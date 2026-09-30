@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v0.5</title>
+  <title>Barcode Battle v0.7</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -30,11 +30,11 @@
     .top-icon img{width:100%;height:100%;display:block}
     .brand{font-weight:950;font-size:24px;letter-spacing:.4px}
     .ver{color:var(--muted);font-size:12px}
-    .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;position:sticky;top:0;z-index:30;background:rgba(7,17,31,.92);backdrop-filter:blur(12px);padding:8px 0 10px}
-    .tab{border:1px solid var(--line);background:#0d1a2b;color:var(--muted);padding:11px 6px;border-radius:14px;font-weight:850}
+    .tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:30;background:rgba(7,17,31,.94);backdrop-filter:blur(12px);padding:8px 0 10px}.tabs::-webkit-scrollbar{display:none}
+    .tab{flex:0 0 auto;min-width:92px;border:1px solid var(--line);background:#0d1a2b;color:var(--muted);padding:10px 12px;border-radius:14px;font-weight:850;white-space:nowrap}
     .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#042027;border-color:transparent}
     .screen{display:none}.screen.active{display:block}
-    .card{background:linear-gradient(180deg,rgba(18,32,52,.98),rgba(9,21,36,.98));border:1px solid var(--line);border-radius:22px;padding:16px;margin:12px 0}
+    .card{background:linear-gradient(180deg,rgba(18,32,52,.98),rgba(9,21,36,.98));border:1px solid var(--line);border-radius:22px;padding:14px;margin:10px 0}
     .hero{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:center}
     .portrait{aspect-ratio:1/1;border-radius:24px;background:#081323;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;position:relative}
     .portrait svg{width:100%;height:100%;display:block}
@@ -102,7 +102,14 @@
     .action{border-radius:13px;padding:13px 8px;border:1px solid #2e4e73;background:#142944;color:#fff;font-weight:900}
     .action.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#052521;border:0}
     .action.guard{background:#263a57}
-    .log{margin-top:12px;background:#030b14;border:1px solid #20364e;border-radius:14px;padding:10px;min-height:160px;max-height:220px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.55}
+    .auto-battle-btn{
+      width:100%;padding:15px 18px;border:0;border-radius:16px;
+      background:linear-gradient(135deg,#67e8f9,#a7f3d0);
+      color:#052521;font-weight:950;font-size:18px;
+    }
+    .auto-battle-btn:disabled{opacity:.5}
+    .ai-state{text-align:center;color:#b9cbe0;font-size:12px;margin-top:8px}
+    .log{margin-top:10px;background:#030b14;border:1px solid #20364e;border-radius:14px;padding:10px;min-height:105px;max-height:145px;overflow:auto;white-space:pre-wrap;font-size:12px;line-height:1.45}
     .result{font-size:22px;font-weight:950;text-align:center;padding:8px}.xpbox{margin-top:10px}.level{font-weight:950;color:#c4e8ff}
     .empty{text-align:center;color:var(--muted);padding:25px 10px}
     .notice{background:#102238;border-left:4px solid var(--accent);padding:10px 12px;border-radius:10px;font-size:13px;color:#c9dbef}
@@ -118,15 +125,23 @@
     @keyframes reveal{0%{transform:scale(.35) rotate(-8deg);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
     .damage-pop{animation:shake .25s linear}
     @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-    .upgrade-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .upgrade-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .upgrade-item{padding:10px}
+    details.compact-details{margin-top:10px;border:1px solid #244766;border-radius:16px;background:#0b1829;overflow:hidden}
+    details.compact-details summary{list-style:none;cursor:pointer;padding:13px 14px;font-weight:900;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    details.compact-details summary::-webkit-details-marker{display:none}
+    details.compact-details summary::after{content:'▼';font-size:12px;color:var(--muted)}
+    details.compact-details[open] summary::after{content:'▲'}
+    details.compact-details .details-body{padding:0 12px 12px}
+    .turn-note{font-size:12px;color:#b9cbe0;text-align:center;margin-top:8px}
     .upgrade-item{background:#0b1829;border:1px solid #223d59;border-radius:16px;padding:12px}
     .dungeon-top{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}
     .floor-num{font-size:30px;font-weight:950;color:#fff}
     .reward-banner{background:linear-gradient(135deg,#102a41,#153555);border:1px solid #26557c;padding:10px;border-radius:14px}
     .run-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    @media(max-width:820px){.tabs{grid-template-columns:repeat(3,1fr)}.dungeon-top{grid-template-columns:1fr}.upgrade-list{grid-template-columns:1fr 1fr}}
+    @media(max-width:820px){.dungeon-top{grid-template-columns:1fr}.upgrade-list{grid-template-columns:1fr 1fr}}
     @media(max-width:680px){.hero{grid-template-columns:120px 1fr}.name{font-size:21px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}.fighter .portrait{max-width:130px}.battle-actions{grid-template-columns:1fr}.upgrade-list{grid-template-columns:1fr}.top{align-items:flex-start}}
-    @media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.tabs{gap:5px}.tab{font-size:12px;padding:10px 3px}.hero{grid-template-columns:100px 1fr}.brand{font-size:20px}}
+    @media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.tabs{gap:5px}.tab{font-size:12px;padding:9px 10px;min-width:84px}.hero{grid-template-columns:100px 1fr}.brand{font-size:20px}}
   </style>
 </head>
 <body>
@@ -134,7 +149,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v0.5 / Premium Monster Art</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v0.7 / Auto Battle AI</div></div>
     </div>
     <button id="resetBtn" class="btn danger" type="button">初期化</button>
   </div>
@@ -211,7 +226,7 @@
           <div class="fighter" id="pFighter"><div id="pPortrait" class="portrait"></div><div id="pName" class="mini-name"></div><div id="pLevel" class="tiny"></div><div class="tiny">HP <span id="pHpText"></span></div><div class="hpbar"><div id="pHpBar"></div></div></div>
           <div class="fighter" id="eFighter"><div id="ePortrait" class="portrait"></div><div id="eName" class="mini-name"></div><div id="eLevel" class="tiny"></div><div class="tiny">HP <span id="eHpText"></span></div><div class="hpbar"><div id="eHpBar"></div></div></div>
         </div>
-        <div class="battle-actions"><button id="attackBtn" class="action primary">⚔ 通常攻撃</button><button id="skillBtn" class="action">✨ 特殊攻撃</button><button id="guardBtn" class="action guard">🛡 防御</button></div>
+        <button id="autoBattleBtn" class="auto-battle-btn">⚔ バトルスタート</button><div id="battleAiState" class="ai-state">開始するとAIが自動で戦います。</div>
         <div class="row" style="margin-top:10px"><button id="newEnemyBtn" class="btn secondary">新しいCOMと対戦</button></div>
         <div id="battleResult" class="result"></div><div id="battleLog" class="log"></div>
       </div>
@@ -219,40 +234,49 @@
   </section>
 
   <section id="dungeon" class="screen">
-    <div class="dungeon-top">
-      <div class="card">
-        <div class="section-title">∞ダンジョン</div>
-        <div id="dungeonInfo" class="notice">お気に入りのモンスターでひたすら進むやりこみモード。勝つほど報酬GET！</div>
-        <div id="dungeonActiveWrap" style="margin-top:12px"></div>
-        <div class="run-controls">
-          <button id="startDungeonBtn" class="btn">ダンジョン開始</button>
-          <button id="nextFloorBtn" class="btn gold" hidden>次の階へ</button>
-          <button id="retireDungeonBtn" class="btn secondary" hidden>撤退</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="section-title">強化ショップ</div>
-        <div class="muted" id="upgradeHint">ダンジョン報酬のゴールドでお気に入りモンスターを永続強化できます。</div>
-        <div id="upgradeArea" class="upgrade-list" style="margin-top:12px"></div>
+    <div class="card">
+      <div class="section-title">∞ダンジョン</div>
+      <div id="dungeonInfo" class="notice">お気に入りのモンスターでひたすら進むやりこみモード。勝つほど報酬GET！</div>
+      <div id="dungeonActiveWrap" style="margin-top:10px"></div>
+      <div class="run-controls">
+        <button id="startDungeonBtn" class="btn">ダンジョン開始</button>
+        <button id="nextFloorBtn" class="btn gold" hidden>次の階へ</button>
+        <button id="retireDungeonBtn" class="btn secondary" hidden>撤退</button>
       </div>
     </div>
 
     <div class="card" id="dungeonRunCard" hidden>
-      <div class="row spread"><div><div class="muted">現在階</div><div class="floor-num" id="floorNowText">1F</div></div><div id="dungeonRewardBanner" class="reward-banner">勝利するとゴールドとEXPを獲得！</div></div>
-      <div class="battlefield" style="margin-top:12px">
+      <div class="row spread">
+        <div><div class="muted">現在階</div><div class="floor-num" id="floorNowText">1F</div></div>
+        <div id="dungeonRewardBanner" class="reward-banner">勝利するとゴールドとEXPを獲得！</div>
+      </div>
+      <div class="battlefield" style="margin-top:10px">
         <div class="fighter" id="dpFighter"><div id="dpPortrait" class="portrait"></div><div id="dpName" class="mini-name"></div><div id="dpLevel" class="tiny"></div><div class="tiny">HP <span id="dpHpText"></span></div><div class="hpbar"><div id="dpHpBar"></div></div></div>
         <div class="fighter" id="deFighter"><div id="dePortrait" class="portrait"></div><div id="deName" class="mini-name"></div><div id="deLevel" class="tiny"></div><div class="tiny">HP <span id="deHpText"></span></div><div class="hpbar"><div id="deHpBar"></div></div></div>
       </div>
       <div class="battle-actions"><button id="dungeonAttackBtn" class="action primary">⚔ 通常攻撃</button><button id="dungeonSkillBtn" class="action">✨ 特殊攻撃</button><button id="dungeonGuardBtn" class="action guard">🛡 防御</button></div>
-      <div id="dungeonResult" class="result"></div><div id="dungeonLog" class="log"></div>
+      <div class="turn-note">行動を選ぶまで敵は動きません。選択後、素早さ順に行動します。</div>
+      <div id="dungeonResult" class="result"></div>
+      <details class="compact-details">
+        <summary>戦闘ログ</summary>
+        <div class="details-body"><div id="dungeonLog" class="log"></div></div>
+      </details>
     </div>
+
+    <details class="compact-details">
+      <summary>🔧 強化ショップ <span class="muted">ゴールドで永続強化</span></summary>
+      <div class="details-body">
+        <div id="upgradeHint" class="muted">ダンジョン報酬のゴールドでお気に入りモンスターを永続強化できます。</div>
+        <div id="upgradeArea" class="upgrade-list" style="margin-top:10px"></div>
+      </div>
+    </details>
   </section>
 </div>
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const STORAGE_KEY="barcodeBattle_v05";
-const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
+const STORAGE_KEY="barcodeBattle_v07";
+const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
 const state = legacy ? JSON.parse(legacy) : {monsters:[], dex:{}, activeMonsterId:null, gold:0, bestFloor:0};
 state.monsters ||= []; state.dex ||= {}; state.gold ||= 0; state.bestFloor ||= 0; state.activeMonsterId ||= null;
 state.monsters.forEach(m=>{m.bonus ||= {hp:0,atk:0,def:0,spd:0}; if(m.favorite===undefined) m.favorite=false;});
@@ -366,13 +390,83 @@ function regen(u){ if(u.skill.kind==='regen'&&u.currentHp>0){ const h=Math.max(1
 function bump(id){ const el=$(id); if(!el) return; el.classList.remove('damage-pop'); void el.offsetWidth; el.classList.add('damage-pop'); }
 
 function renderBattleSelection(){ const m=activeMonster(); if(!m){ $('#battleEmpty').hidden=false; $('#battleArea').hidden=true; return; } startBattle(); }
-function startBattle(){ const src=activeMonster(); if(!src){ $('#battleEmpty').hidden=false; $('#battleArea').hidden=true; return; } battle={player:unitFromMonster(src), enemy:unitFromMonster(makeEnemyForMonster(src, Math.floor(Math.random()*3))), over:false}; $('#battleArea').hidden=false; $('#battleEmpty').hidden=true; $('#battleResult').textContent=''; $('#battleLog').textContent=''; logBattle(`⚔ バトル開始！\n${battle.player.name} vs ${battle.enemy.name}`); updateBattleUI(); if(battle.enemy.spd>battle.player.spd) setTimeout(enemyTurnBattle, 350); }
-function updateBattleUI(){ if(!battle) return; const p=battle.player,e=battle.enemy; $('#pPortrait').innerHTML=portraitSVG(p); $('#ePortrait').innerHTML=portraitSVG(e); $('#pPortrait').classList.toggle('sparkle', p.stars>=4); $('#ePortrait').classList.toggle('sparkle', e.stars>=4); $('#pName').textContent=p.name; $('#eName').textContent=e.name; $('#pLevel').textContent=`Lv.${p.level}`; $('#eLevel').textContent=`Lv.${e.level}`; $('#pHpText').textContent=`${p.currentHp}/${p.maxHp}`; $('#eHpText').textContent=`${e.currentHp}/${e.maxHp}`; $('#pHpBar').style.width=(100*p.currentHp/p.maxHp)+'%'; $('#eHpBar').style.width=(100*e.currentHp/e.maxHp)+'%'; ['#attackBtn','#skillBtn','#guardBtn'].forEach(id=>$(id).disabled=battle.over); }
+function startBattle(){ const src=activeMonster(); if(!src){ $('#battleEmpty').hidden=false; $('#battleArea').hidden=true; return; } battle={player:unitFromMonster(src), enemy:unitFromMonster(makeEnemyForMonster(src, Math.floor(Math.random()*3))), over:false, resolving:false, autoRunning:false, timer:null}; $('#battleArea').hidden=false; $('#battleEmpty').hidden=true; $('#battleResult').textContent=''; $('#battleLog').textContent=''; logBattle(`⚔ 対戦準備完了！\n${battle.player.name} vs ${battle.enemy.name}`); $('#battleAiState').textContent='「バトルスタート」でAI戦闘開始'; updateBattleUI(); }
+function updateBattleUI(){
+  if(!battle)return;
+  const p=battle.player,e=battle.enemy;
+  $('#pPortrait').innerHTML=portraitSVG(p);$('#ePortrait').innerHTML=portraitSVG(e);
+  $('#pPortrait').classList.toggle('sparkle',p.stars>=4);$('#ePortrait').classList.toggle('sparkle',e.stars>=4);
+  $('#pName').textContent=p.name;$('#eName').textContent=e.name;
+  $('#pLevel').textContent=`Lv.${p.level}`;$('#eLevel').textContent=`Lv.${e.level}`;
+  $('#pHpText').textContent=`${p.currentHp}/${p.maxHp}`;$('#eHpText').textContent=`${e.currentHp}/${e.maxHp}`;
+  $('#pHpBar').style.width=(100*p.currentHp/p.maxHp)+'%';$('#eHpBar').style.width=(100*e.currentHp/e.maxHp)+'%';
+  $('#autoBattleBtn').disabled=battle.over||battle.autoRunning;
+}
 function logBattle(t){ $('#battleLog').textContent += t+'\n'; $('#battleLog').scrollTop = $('#battleLog').scrollHeight; }
-function playerActionBattle(kind){ if(!battle||battle.over) return; const p=battle.player,e=battle.enemy; if(kind==='guard'){ p.guarding=true; logBattle(`${p.name}は防御態勢！`); } else { const r=calcDamage(p,e,kind==='skill'); logBattle(`${p.name}の${kind==='skill'?'特殊攻撃':'攻撃'}！ ${r.dmg}ダメージ ${r.note}`); bump('#eFighter'); } const h=regen(p); if(h) logBattle(`${p.name}は${h}回復`); updateBattleUI(); if(checkBattleEnd()) return; setTimeout(enemyTurnBattle, 450); }
-function enemyTurnBattle(){ if(!battle||battle.over) return; const e=battle.enemy,p=battle.player; if(Math.random()<.18){ e.guarding=true; logBattle(`${e.name}は防御態勢！`); } else { const useSkill=Math.random()<.38; const r=calcDamage(e,p,useSkill); logBattle(`COM ${e.name}の${useSkill?'特殊攻撃':'攻撃'}！ ${r.dmg}ダメージ ${r.note}`); bump('#pFighter'); } const h=regen(e); if(h) logBattle(`${e.name}は${h}回復`); updateBattleUI(); checkBattleEnd(); }
+function chooseAiAction(unit, enemy){
+  const hpRate=unit.currentHp/unit.maxHp;
+  const enemyRate=enemy.currentHp/enemy.maxHp;
+  // Low HP: defense more likely, especially if enemy is still healthy.
+  if(hpRate<0.28 && Math.random()<0.42) return "guard";
+  // Finish chance: prefer skill when enemy is weak.
+  if(enemyRate<0.35 && Math.random()<0.72) return "skill";
+  // Strong offensive units use skill more often.
+  const offense=(unit.atk+unit.spd)/(Math.max(1,unit.def)*2);
+  if(Math.random() < Math.min(.58,.28+offense*.12)) return "skill";
+  if(Math.random()<0.14) return "guard";
+  return "attack";
+}
+
+function doAutoAction(actor, target, action, actorLabel, targetFighterId, logFn){
+  if(actor.currentHp<=0 || target.currentHp<=0) return;
+  if(action==="guard"){
+    actor.guarding=true;
+    logFn(`${actorLabel}は防御態勢！`);
+    return;
+  }
+  const r=calcDamage(actor,target,action==="skill");
+  logFn(`${actorLabel}の${action==="skill"?"特殊攻撃":"攻撃"}！ ${r.dmg}ダメージ ${r.note}`);
+  bump(targetFighterId);
+  const h=regen(actor);
+  if(h) logFn(`${actorLabel}は${h}回復`);
+}
+
+function startAutoBattle(){
+  if(!battle || battle.over || battle.autoRunning) return;
+  battle.autoRunning=true;
+  $('#battleAiState').textContent='AIバトル中…';
+  $('#autoBattleBtn').disabled=true;
+  runAutoBattleTurn();
+}
+
+function runAutoBattleTurn(){
+  if(!battle || battle.over || !battle.autoRunning) return;
+  const p=battle.player,e=battle.enemy;
+  const pAction=chooseAiAction(p,e);
+  const eAction=chooseAiAction(e,p);
+  const playerFirst=p.spd>=e.spd;
+
+  const first = playerFirst
+    ? ()=>doAutoAction(p,e,pAction,p.name,'#eFighter',logBattle)
+    : ()=>doAutoAction(e,p,eAction,`COM ${e.name}`,'#pFighter',logBattle);
+  const second = playerFirst
+    ? ()=>doAutoAction(e,p,eAction,`COM ${e.name}`,'#pFighter',logBattle)
+    : ()=>doAutoAction(p,e,pAction,p.name,'#eFighter',logBattle);
+
+  first();
+  updateBattleUI();
+  if(checkBattleEnd()) return;
+
+  battle.timer=setTimeout(()=>{
+    second();
+    updateBattleUI();
+    if(checkBattleEnd()) return;
+    battle.timer=setTimeout(runAutoBattleTurn,520);
+  },360);
+}
+
 function checkBattleEnd(){ if(battle.enemy.currentHp<=0){ finishBattle(true); return true; } if(battle.player.currentHp<=0){ finishBattle(false); return true; } return false; }
-function finishBattle(win){ battle.over=true; const src=activeMonster(); if(src && win){ const gain=35+battle.enemy.level*10+battle.enemy.stars*5; const gold=12+battle.enemy.level*4; const ups=levelUp(src,gain); state.gold += gold; $('#battleResult').textContent=`🏆 WIN! +${gain} EXP / +${gold}G${ups?` / LEVEL UP! Lv.${src.level}`:''}`; logBattle(`勝利！ 経験値${gain}・ゴールド${gold}獲得。`); save(); updateTopBar(); renderBox(); renderDungeon(); } else { $('#battleResult').textContent='💫 LOSE'; logBattle('敗北…。育成して再挑戦しよう。'); } updateBattleUI(); }
+function finishBattle(win){ battle.over=true; battle.autoRunning=false; if(battle.timer)clearTimeout(battle.timer); $('#battleAiState').textContent='バトル終了'; const src=activeMonster(); if(src && win){ const gain=35+battle.enemy.level*10+battle.enemy.stars*5; const gold=12+battle.enemy.level*4; const ups=levelUp(src,gain); state.gold += gold; $('#battleResult').textContent=`🏆 WIN! +${gain} EXP / +${gold}G${ups?` / LEVEL UP! Lv.${src.level}`:''}`; logBattle(`勝利！ 経験値${gain}・ゴールド${gold}獲得。`); save(); updateTopBar(); renderBox(); renderDungeon(); } else { $('#battleResult').textContent='💫 LOSE'; logBattle('敗北…。育成して再挑戦しよう。'); } updateBattleUI(); }
 
 function renderDungeon(){ updateTopBar(); const m=activeMonster(); const wrap=$('#dungeonActiveWrap'); if(!m){ wrap.innerHTML='<div class="empty">まずBOXからお気に入りモンスターを設定してください。</div>'; $('#upgradeArea').innerHTML=''; $('#dungeonRunCard').hidden=true; return; } const s=displayStats(m); wrap.innerHTML=`<div class="hero"><div class="portrait ${m.stars>=4?'sparkle':''}">${portraitSVG(m)}</div><div><div class="name" style="font-size:22px">${m.name}</div><div class="badges"><span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge">Lv.${m.level}</span></div><div class="stats"><div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div></div></div></div>`; renderUpgradeArea(); renderDungeonRun(); }
 function upgradeCost(monster, key){ const bonus=monster.bonus?.[key]||0; const base={hp:50, atk:60, def:60, spd:60}[key]; const step={hp:Math.floor(bonus/8)*12, atk:Math.floor(bonus/2)*12, def:Math.floor(bonus/2)*12, spd:Math.floor(bonus/2)*12}[key]; return base+step; }
@@ -380,15 +474,47 @@ function upgradeAmount(key){ return {hp:8, atk:2, def:2, spd:2}[key]; }
 function renderUpgradeArea(){ const m=activeMonster(); if(!m){ $('#upgradeArea').innerHTML=''; return; } const labels={hp:'HP強化', atk:'攻撃強化', def:'防御強化', spd:'素早さ強化'}; const list=['hp','atk','def','spd'].map(key=>{ const cost=upgradeCost(m,key), plus=upgradeAmount(key), current=m.bonus?.[key]||0; return `<div class="upgrade-item"><div style="font-weight:900">${labels[key]}</div><div class="muted">永続ボーナス +${current}</div><div class="muted">次回強化: +${plus} / ${cost}G</div><button class="btn gold" style="margin-top:10px;width:100%" onclick="upgradeActive('${key}')">強化する</button></div>`; }).join(''); $('#upgradeArea').innerHTML=list; }
 window.upgradeActive = function(key){ const m=activeMonster(); if(!m) return; const cost=upgradeCost(m,key); if(state.gold<cost){ alert('ゴールドが足りません。'); return; } state.gold -= cost; m.bonus[key] = (m.bonus[key]||0) + upgradeAmount(key); save(); updateTopBar(); renderBox(); renderBattleSelection(); renderDungeon(); };
 
-function renderDungeonRun(){ if(!dungeonRun){ $('#dungeonRunCard').hidden=true; $('#nextFloorBtn').hidden=true; $('#retireDungeonBtn').hidden=true; $('#startDungeonBtn').hidden=false; $('#dungeonRewardBanner').textContent='勝利するとゴールドとEXPを獲得！'; return; } $('#dungeonRunCard').hidden=false; $('#startDungeonBtn').hidden=true; $('#retireDungeonBtn').hidden=false; $('#nextFloorBtn').hidden=!dungeonRun.readyForNext; $('#floorNowText').textContent=dungeonRun.floor+'F'; const nextGold=20+dungeonRun.floor*12, nextExp=20+dungeonRun.floor*15; $('#dungeonRewardBanner').textContent=`この階の報酬: ${nextGold}G / ${nextExp}EXP`; const p=dungeonRun.player,e=dungeonRun.enemy; $('#dpPortrait').innerHTML=portraitSVG(p); $('#dePortrait').innerHTML=portraitSVG(e); $('#dpPortrait').classList.toggle('sparkle', p.stars>=4); $('#dePortrait').classList.toggle('sparkle', e.stars>=4); $('#dpName').textContent=p.name; $('#deName').textContent=e.name; $('#dpLevel').textContent=`Lv.${p.level}`; $('#deLevel').textContent=`Lv.${e.level}`; $('#dpHpText').textContent=`${p.currentHp}/${p.maxHp}`; $('#deHpText').textContent=`${e.currentHp}/${e.maxHp}`; $('#dpHpBar').style.width=(100*p.currentHp/p.maxHp)+'%'; $('#deHpBar').style.width=(100*e.currentHp/e.maxHp)+'%'; ['#dungeonAttackBtn','#dungeonSkillBtn','#dungeonGuardBtn'].forEach(id=>$(id).disabled=dungeonRun.over||dungeonRun.readyForNext); }
+function renderDungeonRun(){ if(!dungeonRun){ $('#dungeonRunCard').hidden=true; $('#nextFloorBtn').hidden=true; $('#retireDungeonBtn').hidden=true; $('#startDungeonBtn').hidden=false; $('#dungeonRewardBanner').textContent='勝利するとゴールドとEXPを獲得！'; return; } $('#dungeonRunCard').hidden=false; $('#startDungeonBtn').hidden=true; $('#retireDungeonBtn').hidden=false; $('#nextFloorBtn').hidden=!dungeonRun.readyForNext; $('#floorNowText').textContent=dungeonRun.floor+'F'; const nextGold=20+dungeonRun.floor*12, nextExp=20+dungeonRun.floor*15; $('#dungeonRewardBanner').textContent=`この階の報酬: ${nextGold}G / ${nextExp}EXP`; const p=dungeonRun.player,e=dungeonRun.enemy; $('#dpPortrait').innerHTML=portraitSVG(p); $('#dePortrait').innerHTML=portraitSVG(e); $('#dpPortrait').classList.toggle('sparkle', p.stars>=4); $('#dePortrait').classList.toggle('sparkle', e.stars>=4); $('#dpName').textContent=p.name; $('#deName').textContent=e.name; $('#dpLevel').textContent=`Lv.${p.level}`; $('#deLevel').textContent=`Lv.${e.level}`; $('#dpHpText').textContent=`${p.currentHp}/${p.maxHp}`; $('#deHpText').textContent=`${e.currentHp}/${e.maxHp}`; $('#dpHpBar').style.width=(100*p.currentHp/p.maxHp)+'%'; $('#deHpBar').style.width=(100*e.currentHp/e.maxHp)+'%'; $('#dungeonAutoBattleBtn').disabled=dungeonRun.over||dungeonRun.readyForNext||dungeonRun.autoRunning; if($('#dungeonAiState')) $('#dungeonAiState').textContent=dungeonRun.autoRunning?'AIバトル中…':(dungeonRun.readyForNext?'この階クリア！':'この階の自動バトルを開始できます。'); }
 function logDungeon(t){ $('#dungeonLog').textContent += t+'\n'; $('#dungeonLog').scrollTop = $('#dungeonLog').scrollHeight; }
-function startDungeon(){ const src=activeMonster(); if(!src){ alert('お気に入りモンスターを設定してください。'); return; } dungeonRun={ floor:1, player:unitFromMonster(src), enemy:null, over:false, readyForNext:false, sourceId:src.id }; dungeonRun.enemy = makeDungeonEnemy(); $('#dungeonLog').textContent=''; $('#dungeonResult').textContent=''; logDungeon(`∞ダンジョン開始！\n${dungeonRun.player.name}が1Fへ突入！`); renderDungeonRun(); if(dungeonRun.enemy.spd>dungeonRun.player.spd) setTimeout(enemyTurnDungeon, 350); }
+function startDungeon(){ const src=activeMonster(); if(!src){ alert('お気に入りモンスターを設定してください。'); return; } dungeonRun={ floor:1, player:unitFromMonster(src), enemy:null, over:false, readyForNext:false, sourceId:src.id, autoRunning:false, timer:null }; dungeonRun.enemy = makeDungeonEnemy(); $('#dungeonLog').textContent=''; $('#dungeonResult').textContent=''; logDungeon(`∞ダンジョン開始！\n${dungeonRun.player.name}が1Fへ突入！`); renderDungeonRun(); $('#dungeonAiState').textContent='この階の自動バトルを開始できます。'; }
 function makeDungeonEnemy(){ const src=activeMonster(); const floor=dungeonRun.floor; const enemy = unitFromMonster(makeEnemyForMonster(src, Math.floor(floor/2)+Math.floor(Math.random()*2))); enemy.level = clamp(src.level + Math.floor(floor/2), 1, 50); const r = rng(hashString(src.id+':'+floor)); enemy.maxHp += floor*8; enemy.currentHp = enemy.maxHp; enemy.atk += floor*2; enemy.def += floor*2; enemy.spd += Math.floor(floor/3); if(floor>=10 && enemy.stars<5 && r()>.5) enemy.stars++; return enemy; }
-function playerActionDungeon(kind){ if(!dungeonRun||dungeonRun.over||dungeonRun.readyForNext) return; const p=dungeonRun.player,e=dungeonRun.enemy; if(kind==='guard'){ p.guarding=true; logDungeon(`${p.name}は防御態勢！`); } else { const r=calcDamage(p,e,kind==='skill'); logDungeon(`${p.name}の${kind==='skill'?'特殊攻撃':'攻撃'}！ ${r.dmg}ダメージ ${r.note}`); bump('#deFighter'); } const h=regen(p); if(h) logDungeon(`${p.name}は${h}回復`); renderDungeonRun(); if(checkDungeonEnd()) return; setTimeout(enemyTurnDungeon, 450); }
-function enemyTurnDungeon(){ if(!dungeonRun||dungeonRun.over||dungeonRun.readyForNext) return; const e=dungeonRun.enemy,p=dungeonRun.player; if(Math.random()<.16){ e.guarding=true; logDungeon(`${e.name}は防御態勢！`); } else { const useSkill=Math.random()<.36; const r=calcDamage(e,p,useSkill); logDungeon(`${e.name}の${useSkill?'特殊攻撃':'攻撃'}！ ${r.dmg}ダメージ ${r.note}`); bump('#dpFighter'); } const h=regen(e); if(h) logDungeon(`${e.name}は${h}回復`); renderDungeonRun(); checkDungeonEnd(); }
+function startDungeonAutoBattle(){
+  if(!dungeonRun||dungeonRun.over||dungeonRun.readyForNext||dungeonRun.autoRunning) return;
+  dungeonRun.autoRunning=true;
+  $('#dungeonAiState').textContent='AIバトル中…';
+  $('#dungeonAutoBattleBtn').disabled=true;
+  runDungeonAutoTurn();
+}
+
+function runDungeonAutoTurn(){
+  if(!dungeonRun||dungeonRun.over||dungeonRun.readyForNext||!dungeonRun.autoRunning) return;
+  const p=dungeonRun.player,e=dungeonRun.enemy;
+  const pAction=chooseAiAction(p,e);
+  const eAction=chooseAiAction(e,p);
+  const playerFirst=p.spd>=e.spd;
+
+  const first = playerFirst
+    ? ()=>doAutoAction(p,e,pAction,p.name,'#deFighter',logDungeon)
+    : ()=>doAutoAction(e,p,eAction,e.name,'#dpFighter',logDungeon);
+  const second = playerFirst
+    ? ()=>doAutoAction(e,p,eAction,e.name,'#dpFighter',logDungeon)
+    : ()=>doAutoAction(p,e,pAction,p.name,'#deFighter',logDungeon);
+
+  first();
+  renderDungeonRun();
+  if(checkDungeonEnd()) return;
+
+  dungeonRun.timer=setTimeout(()=>{
+    second();
+    renderDungeonRun();
+    if(checkDungeonEnd()) return;
+    dungeonRun.timer=setTimeout(runDungeonAutoTurn,500);
+  },340);
+}
+
 function checkDungeonEnd(){ if(dungeonRun.enemy.currentHp<=0){ finishDungeonFloor(true); return true; } if(dungeonRun.player.currentHp<=0){ finishDungeonFloor(false); return true; } return false; }
-function finishDungeonFloor(win){ const src=activeMonster(); if(win){ dungeonRun.readyForNext=true; const gold=20+dungeonRun.floor*12; const exp=20+dungeonRun.floor*15; state.gold += gold; const ups=levelUp(src, exp); state.bestFloor = Math.max(state.bestFloor, dungeonRun.floor); $('#dungeonResult').textContent=`🏆 ${dungeonRun.floor}Fクリア！ +${gold}G / +${exp}EXP${ups?` / LEVEL UP! Lv.${src.level}`:''}`; logDungeon(`${dungeonRun.floor}F突破！ ゴールド${gold}・EXP${exp}獲得。`); save(); updateTopBar(); renderBox(); } else { dungeonRun.over=true; $('#dungeonResult').textContent=`💀 ${dungeonRun.floor}Fで力尽きた…`; logDungeon('ダンジョン攻略失敗…。報酬は持ち帰れた！'); if(dungeonRun.floor-1>0) state.bestFloor=Math.max(state.bestFloor, dungeonRun.floor-1); save(); updateTopBar(); } renderDungeon(); }
-function nextDungeonFloor(){ if(!dungeonRun||!dungeonRun.readyForNext) return; dungeonRun.floor += 1; dungeonRun.readyForNext=false; dungeonRun.over=false; const heal = Math.round(dungeonRun.player.maxHp*0.25); dungeonRun.player.currentHp = Math.min(dungeonRun.player.maxHp, dungeonRun.player.currentHp + heal); dungeonRun.player.guarding=false; dungeonRun.player.first=true; dungeonRun.enemy = makeDungeonEnemy(); $('#dungeonResult').textContent=''; logDungeon(`\n▶ ${dungeonRun.floor}Fへ進んだ！ HPが${heal}回復。`); renderDungeonRun(); if(dungeonRun.enemy.spd>dungeonRun.player.spd) setTimeout(enemyTurnDungeon, 350); }
+function finishDungeonFloor(win){ const src=activeMonster(); dungeonRun.autoRunning=false; if(dungeonRun.timer)clearTimeout(dungeonRun.timer); if(win){ dungeonRun.readyForNext=true; const gold=20+dungeonRun.floor*12; const exp=20+dungeonRun.floor*15; state.gold += gold; const ups=levelUp(src, exp); state.bestFloor = Math.max(state.bestFloor, dungeonRun.floor); $('#dungeonResult').textContent=`🏆 ${dungeonRun.floor}Fクリア！ +${gold}G / +${exp}EXP${ups?` / LEVEL UP! Lv.${src.level}`:''}`; logDungeon(`${dungeonRun.floor}F突破！ ゴールド${gold}・EXP${exp}獲得。`); save(); updateTopBar(); renderBox(); } else { dungeonRun.over=true; $('#dungeonResult').textContent=`💀 ${dungeonRun.floor}Fで力尽きた…`; logDungeon('ダンジョン攻略失敗…。報酬は持ち帰れた！'); if(dungeonRun.floor-1>0) state.bestFloor=Math.max(state.bestFloor, dungeonRun.floor-1); save(); updateTopBar(); } renderDungeon(); }
+function nextDungeonFloor(){ if(!dungeonRun||!dungeonRun.readyForNext) return; dungeonRun.floor += 1; dungeonRun.readyForNext=false; dungeonRun.over=false; dungeonRun.autoRunning=false; if(dungeonRun.timer)clearTimeout(dungeonRun.timer); const heal = Math.round(dungeonRun.player.maxHp*0.25); dungeonRun.player.currentHp = Math.min(dungeonRun.player.maxHp, dungeonRun.player.currentHp + heal); dungeonRun.player.guarding=false; dungeonRun.player.first=true; dungeonRun.enemy = makeDungeonEnemy(); $('#dungeonResult').textContent=''; logDungeon(`\n▶ ${dungeonRun.floor}Fへ進んだ！ HPが${heal}回復。`); renderDungeonRun(); $('#dungeonAiState').textContent='この階の自動バトルを開始できます。'; }
 function retireDungeon(){ if(!dungeonRun) return; if(confirm('ダンジョンから撤退しますか？')){ dungeonRun=null; $('#dungeonResult').textContent=''; renderDungeon(); } }
 
 async function startScanner(){ if(scanning) return; if(typeof Html5Qrcode==='undefined'){ alert('カメラ読み取り機能の読み込みに失敗しました。'); return; } try{ scanner=new Html5Qrcode('reader'); scanning=true; $('#cameraBtn').disabled=true; $('#stopCameraBtn').disabled=false; $('#scanFrame').style.display='block'; await scanner.start({facingMode:'environment'}, {fps:10, qrbox:{width:280,height:130}, aspectRatio:1.7}, decoded=>{ stopScanner(); summonFromCode(decoded); }, ()=>{}); } catch(e){ scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; alert('カメラを開始できませんでした。Safariのカメラ権限を確認してください。'); } }
@@ -399,8 +525,8 @@ $('#summonBtn').addEventListener('click', summon); $('#rerollBtn').addEventListe
 $('#cameraBtn').addEventListener('click', startScanner); $('#stopCameraBtn').addEventListener('click', stopScanner);
 $('#setActiveBtn').addEventListener('click', ()=>{ if(selectedId) setActiveMonster(selectedId); });
 $('#deleteMonsterBtn').addEventListener('click', deleteSelected);
-$('#attackBtn').addEventListener('click', ()=>playerActionBattle('attack')); $('#skillBtn').addEventListener('click', ()=>playerActionBattle('skill')); $('#guardBtn').addEventListener('click', ()=>playerActionBattle('guard')); $('#newEnemyBtn').addEventListener('click', startBattle);
-$('#startDungeonBtn').addEventListener('click', startDungeon); $('#nextFloorBtn').addEventListener('click', nextDungeonFloor); $('#retireDungeonBtn').addEventListener('click', retireDungeon); $('#dungeonAttackBtn').addEventListener('click', ()=>playerActionDungeon('attack')); $('#dungeonSkillBtn').addEventListener('click', ()=>playerActionDungeon('skill')); $('#dungeonGuardBtn').addEventListener('click', ()=>playerActionDungeon('guard'));
+$('#autoBattleBtn').addEventListener('click', startAutoBattle); $('#newEnemyBtn').addEventListener('click', startBattle);
+$('#startDungeonBtn').addEventListener('click', startDungeon); $('#nextFloorBtn').addEventListener('click', nextDungeonFloor); $('#retireDungeonBtn').addEventListener('click', retireDungeon); $('#dungeonAutoBattleBtn').addEventListener('click', startDungeonAutoBattle);
 $('#resetBtn').addEventListener('click', ()=>{ if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){ localStorage.removeItem(STORAGE_KEY); location.reload(); } });
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 if(state.monsters.length && !state.activeMonsterId){ state.activeMonsterId=state.monsters[0].id; state.monsters[0].favorite=true; save(); }
