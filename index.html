@@ -1,12 +1,313 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0f172a"><title>Barcode Battle v0.2</title><link rel="manifest" href="manifest.webmanifest"><style>
-:root{--bg:#07111f;--p:#0f1b2d;--l:#28405f;--t:#eef6ff;--m:#95aac3;--a:#5eead4;--g:#fbbf24;--r:#fb7185}*{box-sizing:border-box}body{margin:0;background:#07111f;color:var(--t);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}.app{max-width:900px;margin:auto;padding:16px 16px 80px}.brand{font-size:25px;font-weight:900}.muted{color:var(--m);font-size:13px}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;position:sticky;top:0;background:#07111feF;padding:10px 0;z-index:5}.tab,.btn{border:0;border-radius:12px;padding:12px;font-weight:800}.tab{background:#13243b;color:#b6c6d9}.tab.active,.btn{background:var(--a);color:#052521}.btn.secondary{background:#203754;color:white}.btn.danger{background:var(--r);color:white}.screen{display:none}.screen.active{display:block}.card{background:var(--p);border:1px solid var(--l);border-radius:18px;padding:15px;margin:12px 0}.row{display:flex;gap:8px;flex-wrap:wrap}input{flex:1;min-width:210px;padding:13px;border-radius:12px;border:1px solid #36506f;background:#081421;color:white;font-size:16px}.hero{display:grid;grid-template-columns:150px 1fr;gap:15px;align-items:center}.portrait{aspect-ratio:1;border-radius:18px;background:#081321;overflow:hidden;border:1px solid var(--l)}.portrait svg{width:100%;height:100%}.name{font-size:24px;font-weight:900}.badges{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}.badge{font-size:12px;border:1px solid #385577;background:#15283f;border-radius:999px;padding:5px 8px}.stars{color:var(--g)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.stat{background:#091624;border:1px solid #203b59;border-radius:12px;padding:9px}.stat b{display:block;font-size:21px}.skill{margin-top:10px;background:#091624;border-radius:12px;padding:10px}.progress{height:9px;background:#24364d;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:var(--a)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.mini{background:#0b1727;border:1px solid var(--l);border-radius:14px;padding:9px;color:white;text-align:left}.mini.selected{outline:2px solid var(--a)}.miniimg{aspect-ratio:1;border-radius:10px;overflow:hidden}.miniimg svg{width:100%;height:100%}.tiny{font-size:11px;color:var(--m)}.battle{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fighter{background:#091522;border:1px solid var(--l);border-radius:15px;padding:10px}.fighter .portrait{max-width:150px;margin:auto}.hpbar{height:12px;background:#422735;border-radius:999px;overflow:hidden}.hpbar>div{height:100%;background:#4ade80;transition:.25s}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.log{background:#030b14;border-radius:12px;padding:10px;min-height:150px;max-height:220px;overflow:auto;white-space:pre-wrap;font-size:13px;margin-top:10px}.result{text-align:center;font-size:21px;font-weight:900;padding:8px}.empty{text-align:center;color:var(--m);padding:20px}@media(max-width:620px){.hero{grid-template-columns:105px 1fr}.grid{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:1fr}.brand{font-size:21px}}
-</style></head><body><div class="app"><div class="brand">⚡ BARCODE BATTLE <span class="muted">v0.2</span></div><div class="muted">召喚・保存・図鑑・育成・COMバトル</div>
-<nav class="tabs"><button class="tab active" data-tab="scan">召喚</button><button class="tab" data-tab="box">BOX</button><button class="tab" data-tab="dex">図鑑</button><button class="tab" data-tab="battle">バトル</button></nav>
-<section id="scan" class="screen active"><div class="card"><div class="row"><input id="code" inputmode="numeric" placeholder="バーコード数字（4桁以上）"><button id="summon" class="btn">召喚</button></div><div class="muted" style="margin-top:8px">同じバーコードでも個体差が出ます。</div></div><div id="result" class="card" hidden><div class="hero"><div id="portrait" class="portrait"></div><div><div id="name" class="name"></div><div class="badges"><span id="stars" class="badge stars"></span><span id="element" class="badge"></span><span id="type" class="badge"></span><span id="rank" class="badge"></span></div><div>Lv.<b id="level"></b></div><div class="muted">EXP <span id="xptext"></span></div><div class="progress"><div id="xpbar"></div></div></div></div><div class="stats"><div class="stat">HP<b id="hp"></b></div><div class="stat">攻撃<b id="atk"></b></div><div class="stat">防御<b id="def"></b></div><div class="stat">素早さ<b id="spd"></b></div></div><div id="skill" class="skill"></div><div class="row" style="margin-top:10px"><button id="save" class="btn">BOXに保存</button><button id="reroll" class="btn secondary">同じコードでもう1体</button></div></div></section>
-<section id="box" class="screen"><div class="card"><div><b>モンスターBOX</b> <span id="boxcount" class="muted"></span></div><div id="boxgrid" class="grid" style="margin-top:10px"></div></div><div id="detail" class="card" hidden><div class="hero"><div id="dportrait" class="portrait"></div><div><div id="dname" class="name"></div><div id="dmeta" class="badges"></div><div id="dlevel"></div><div id="dxp" class="muted"></div><div class="progress"><div id="dxpbar"></div></div></div></div><div id="dstats" class="stats"></div><div id="dskill" class="skill"></div><div class="row" style="margin-top:10px"><button id="choose" class="btn">このキャラで戦う</button><button id="remove" class="btn danger">削除</button></div></div></section>
-<section id="dex" class="screen"><div class="card"><b>キャラ図鑑</b> <span id="dexcount" class="muted"></span><div id="dexgrid" class="grid" style="margin-top:10px"></div></div></section>
-<section id="battle" class="screen"><div class="card"><div id="battleempty" class="empty">BOXから戦うキャラを選んでください。</div><div id="battlearea" hidden><div class="battle"><div class="fighter"><div id="pp" class="portrait"></div><b id="pn"></b><div id="pl" class="tiny"></div><div class="tiny">HP <span id="pht"></span></div><div class="hpbar"><div id="ph"></div></div></div><div class="fighter"><div id="ep" class="portrait"></div><b id="en"></b><div id="el" class="tiny"></div><div class="tiny">HP <span id="eht"></span></div><div class="hpbar"><div id="eh"></div></div></div></div><div class="actions"><button id="attack" class="btn">⚔ 通常攻撃</button><button id="special" class="btn secondary">✨ 特殊攻撃</button><button id="guard" class="btn secondary">🛡 防御</button></div><div class="row" style="margin-top:8px"><button id="newenemy" class="btn secondary">新しいCOM</button></div><div id="bres" class="result"></div><div id="blog" class="log"></div></div></div></section>
-<div class="row"><button id="reset" class="btn danger">保存データ初期化</button></div></div>
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1325">
+  <title>Barcode Battle v0.3</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <script src="https://unpkg.com/html5-qrcode" defer></script>
+  <style>
+    :root{
+      --bg:#07111f;--panel:#0f1b2d;--panel2:#14233a;--line:#294766;--text:#f4f8ff;--muted:#9bb1c9;
+      --accent:#67e8f9;--accent2:#a7f3d0;--pink:#f9a8d4;--danger:#fb7185;--gold:#fbbf24;--ok:#4ade80;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;background:
+      radial-gradient(circle at top,#10213b 0,#07111f 42%,#050a12 100%);color:var(--text)}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:900px;margin:auto;padding:16px 16px 90px}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 14px}
+    .brand{font-weight:950;font-size:24px;letter-spacing:.4px}
+    .ver{color:var(--muted);font-size:12px}
+    .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:sticky;top:0;z-index:30;background:rgba(7,17,31,.92);backdrop-filter:blur(12px);padding:8px 0 10px}
+    .tab{border:1px solid var(--line);background:#0d1a2b;color:var(--muted);padding:11px 6px;border-radius:14px;font-weight:850}
+    .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#042027;border-color:transparent}
+    .screen{display:none}.screen.active{display:block}
+    .card{background:linear-gradient(180deg,rgba(18,32,52,.98),rgba(9,21,36,.98));border:1px solid var(--line);border-radius:22px;padding:16px;margin:12px 0}
+    .hero{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:center}
+    .portrait{aspect-ratio:1/1;border-radius:24px;background:#081323;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;position:relative}
+    .portrait svg{width:100%;height:100%;display:block}
+    .sparkle::before,.sparkle::after{content:"✦";position:absolute;color:#fff7b2;font-size:18px;animation:twinkle 1.2s infinite alternate}
+    .sparkle::before{left:10px;top:12px}.sparkle::after{right:12px;bottom:18px;animation-delay:.4s}
+    @keyframes twinkle{from{opacity:.25;transform:scale(.7)}to{opacity:1;transform:scale(1.25)}}
+    .name{font-size:26px;font-weight:950;margin:0 0 5px}
+    .badges{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+    .badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;background:#15283f;border:1px solid #2c476a;color:#d7e8fa;font-size:12px;font-weight:800}
+    .stars{color:var(--gold);letter-spacing:1px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .stat{background:#0a1626;border:1px solid #203b59;border-radius:14px;padding:10px}
+    .stat small{color:var(--muted)} .stat b{display:block;font-size:22px;margin-top:2px}
+    .row{display:flex;gap:9px;flex-wrap:wrap}
+    input{flex:1;min-width:220px;padding:13px 14px;border-radius:13px;border:1px solid #36506f;background:#081421;color:#fff;outline:none}
+    input:focus{border-color:var(--accent)}
+    .btn{border:0;border-radius:14px;padding:12px 15px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#052521}
+    .btn.secondary{background:#1a304c;color:#fff;border:1px solid #2d4d72}
+    .btn.pink{background:linear-gradient(135deg,#f9a8d4,#fbcfe8);color:#4a1230}
+    .btn.danger{background:var(--danger);color:#fff}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .muted{color:var(--muted);font-size:13px}
+    .section-title{font-size:18px;font-weight:950;margin:3px 0 10px}
+    .skillbox{background:#091624;border:1px solid #203e5c;border-radius:14px;padding:11px;margin-top:10px}
+    .progress{height:10px;background:#1d2c42;border-radius:999px;overflow:hidden}
+    .progress>div{height:100%;background:linear-gradient(90deg,#60a5fa,#67e8f9,#a7f3d0);width:0}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .monster-mini{background:#0c1828;border:1px solid #203a58;border-radius:18px;padding:10px;position:relative;color:#fff;text-align:left}
+    .monster-mini.selected{outline:2px solid var(--accent)}
+    .miniimg{aspect-ratio:1/1;border-radius:14px;background:#081321;overflow:hidden;margin-bottom:8px}
+    .miniimg svg{width:100%;height:100%}.mini-name{font-weight:900;font-size:14px}.tiny{font-size:11px;color:var(--muted)}
+    .battlefield{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .fighter{background:#091522;border:1px solid #294762;border-radius:18px;padding:12px}
+    .fighter .portrait{max-width:180px;margin:0 auto 8px}
+    .hpbar{height:13px;background:#382331;border-radius:999px;overflow:hidden;border:1px solid #51384a}
+    .hpbar>div{height:100%;background:linear-gradient(90deg,#4ade80,#a3e635);transition:width .3s}
+    .battle-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+    .action{border-radius:13px;padding:13px 8px;border:1px solid #2e4e73;background:#142944;color:#fff;font-weight:900}
+    .action.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#052521;border:0}
+    .action.guard{background:#263a57}.log{margin-top:12px;background:#030b14;border:1px solid #20364e;border-radius:14px;padding:10px;min-height:160px;max-height:220px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.55}
+    .result{font-size:22px;font-weight:950;text-align:center;padding:8px}.xpbox{margin-top:10px}.level{font-weight:950;color:#c4e8ff}
+    .empty{text-align:center;color:var(--muted);padding:25px 10px}.notice{background:#102238;border-left:4px solid var(--accent);padding:10px 12px;border-radius:10px;font-size:13px;color:#c9dbef}
+    #reader{width:100%;overflow:hidden;border-radius:16px;margin-top:10px;background:#000}
+    #reader video{border-radius:16px}
+    .scanner-wrap{position:relative}
+    .scan-frame{pointer-events:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72%;aspect-ratio:1.7/1;border:3px solid #67e8f9;border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.28),0 0 20px rgba(103,232,249,.55);display:none;z-index:5}
+    .summon-stage{position:relative;min-height:180px;display:grid;place-items:center;overflow:hidden}
+    .summon-orb{width:104px;height:104px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#bae6fd 22%,#67e8f9 45%,#1d4ed8 85%);box-shadow:0 0 35px #67e8f9;animation:pulse 1s infinite alternate}
+    @keyframes pulse{from{transform:scale(.92);filter:brightness(.9)}to{transform:scale(1.08);filter:brightness(1.25)}}
+    .reveal{animation:reveal .55s ease-out}
+    @keyframes reveal{0%{transform:scale(.35) rotate(-8deg);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+    .damage-pop{animation:shake .25s linear}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+    @media(max-width:680px){
+      .hero{grid-template-columns:120px 1fr}.name{font-size:21px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}
+      .fighter .portrait{max-width:130px}.battle-actions{grid-template-columns:1fr}
+    }
+    @media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.tabs{gap:5px}.tab{font-size:12px;padding:10px 3px}.hero{grid-template-columns:100px 1fr}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">Prototype v0.3 / Cute Monster Edition</div></div>
+    <button id="resetBtn" class="btn danger" type="button">初期化</button>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="scan">召喚</button>
+    <button class="tab" data-tab="box">BOX</button>
+    <button class="tab" data-tab="dex">図鑑</button>
+    <button class="tab" data-tab="battle">バトル</button>
+  </nav>
+
+  <section id="scan" class="screen active">
+    <div class="card">
+      <div class="section-title">バーコード召喚</div>
+      <div class="row">
+        <input id="barcodeInput" inputmode="numeric" placeholder="バーコード数字を入力（4桁以上）" maxlength="32">
+        <button id="summonBtn" class="btn">召喚する</button>
+      </div>
+      <div class="row" style="margin-top:9px">
+        <button id="cameraBtn" class="btn secondary">📷 カメラで読む</button>
+        <button id="stopCameraBtn" class="btn danger" disabled>停止</button>
+      </div>
+      <div class="muted" style="margin-top:8px">スマホでは背面カメラからJANコードを読み取れます。読み取り枠にバーコードを合わせてください。</div>
+      <div class="scanner-wrap">
+        <div id="scanFrame" class="scan-frame"></div>
+        <div id="reader"></div>
+      </div>
+    </div>
+
+    <div id="summonAnim" class="card" hidden>
+      <div class="summon-stage"><div class="summon-orb"></div></div>
+      <div class="muted" style="text-align:center">バーコードエネルギー解析中…</div>
+    </div>
+
+    <div id="summonResult" class="card" hidden>
+      <div class="hero reveal">
+        <div id="summonPortrait" class="portrait"></div>
+        <div>
+          <div id="summonName" class="name"></div>
+          <div class="badges"><span id="summonStars" class="badge stars"></span><span id="summonElement" class="badge"></span><span id="summonType" class="badge"></span><span id="summonRank" class="badge"></span></div>
+          <div class="level">Lv.<span id="summonLevel"></span></div>
+          <div class="xpbox"><div class="muted">EXP <span id="summonXpText"></span></div><div class="progress"><div id="summonXpBar"></div></div></div>
+        </div>
+      </div>
+      <div class="stats" style="margin-top:12px">
+        <div class="stat"><small>HP</small><b id="summonHp"></b></div><div class="stat"><small>攻撃</small><b id="summonAtk"></b></div>
+        <div class="stat"><small>防御</small><b id="summonDef"></b></div><div class="stat"><small>素早さ</small><b id="summonSpd"></b></div>
+      </div>
+      <div id="summonSkill" class="skillbox"></div>
+      <div class="row" style="margin-top:12px"><button id="saveBtn" class="btn">BOXに保存</button><button id="rerollBtn" class="btn secondary">同じコードでもう1体</button></div>
+    </div>
+  </section>
+
+  <section id="box" class="screen">
+    <div class="card"><div class="section-title">モンスターBOX</div><div id="boxInfo" class="muted"></div><div id="boxGrid" class="grid" style="margin-top:12px"></div></div>
+    <div id="selectedCard" class="card" hidden>
+      <div class="hero"><div id="boxPortrait" class="portrait"></div><div><div id="boxName" class="name"></div><div id="boxMeta" class="badges"></div><div id="boxLevel" class="level"></div><div class="xpbox"><div id="boxXpText" class="muted"></div><div class="progress"><div id="boxXpBar"></div></div></div></div></div>
+      <div id="boxStats" class="stats" style="margin-top:12px"></div><div id="boxSkill" class="skillbox"></div>
+      <div class="row" style="margin-top:12px"><button id="setBattleBtn" class="btn">このキャラで戦う</button><button id="deleteMonsterBtn" class="btn danger">削除</button></div>
+    </div>
+  </section>
+
+  <section id="dex" class="screen"><div class="card"><div class="section-title">キャラ図鑑</div><div id="dexProgress" class="muted"></div><div id="dexGrid" class="grid" style="margin-top:12px"></div></div></section>
+
+  <section id="battle" class="screen">
+    <div class="card">
+      <div class="section-title">COMバトル</div>
+      <div id="battleEmpty" class="notice">BOXから戦うキャラクターを選んでください。</div>
+      <div id="battleArea" hidden>
+        <div class="battlefield">
+          <div class="fighter" id="pFighter"><div id="pPortrait" class="portrait"></div><div id="pName" class="mini-name"></div><div id="pLevel" class="tiny"></div><div class="tiny">HP <span id="pHpText"></span></div><div class="hpbar"><div id="pHpBar"></div></div></div>
+          <div class="fighter" id="eFighter"><div id="ePortrait" class="portrait"></div><div id="eName" class="mini-name"></div><div id="eLevel" class="tiny"></div><div class="tiny">HP <span id="eHpText"></span></div><div class="hpbar"><div id="eHpBar"></div></div></div>
+        </div>
+        <div class="battle-actions"><button id="attackBtn" class="action primary">⚔ 通常攻撃</button><button id="skillBtn" class="action">✨ 特殊攻撃</button><button id="guardBtn" class="action guard">🛡 防御</button></div>
+        <div class="row" style="margin-top:10px"><button id="newEnemyBtn" class="btn secondary">新しいCOMと対戦</button></div>
+        <div id="battleResult" class="result"></div><div id="battleLog" class="log"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
 <script>
-const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],KEY='barcodeBattle02';let S=JSON.parse(localStorage.getItem(KEY)||'{"monsters":[],"dex":{},"battleId":null}'),cur=null,sel=null,B=null;const els=['炎','水','雷','風','土','光','闇'],tys=['ドラゴン','ビースト','ゴーレム','スライム','マシン','スピリット','ナイト','バード'],A=['フレイム','アクア','ボルト','ストーム','ロック','ルミナ','ナイト','ギア','ファング','ゼロ'],C=['ホーン','ウルフ','レックス','ゴーレム','スライム','クロウ','ナイト','ドレイク','バイト','コア'],SK=[['連撃','22%で追加攻撃','double'],['鉄壁','被ダメージ18%軽減','guard'],['先制','最初の攻撃40%強化','first'],['吸収','与ダメージの18%回復','drain'],['会心','20%でダメージ1.8倍','crit'],['逆境','HP30%以下で攻撃35%強化','pinch'],['再生','行動後に5%回復','regen'],['俊足','素早いほど追加ダメージ','speed']];function save(){localStorage.setItem(KEY,JSON.stringify(S))}function h(s){let x=2166136261>>>0;for(const c of s){x^=c.charCodeAt(0);x=Math.imul(x,16777619)}return x>>>0}function rnd(a){return function(){let t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}function need(l){return 80+l*45}function uid(){return'm'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}function species(code){let seed=h(code),r=rnd(seed);return{seed,element:els[Math.floor(r()*els.length)],type:tys[Math.floor(r()*tys.length)],name:A[Math.floor(r()*A.length)]+C[Math.floor(r()*C.length)],sid:String(seed%9999).padStart(4,'0')}}function make(code){code=String(code).replace(/\D/g,'');if(code.length<4)throw Error('4桁以上の数字を入力してください');let sp=species(code),r=rnd((sp.seed^Date.now()^Math.floor(Math.random()*0xffffffff))>>>0),rr=(sp.seed%1000)/1000,stars=rr>.985?5:rr>.92?4:rr>.74?3:rr>.42?2:1;if(r()>.94&&stars<5)stars++;let base={hp:Math.round(80+(sp.seed%45)+r()*25+stars*10),atk:Math.round(40+((sp.seed>>>5)%42)+r()*22+stars*7),def:Math.round(36+((sp.seed>>>9)%40)+r()*20+stars*7),spd:Math.round(35+((sp.seed>>>13)%48)+r()*22+stars*7)},iv=(base.hp+base.atk+base.def+base.spd)/4,rank=iv>120?'S':iv>105?'A':iv>90?'B':'C',sk=SK[Math.floor(r()*SK.length)];return{id:uid(),barcode:code,...sp,stars,rank,base,level:1,xp:0,skill:{name:sk[0],desc:sk[1],kind:sk[2]}}}function st(m,k){return Math.round(m.base[k]*(1+(m.level-1)*.055))}function stats(m){return{hp:st(m,'hp'),atk:st(m,'atk'),def:st(m,'def'),spd:st(m,'spd')}}function stars(m){return'★'.repeat(m.stars)+'☆'.repeat(5-m.stars)}const PAL={'炎':['#ff7a45','#7f1d1d'],'水':['#38bdf8','#164e63'],'雷':['#facc15','#713f12'],'風':['#5eead4','#134e4a'],'土':['#a3a3a3','#44403c'],'光':['#fde68a','#78716c'],'闇':['#a78bfa','#312e81']};function pic(m){let[c1,c2]=PAL[m.element],r=rnd(m.seed),horn=r()>.45?`<path d="M28 35L19 10L42 29Z" fill="${c2}"/><path d="M72 35L81 10L58 29Z" fill="${c2}"/>`:'';return`<svg viewBox="0 0 100 100"><rect width="100" height="100" rx="18" fill="#07111f"/><circle cx="50" cy="50" r="42" fill="${c2}" opacity=".5"/>${horn}<circle cx="50" cy="54" r="31" fill="${c1}"/><circle cx="38" cy="47" r="4" fill="white"/><circle cx="62" cy="47" r="4" fill="white"/><circle cx="39" cy="47" r="2"/><circle cx="61" cy="47" r="2"/><path d="M36 67Q50 76 64 67" fill="none" stroke="#102033" stroke-width="4" stroke-linecap="round"/></svg>`}function addDex(m){if(!S.dex[m.sid])S.dex[m.sid]={sid:m.sid,name:m.name,element:m.element,type:m.type,seed:m.seed,seen:0};S.dex[m.sid].seen++;save()}function render(m){cur=m;$('#result').hidden=false;$('#portrait').innerHTML=pic(m);$('#name').textContent=m.name;$('#stars').textContent=stars(m);$('#element').textContent=m.element;$('#type').textContent=m.type;$('#rank').textContent='個体 '+m.rank;$('#level').textContent=m.level;$('#xptext').textContent=`${m.xp}/${need(m.level)}`;$('#xpbar').style.width=(m.xp/need(m.level)*100)+'%';let s=stats(m);['hp','atk','def','spd'].forEach(k=>$('#'+k).textContent=s[k]);$('#skill').innerHTML=`<b>${m.skill.name}</b><div class="muted">${m.skill.desc}</div>`}function summon(){try{let m=make($('#code').value);addDex(m);render(m);renderDex();$('#save').disabled=false;$('#save').textContent='BOXに保存'}catch(e){alert(e.message)}}function renderBox(){$('#boxcount').textContent=`${S.monsters.length}/60体`;let g=$('#boxgrid');g.innerHTML='';if(!S.monsters.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">まだいません</div>';$('#detail').hidden=true;return}S.monsters.forEach(m=>{let b=document.createElement('button');b.className='mini'+(m.id===sel?' selected':'');b.innerHTML=`<div class="miniimg">${pic(m)}</div><b>${m.name}</b><div class="tiny">Lv.${m.level} / ${m.element} / ${stars(m)}</div>`;b.onclick=()=>{sel=m.id;renderBox();detail(m)};g.appendChild(b)})}function detail(m){$('#detail').hidden=false;$('#dportrait').innerHTML=pic(m);$('#dname').textContent=m.name;$('#dmeta').innerHTML=`<span class="badge stars">${stars(m)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge">個体 ${m.rank}</span>`;$('#dlevel').textContent='Lv.'+m.level;$('#dxp').textContent=`EXP ${m.xp}/${need(m.level)}`;$('#dxpbar').style.width=(m.xp/need(m.level)*100)+'%';let s=stats(m);$('#dstats').innerHTML=Object.entries(s).map(([k,v])=>`<div class="stat">${{hp:'HP',atk:'攻撃',def:'防御',spd:'素早さ'}[k]}<b>${v}</b></div>`).join('');$('#dskill').innerHTML=`<b>${m.skill.name}</b><div class="muted">${m.skill.desc}</div>`}function renderDex(){let a=Object.values(S.dex);$('#dexcount').textContent=`発見 ${a.length}種`;let g=$('#dexgrid');g.innerHTML='';a.forEach(d=>{let m={...d,element:d.element,type:d.type,name:d.name,seed:d.seed};let x=document.createElement('div');x.className='mini';x.innerHTML=`<div class="miniimg">${pic(m)}</div><b>No.${d.sid} ${d.name}</b><div class="tiny">${d.element}/${d.type} 遭遇${d.seen}回</div>`;g.appendChild(x)});if(!a.length)g.innerHTML='<div class="empty" style="grid-column:1/-1">召喚すると埋まります</div>'}function tab(id){$$('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));$$('.screen').forEach(x=>x.classList.toggle('active',x.id===id));if(id==='box')renderBox();if(id==='dex')renderDex();if(id==='battle')startBattle()}function level(m,g){m.xp+=g;let up=0;while(m.xp>=need(m.level)&&m.level<50){m.xp-=need(m.level);m.level++;up++}return up}function enemyFor(m){let e=make(String(Math.floor(1e12+Math.random()*8.9e12)));e.level=Math.max(1,Math.min(50,m.level+Math.floor(Math.random()*5)-2));return e}function unit(m){let s=stats(m);return{...m,...s,maxHp:s.hp,currentHp:s.hp,first:true,guarding:false}}function startBattle(){let m=S.monsters.find(x=>x.id===S.battleId);if(!m){$('#battleempty').hidden=false;$('#battlearea').hidden=true;return}B={p:unit(m),e:unit(enemyFor(m)),src:m.id,over:false};$('#battleempty').hidden=true;$('#battlearea').hidden=false;$('#bres').textContent='';$('#blog').textContent='';log(`⚔ バトル開始！\n${B.p.name} vs ${B.e.name}`);ui()}function dmg(a,d,special){let p=a.atk*(.9+Math.random()*.2),note='';if(a.skill.kind==='pinch'&&a.currentHp/a.maxHp<=.3){p*=1.35;note+='逆境! '}if(a.skill.kind==='first'&&a.first){p*=1.4;note+='先制! '}if(a.skill.kind==='speed')p*=1+Math.min(.3,a.spd/700);let z=Math.max(1,Math.round(p-d.def*.38));if(special)z=Math.round(z*1.3);if(a.skill.kind==='crit'&&Math.random()<.2){z=Math.round(z*1.8);note+='会心! '}if(d.guarding){z=Math.round(z*.52);note+='防御! '}if(d.skill.kind==='guard')z=Math.round(z*.82);d.currentHp=Math.max(0,d.currentHp-z);if(a.skill.kind==='drain'){let q=Math.max(1,Math.round(z*.18));a.currentHp=Math.min(a.maxHp,a.currentHp+q);note+=`吸収+${q} `}a.first=false;d.guarding=false;if(a.skill.kind==='double'&&Math.random()<.22&&d.currentHp>0){let q=Math.max(1,Math.round(z*.55));d.currentHp=Math.max(0,d.currentHp-q);note+=`連撃+${q} `}return[z,note]}function regen(u){if(u.skill.kind==='regen'&&u.currentHp>0){let q=Math.max(1,Math.round(u.maxHp*.05));u.currentHp=Math.min(u.maxHp,u.currentHp+q);return q}return 0}function act(k){if(!B||B.over)return;if(k==='guard'){B.p.guarding=true;log(`${B.p.name}は防御！`)}else{let[z,n]=dmg(B.p,B.e,k==='special');log(`${B.p.name}の${k==='special'?'特殊攻撃':'攻撃'}！ ${z}ダメージ ${n}`)}let q=regen(B.p);if(q)log(`${B.p.name}は${q}回復`);ui();if(end())return;setTimeout(cpu,350)}function cpu(){if(!B||B.over)return;if(Math.random()<.18){B.e.guarding=true;log(`${B.e.name}は防御！`)}else{let sp=Math.random()<.38,[z,n]=dmg(B.e,B.p,sp);log(`COM ${B.e.name}の${sp?'特殊攻撃':'攻撃'}！ ${z}ダメージ ${n}`)}let q=regen(B.e);if(q)log(`${B.e.name}は${q}回復`);ui();end()}function end(){if(B.e.currentHp<=0){finish(true);return true}if(B.p.currentHp<=0){finish(false);return true}return false}function finish(win){B.over=true;if(win){let m=S.monsters.find(x=>x.id===B.src),gain=35+B.e.level*10+B.e.stars*5,up=level(m,gain);$('#bres').textContent=`🏆 WIN! +${gain}EXP${up?' / LEVEL UP! Lv.'+m.level:''}`}else $('#bres').textContent='💀 LOSE';save();ui()}function ui(){let p=B.p,e=B.e;$('#pp').innerHTML=pic(p);$('#ep').innerHTML=pic(e);$('#pn').textContent=p.name;$('#en').textContent=e.name;$('#pl').textContent='Lv.'+p.level;$('#el').textContent='Lv.'+e.level;$('#pht').textContent=`${p.currentHp}/${p.maxHp}`;$('#eht').textContent=`${e.currentHp}/${e.maxHp}`;$('#ph').style.width=(p.currentHp/p.maxHp*100)+'%';$('#eh').style.width=(e.currentHp/e.maxHp*100)+'%'}function log(t){$('#blog').textContent+=t+'\n';$('#blog').scrollTop=$('#blog').scrollHeight}$$('.tab').forEach(b=>b.onclick=()=>tab(b.dataset.tab));$('#summon').onclick=summon;$('#reroll').onclick=summon;$('#save').onclick=()=>{if(cur&&S.monsters.length<60){S.monsters.push(cur);S.battleId=cur.id;save();renderBox();$('#save').disabled=true;$('#save').textContent='保存済み';alert('BOXに保存しました')}};$('#choose').onclick=()=>{S.battleId=sel;save();tab('battle')};$('#remove').onclick=()=>{if(sel&&confirm('削除しますか？')){S.monsters=S.monsters.filter(x=>x.id!==sel);if(S.battleId===sel)S.battleId=S.monsters[0]?.id||null;sel=null;save();renderBox()}};$('#attack').onclick=()=>act('attack');$('#special').onclick=()=>act('special');$('#guard').onclick=()=>act('guard');$('#newenemy').onclick=startBattle;$('#reset').onclick=()=>{if(confirm('すべての保存データを初期化しますか？')){localStorage.removeItem(KEY);location.reload()}};$('#code').onkeydown=e=>{if(e.key==='Enter')summon()};renderBox();renderDex();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
-</script></body></html>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const STORAGE_KEY="barcodeBattle_v03";
+const old=localStorage.getItem(STORAGE_KEY);
+const state=old?JSON.parse(old):{monsters:[],dex:{},battleMonsterId:null};
+let currentSummon=null,selectedId=null,battle=null,scanner=null,scanning=false;
+
+const elements=["炎","水","雷","風","土","光","闇"];
+const types=["スライム","ドラゴン","ビースト","バード","ゴースト","マシン","ナイト"];
+const nameA=["ぽよ","モコ","ピコ","ルル","ミル","コロ","プチ","キラ","フワ","チビ","ペコ","マル"];
+const nameB=["リン","ドラ","ポン","ミー","ロボ","ピヨ","モン","リオ","ニャ","ゴン","プル","ラビ"];
+const skills=[
+{name:"れんぞくパンチ",desc:"22%で追加攻撃",kind:"double"},
+{name:"まもりのオーラ",desc:"被ダメージを18%軽減",kind:"guard"},
+{name:"スタートダッシュ",desc:"最初の攻撃が40%強化",kind:"first"},
+{name:"げんきすいとり",desc:"与えたダメージの18%を回復",kind:"drain"},
+{name:"キラキラ会心",desc:"20%でダメージ1.8倍",kind:"crit"},
+{name:"ピンチパワー",desc:"HP30%以下で攻撃35%強化",kind:"pinch"},
+{name:"もぐもぐ再生",desc:"行動後に最大HPの5%回復",kind:"regen"},
+{name:"すばやいしっぽ",desc:"素早さが高いほど追加ダメージ",kind:"speed"}];
+
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function hashString(str){let h=2166136261>>>0;for(let c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
+function rng(seed){return function(){let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function uid(){return"m_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8)}
+function xpNeed(l){return 80+l*45} function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function makeSpecies(code){const c=String(code).replace(/\D/g,""),seed=hashString(c),r=rng(seed);return{seed,element:elements[Math.floor(r()*elements.length)],type:types[Math.floor(r()*types.length)],name:nameA[Math.floor(r()*nameA.length)]+nameB[Math.floor(r()*nameB.length)],speciesId:(seed%9999).toString().padStart(4,"0")}}
+function makeMonster(code){
+ const clean=String(code).replace(/\D/g,"");if(clean.length<4)throw Error("4桁以上の数字を入力してください。");
+ const sp=makeSpecies(clean),r=rng((sp.seed^Date.now()^Math.floor(Math.random()*0xffffffff))>>>0);
+ let stars=((sp.seed%1000)/1000>.985)?5:((sp.seed%1000)/1000>.92)?4:((sp.seed%1000)/1000>.74)?3:((sp.seed%1000)/1000>.42)?2:1;if(r()>.94&&stars<5)stars++;
+ let hp=Math.round(78+((sp.seed>>>3)%55)+r()*28+stars*11),atk=Math.round(38+((sp.seed>>>7)%48)+r()*24+stars*7),def=Math.round(35+((sp.seed>>>11)%44)+r()*22+stars*7),spd=Math.round(34+((sp.seed>>>15)%52)+r()*25+stars*7);
+ const iv=Math.round((hp+atk+def+spd)/4),rank=iv>125?"S":iv>108?"A":iv>92?"B":"C";
+ return{id:uid(),barcode:clean,...sp,stars,rank,base:{hp,atk,def,spd},level:1,xp:0,skill:skills[Math.floor(r()*skills.length)],createdAt:Date.now()}
+}
+function statAt(m,k){return Math.round(m.base[k]*(1+(m.level-1)*.055))}
+function displayStats(m){return{hp:statAt(m,"hp"),atk:statAt(m,"atk"),def:statAt(m,"def"),spd:statAt(m,"spd")}}
+function rarityText(m){return"★".repeat(m.stars)+"☆".repeat(5-m.stars)} function xpPercent(m){return Math.min(100,m.xp/xpNeed(m.level)*100)}
+
+const colors={
+ "炎":["#ff8a65","#ffcc80","#7f1d1d"],"水":["#67e8f9","#bae6fd","#155e75"],"雷":["#fde047","#fff7ae","#854d0e"],
+ "風":["#86efac","#d1fae5","#166534"],"土":["#d6b98c","#f2dfbf","#6b4f2c"],"光":["#fff1a8","#ffffff","#b08900"],"闇":["#c4b5fd","#e9d5ff","#4c1d95"]
+};
+function portraitSVG(m){
+ const [main,soft,dark]=colors[m.element]||colors["水"]; const r=rng(m.seed); const cheek=r()>.2,mark=r()>.55; let body="",ears="",tail="",extra="";
+ const eyeY=49, eyeL=40, eyeR=60;
+ if(m.type==="スライム"){body=`<path d="M24 67 Q24 36 50 28 Q76 36 76 67 Q72 83 50 85 Q28 83 24 67Z" fill="${main}"/>`;extra=`<ellipse cx="50" cy="77" rx="20" ry="5" fill="${soft}" opacity=".35"/>`}
+ if(m.type==="ドラゴン"){body=`<ellipse cx="50" cy="57" rx="27" ry="30" fill="${main}"/>`;ears=`<path d="M31 35 L22 16 L41 31Z" fill="${dark}"/><path d="M69 35 L78 16 L59 31Z" fill="${dark}"/>`;tail=`<path d="M72 70 Q92 75 84 88 Q75 83 70 76" fill="${main}"/>`;extra=`<path d="M33 42 Q50 27 67 42" fill="${soft}" opacity=".75"/>`}
+ if(m.type==="ビースト"){body=`<ellipse cx="50" cy="58" rx="29" ry="28" fill="${main}"/>`;ears=`<path d="M29 39 Q18 16 39 29Z" fill="${main}"/><path d="M71 39 Q82 16 61 29Z" fill="${main}"/>`;tail=`<path d="M76 68 Q93 59 91 78 Q86 88 77 82" fill="${main}"/>`}
+ if(m.type==="バード"){body=`<ellipse cx="50" cy="60" rx="27" ry="26" fill="${main}"/>`;ears=`<path d="M28 58 Q12 51 20 68 Q28 76 36 65" fill="${soft}"/><path d="M72 58 Q88 51 80 68 Q72 76 64 65" fill="${soft}"/>`;extra=`<path d="M44 58 L56 58 L50 66Z" fill="#f59e0b"/>`}
+ if(m.type==="ゴースト"){body=`<path d="M24 64 Q24 34 50 28 Q76 34 76 64 L71 84 L61 77 L52 85 L43 77 L33 84Z" fill="${main}"/>`;extra=`<path d="M29 40 Q50 22 71 40" fill="${soft}" opacity=".45"/>`}
+ if(m.type==="マシン"){body=`<rect x="24" y="31" width="52" height="50" rx="20" fill="${main}"/>`;ears=`<circle cx="24" cy="52" r="8" fill="${dark}"/><circle cx="76" cy="52" r="8" fill="${dark}"/>`;extra=`<path d="M50 31 V19" stroke="${soft}" stroke-width="4"/><circle cx="50" cy="16" r="5" fill="#fde047"/>`}
+ if(m.type==="ナイト"){body=`<ellipse cx="50" cy="61" rx="27" ry="25" fill="${main}"/>`;ears=`<path d="M28 42 Q50 16 72 42 L68 50 H32Z" fill="${dark}"/>`;extra=`<path d="M36 35 H64" stroke="${soft}" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="28" r="5" fill="${soft}"/>`}
+ const eyes=`<ellipse cx="${eyeL}" cy="${eyeY}" rx="5" ry="7" fill="#fff"/><ellipse cx="${eyeR}" cy="${eyeY}" rx="5" ry="7" fill="#fff"/><circle cx="${eyeL+1}" cy="${eyeY+1}" r="2.5" fill="#172033"/><circle cx="${eyeR+1}" cy="${eyeY+1}" r="2.5" fill="#172033"/>`;
+ const cheeks=cheek?`<circle cx="30" cy="60" r="5" fill="#fb7185" opacity=".5"/><circle cx="70" cy="60" r="5" fill="#fb7185" opacity=".5"/>`:"";
+ const face=`${eyes}${cheeks}<path d="M41 65 Q50 72 59 65" fill="none" stroke="#172033" stroke-width="3.5" stroke-linecap="round"/>`;
+ const markEl=mark?`<path d="M45 37 Q50 31 55 37 Q50 41 45 37" fill="${soft}"/>`:"";
+ const stars=m.stars>=4?`<g fill="#fff7ae"><circle cx="17" cy="20" r="2"/><circle cx="84" cy="24" r="2"/><circle cx="82" cy="77" r="2"/></g>`:"";
+ return `<svg viewBox="0 0 100 100" role="img" aria-label="${m.name}">
+ <rect width="100" height="100" rx="20" fill="#07111f"/>
+ <circle cx="50" cy="50" r="42" fill="${soft}" opacity=".12"/>
+ ${tail}${ears}${body}${extra}${markEl}${face}${stars}
+ </svg>`;
+}
+function registerDex(m){if(!state.dex[m.speciesId])state.dex[m.speciesId]={speciesId:m.speciesId,name:m.name,element:m.element,type:m.type,seed:m.seed,seen:0};state.dex[m.speciesId].seen++;save()}
+function showSummon(m){
+ currentSummon=m;$("#summonAnim").hidden=false;$("#summonResult").hidden=true;
+ setTimeout(()=>{$("#summonAnim").hidden=true;renderSummon(m);$("#summonResult").hidden=false},700)
+}
+function summonFromCode(code){
+ try{$("#barcodeInput").value=code;const m=makeMonster(code);registerDex(m);showSummon(m);renderDex();$("#saveBtn").disabled=false;$("#saveBtn").textContent="BOXに保存"}
+ catch(e){alert(e.message)}
+}
+function summon(){summonFromCode($("#barcodeInput").value.trim())}
+function renderSummon(m){
+ $("#summonPortrait").innerHTML=portraitSVG(m);$("#summonPortrait").classList.toggle("sparkle",m.stars>=4);
+ $("#summonName").textContent=m.name;$("#summonStars").textContent=rarityText(m);$("#summonElement").textContent=m.element;$("#summonType").textContent=m.type;$("#summonRank").textContent="個体 "+m.rank;
+ $("#summonLevel").textContent=m.level;$("#summonXpText").textContent=`${m.xp}/${xpNeed(m.level)}`;$("#summonXpBar").style.width=xpPercent(m)+"%";
+ const s=displayStats(m);$("#summonHp").textContent=s.hp;$("#summonAtk").textContent=s.atk;$("#summonDef").textContent=s.def;$("#summonSpd").textContent=s.spd;
+ $("#summonSkill").innerHTML=`<b>${m.skill.name}</b><div class="muted">${m.skill.desc}</div>`;
+}
+function addToBox(){if(!currentSummon)return;if(state.monsters.length>=60){alert("BOX上限は60体です。");return}state.monsters.push(currentSummon);state.battleMonsterId=currentSummon.id;save();renderBox();alert("BOXに保存しました！");$("#saveBtn").disabled=true;$("#saveBtn").textContent="保存済み"}
+function renderBox(){
+ $("#boxInfo").textContent=`${state.monsters.length}/60体`;const g=$("#boxGrid");g.innerHTML="";
+ if(!state.monsters.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">まだキャラクターがいません。</div>';$("#selectedCard").hidden=true;return}
+ state.monsters.forEach(m=>{const d=document.createElement("button");d.type="button";d.className="monster-mini"+(m.id===selectedId?" selected":"");d.innerHTML=`<div class="miniimg">${portraitSVG(m)}</div><div class="mini-name">${m.name}</div><div class="tiny">Lv.${m.level} / ${m.element} / ${rarityText(m)}</div>`;d.addEventListener("click",()=>{selectedId=m.id;renderBox();renderSelected(m)});g.appendChild(d)})
+ if(selectedId){const m=state.monsters.find(x=>x.id===selectedId);if(m)renderSelected(m)}
+}
+function renderSelected(m){
+ $("#selectedCard").hidden=false;$("#boxPortrait").innerHTML=portraitSVG(m);$("#boxName").textContent=m.name;$("#boxMeta").innerHTML=`<span class="badge stars">${rarityText(m)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge">個体 ${m.rank}</span>`;
+ $("#boxLevel").textContent=`Lv.${m.level}`;$("#boxXpText").textContent=`EXP ${m.xp}/${xpNeed(m.level)}`;$("#boxXpBar").style.width=xpPercent(m)+"%";const s=displayStats(m);
+ $("#boxStats").innerHTML=`<div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div>`;$("#boxSkill").innerHTML=`<b>${m.skill.name}</b><div class="muted">${m.skill.desc}</div>`;
+}
+function renderDex(){const entries=Object.values(state.dex);$("#dexProgress").textContent=`発見した種族：${entries.length}種`;const g=$("#dexGrid");g.innerHTML="";if(!entries.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">バーコードを読み取ると図鑑が埋まります。</div>';return}
+ entries.sort((a,b)=>a.speciesId.localeCompare(b.speciesId)).forEach(d=>{const faux={...d,stars:1,rank:"?",level:1,skill:{name:"?"},base:{hp:0,atk:0,def:0,spd:0}};const div=document.createElement("div");div.className="monster-mini";div.innerHTML=`<div class="miniimg">${portraitSVG(faux)}</div><div class="mini-name">No.${d.speciesId} ${d.name}</div><div class="tiny">${d.element} / ${d.type} / 遭遇 ${d.seen}回</div>`;g.appendChild(div)})}
+function switchTab(id){$$(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));$$(".screen").forEach(s=>s.classList.toggle("active",s.id===id));if(id==="box")renderBox();if(id==="dex")renderDex();if(id==="battle")renderBattleSelection()}
+
+function levelUp(m,gain){m.xp+=gain;let ups=0;while(m.xp>=xpNeed(m.level)&&m.level<50){m.xp-=xpNeed(m.level);m.level++;ups++}if(m.level>=50)m.xp=0;return ups}
+function makeEnemyFor(m){const r=rng((Date.now()^hashString(m.id))>>>0),e=makeMonster(String(Math.floor(1000000000000+r()*8999999999999)));e.level=clamp(m.level+Math.floor(r()*5)-2,1,50);return e}
+function battleUnit(m){const s=displayStats(m);return{...m,maxHp:s.hp,currentHp:s.hp,atk:s.atk,def:s.def,spd:s.spd,first:true,guarding:false}}
+function startBattle(){const src=state.monsters.find(m=>m.id===state.battleMonsterId);if(!src){$("#battleEmpty").hidden=false;$("#battleArea").hidden=true;return}battle={player:battleUnit(src),enemy:battleUnit(makeEnemyFor(src)),over:false,sourceId:src.id};$("#battleArea").hidden=false;$("#battleEmpty").hidden=true;$("#battleResult").textContent="";$("#battleLog").textContent="";logBattle(`⚔ バトル開始！\n${battle.player.name} vs ${battle.enemy.name}`);updateBattleUI();if(battle.enemy.spd>battle.player.spd)setTimeout(()=>enemyTurn(true),300)}
+function renderBattleSelection(){const m=state.monsters.find(x=>x.id===state.battleMonsterId);if(!m){$("#battleEmpty").hidden=false;$("#battleArea").hidden=true;return}startBattle()}
+function calcDamage(a,d,skill=false){let power=a.atk*(.9+Math.random()*.2),note="";if(a.skill.kind==="pinch"&&a.currentHp/a.maxHp<=.3){power*=1.35;note+="ピンチパワー! "}if(a.skill.kind==="first"&&a.first){power*=1.4;note+="スタートダッシュ! "}if(a.skill.kind==="speed")power*=1+Math.min(.3,a.spd/700);let dmg=Math.max(1,Math.round(power-d.def*.38));if(skill)dmg=Math.round(dmg*1.3);if(a.skill.kind==="crit"&&Math.random()<.2){dmg=Math.round(dmg*1.8);note+="キラキラ会心! "}if(d.guarding){dmg=Math.round(dmg*.52);note+="防御! "}if(d.skill.kind==="guard")dmg=Math.round(dmg*.82);d.currentHp=Math.max(0,d.currentHp-dmg);if(a.skill.kind==="drain"){const heal=Math.max(1,Math.round(dmg*.18));a.currentHp=Math.min(a.maxHp,a.currentHp+heal);note+=`回復+${heal} `}a.first=false;d.guarding=false;if(a.skill.kind==="double"&&Math.random()<.22&&d.currentHp>0){const extra=Math.max(1,Math.round(dmg*.55));d.currentHp=Math.max(0,d.currentHp-extra);note+=`追加+${extra} `}return{dmg,note}}
+function regen(u){if(u.skill.kind==="regen"&&u.currentHp>0){const h=Math.max(1,Math.round(u.maxHp*.05));u.currentHp=Math.min(u.maxHp,u.currentHp+h);return h}return 0}
+function bump(id){const el=$(id);el.classList.remove("damage-pop");void el.offsetWidth;el.classList.add("damage-pop")}
+function playerAction(kind){if(!battle||battle.over)return;const p=battle.player,e=battle.enemy;if(kind==="guard"){p.guarding=true;logBattle(`${p.name}は防御態勢！`)}else{const r=calcDamage(p,e,kind==="skill");logBattle(`${p.name}の${kind==="skill"?"特殊攻撃":"攻撃"}！ ${r.dmg}ダメージ ${r.note}`);bump("#eFighter")}const h=regen(p);if(h)logBattle(`${p.name}は${h}回復`);updateBattleUI();if(checkBattleEnd())return;setTimeout(()=>enemyTurn(false),450)}
+function enemyTurn(){if(!battle||battle.over)return;const e=battle.enemy,p=battle.player;if(Math.random()<.18){e.guarding=true;logBattle(`${e.name}は防御態勢！`)}else{const useSkill=Math.random()<.38,r=calcDamage(e,p,useSkill);logBattle(`COM ${e.name}の${useSkill?"特殊攻撃":"攻撃"}！ ${r.dmg}ダメージ ${r.note}`);bump("#pFighter")}const h=regen(e);if(h)logBattle(`${e.name}は${h}回復`);updateBattleUI();checkBattleEnd()}
+function checkBattleEnd(){if(battle.enemy.currentHp<=0){finishBattle(true);return true}if(battle.player.currentHp<=0){finishBattle(false);return true}return false}
+function finishBattle(win){battle.over=true;const src=state.monsters.find(m=>m.id===battle.sourceId);if(win){const gain=35+battle.enemy.level*10+battle.enemy.stars*5,ups=levelUp(src,gain);$("#battleResult").textContent=`🏆 WIN! +${gain} EXP${ups?` / LEVEL UP! Lv.${src.level}`:""}`;logBattle(`勝利！ 経験値を${gain}獲得。`)}else{$("#battleResult").textContent="💫 LOSE";logBattle("敗北…。育成して再挑戦しよう。")}save();renderBox();updateBattleUI()}
+function updateBattleUI(){if(!battle)return;const p=battle.player,e=battle.enemy;$("#pPortrait").innerHTML=portraitSVG(p);$("#ePortrait").innerHTML=portraitSVG(e);$("#pName").textContent=p.name;$("#eName").textContent=e.name;$("#pLevel").textContent=`Lv.${p.level}`;$("#eLevel").textContent=`Lv.${e.level}`;$("#pHpText").textContent=`${p.currentHp}/${p.maxHp}`;$("#eHpText").textContent=`${e.currentHp}/${e.maxHp}`;$("#pHpBar").style.width=(100*p.currentHp/p.maxHp)+"%";$("#eHpBar").style.width=(100*e.currentHp/e.maxHp)+"%";["#attackBtn","#skillBtn","#guardBtn"].forEach(s=>$(s).disabled=battle.over)}
+function logBattle(t){$("#battleLog").textContent+=t+"\n";$("#battleLog").scrollTop=$("#battleLog").scrollHeight}
+
+async function startScanner(){
+ if(scanning)return;
+ if(typeof Html5Qrcode==="undefined"){alert("カメラ読み取り機能の読み込みに失敗しました。通信状態を確認してください。");return}
+ try{
+   scanner=new Html5Qrcode("reader");scanning=true;$("#cameraBtn").disabled=true;$("#stopCameraBtn").disabled=false;$("#scanFrame").style.display="block";
+   await scanner.start({facingMode:"environment"},{fps:10,qrbox:{width:280,height:130},aspectRatio:1.7},
+     decoded=>{stopScanner();summonFromCode(decoded)},()=>{});
+ }catch(e){scanning=false;$("#cameraBtn").disabled=false;$("#stopCameraBtn").disabled=true;$("#scanFrame").style.display="none";alert("カメラを開始できませんでした。Safariのカメラ権限を確認してください。")}
+}
+async function stopScanner(){
+ if(!scanner||!scanning)return;
+ try{await scanner.stop();await scanner.clear()}catch(e){}
+ scanner=null;scanning=false;$("#cameraBtn").disabled=false;$("#stopCameraBtn").disabled=true;$("#scanFrame").style.display="none";$("#reader").innerHTML="";
+}
+
+$$(".tab").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
+$("#summonBtn").addEventListener("click",summon);$("#rerollBtn").addEventListener("click",summon);$("#saveBtn").addEventListener("click",addToBox);
+$("#barcodeInput").addEventListener("keydown",e=>{if(e.key==="Enter")summon()});
+$("#cameraBtn").addEventListener("click",startScanner);$("#stopCameraBtn").addEventListener("click",stopScanner);
+$("#setBattleBtn").addEventListener("click",()=>{if(selectedId){state.battleMonsterId=selectedId;save();switchTab("battle")}});
+$("#deleteMonsterBtn").addEventListener("click",()=>{if(!selectedId)return;if(confirm("このキャラクターを削除しますか？")){state.monsters=state.monsters.filter(m=>m.id!==selectedId);if(state.battleMonsterId===selectedId)state.battleMonsterId=state.monsters[0]?.id||null;selectedId=null;save();renderBox()}});
+$("#attackBtn").addEventListener("click",()=>playerAction("attack"));$("#skillBtn").addEventListener("click",()=>playerAction("skill"));$("#guardBtn").addEventListener("click",()=>playerAction("guard"));$("#newEnemyBtn").addEventListener("click",startBattle);
+$("#resetBtn").addEventListener("click",()=>{if(confirm("BOX・図鑑・育成データをすべて初期化しますか？")){localStorage.removeItem(STORAGE_KEY);location.reload()}});
+if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+renderBox();renderDex();
+</script>
+</body>
+</html>

@@ -1,25 +1,37 @@
-# Barcode Battle v0.2
+# Barcode Battle v0.3
 
-## 追加機能
-- キャラクター画像（バーコード由来の自動生成イラスト）
-- BOX保存（ブラウザ内保存）
-- キャラ図鑑
-- レベル・経験値・育成
-- 通常攻撃 / 特殊攻撃 / 防御
-- 特殊能力8種
-- 勝利EXP / レベルアップ
-- PWA対応
+## v0.3の変更点
+- かわいい系モンスターデザインへ刷新
+- 種族ごとにシルエットを変更
+  - スライム
+  - ドラゴン
+  - ビースト
+  - バード
+  - ゴースト
+  - マシン
+  - ナイト
+- 属性ごとに配色変更
+- ★4以上はキラキラ演出
+- 召喚アニメーション追加
+- html5-qrcodeを使ったスマホ向けカメラ読取
+- 背面カメラ優先
+- スキャン枠表示
+- バトル時のダメージ揺れ演出
 
-## GitHub Pagesへ導入
-1. GitHubで `barcode-battle` リポジトリを作成
-2. `index.html` `manifest.webmanifest` `sw.js` をアップロード
-3. Settings → Pages
-4. Source: Deploy from a branch
-5. Branch: main / root
-6. Save
+## GitHub更新方法
+既存の barcode-battle リポジトリで以下を上書きしてください。
+- index.html
+- manifest.webmanifest
+- sw.js
+- README.md（任意）
 
-## 更新方法
-次のバージョンができたら GitHub 上の `index.html` `manifest.webmanifest` `sw.js` を新しいものへ置き換えて Commit changes するだけです。
+Commit changes後、GitHub Pagesが自動更新されます。
 
-## 保存について
-現時点では localStorage を使うため、データはそのブラウザ・端末内に保存されます。ブラウザデータ削除や端末変更では消える可能性があります。
+## iPhoneで古い画面が残る場合
+PWA/Service Workerのキャッシュが残る場合があります。
+Safariでページを再読み込みするか、ホーム画面版を一度閉じて開き直してください。
+改善しない場合はSafariのWebサイトデータ削除が必要なことがあります。
+
+## 注意
+カメラ読取は外部ライブラリ html5-qrcode をCDNから読み込みます。
+初回起動時はインターネット接続が必要です。

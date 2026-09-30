@@ -1,1 +1,9 @@
-{"name":"Barcode Battle","short_name":"BarcodeBattle","start_url":"./","display":"standalone","background_color":"#07111f","theme_color":"#0f172a","icons":[]}
+{
+  "name": "Barcode Battle",
+  "short_name": "BarcodeBattle",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#0b1325",
+  "icons": []
+}
