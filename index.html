@@ -4,25 +4,33 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b1325">
-  <title>Barcode Battle v0.3</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
+  <title>Barcode Battle v0.5</title>
   <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <script src="https://unpkg.com/html5-qrcode" defer></script>
   <style>
     :root{
       --bg:#07111f;--panel:#0f1b2d;--panel2:#14233a;--line:#294766;--text:#f4f8ff;--muted:#9bb1c9;
       --accent:#67e8f9;--accent2:#a7f3d0;--pink:#f9a8d4;--danger:#fb7185;--gold:#fbbf24;--ok:#4ade80;
+      --cyan:#4dd8ff;--purple:#a78bfa;
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
-    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;background:
-      radial-gradient(circle at top,#10213b 0,#07111f 42%,#050a12 100%);color:var(--text)}
-    button,input{font:inherit}
-    button{cursor:pointer}
-    .app{max-width:900px;margin:auto;padding:16px 16px 90px}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;background:radial-gradient(circle at top,#112447 0,#07111f 42%,#050a12 100%);color:var(--text)}
+    button,input{font:inherit} button{cursor:pointer}
+    .app{max-width:980px;margin:auto;padding:16px 16px 90px}
     .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 14px}
+    .brand-wrap{display:flex;align-items:center;gap:12px}
+    .top-icon{width:54px;height:54px;border-radius:18px;border:1px solid #355278;overflow:hidden;flex:none;box-shadow:0 10px 25px rgba(0,0,0,.25)}
+    .top-icon img{width:100%;height:100%;display:block}
     .brand{font-weight:950;font-size:24px;letter-spacing:.4px}
     .ver{color:var(--muted);font-size:12px}
-    .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;position:sticky;top:0;z-index:30;background:rgba(7,17,31,.92);backdrop-filter:blur(12px);padding:8px 0 10px}
+    .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;position:sticky;top:0;z-index:30;background:rgba(7,17,31,.92);backdrop-filter:blur(12px);padding:8px 0 10px}
     .tab{border:1px solid var(--line);background:#0d1a2b;color:var(--muted);padding:11px 6px;border-radius:14px;font-weight:850}
     .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#042027;border-color:transparent}
     .screen{display:none}.screen.active{display:block}
@@ -30,6 +38,28 @@
     .hero{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:center}
     .portrait{aspect-ratio:1/1;border-radius:24px;background:#081323;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;position:relative}
     .portrait svg{width:100%;height:100%;display:block}
+    .portrait img,.miniimg img{width:100%;height:100%;object-fit:contain;display:block}
+    .portrait,.miniimg{
+      background:
+        radial-gradient(circle at 50% 45%,rgba(103,232,249,.22),rgba(9,20,35,.70) 58%,rgba(4,10,18,.98) 100%);
+    }
+    .monster-art{
+      transform:scale(.96);
+      filter:drop-shadow(0 12px 18px rgba(0,0,0,.42));
+      transition:transform .25s ease,filter .25s ease;
+    }
+    .portrait .monster-art{transform:scale(1)}
+    .monster-art.rarity-4{
+      filter:drop-shadow(0 0 14px rgba(255,235,135,.52)) drop-shadow(0 12px 18px rgba(0,0,0,.38));
+    }
+    .monster-art.rarity-5{
+      transform:scale(1.025);
+      filter:drop-shadow(0 0 20px rgba(255,238,120,.82)) drop-shadow(0 12px 18px rgba(0,0,0,.34));
+    }
+    .monster-glow{
+      position:absolute;inset:7%;border-radius:50%;pointer-events:none;
+      background:radial-gradient(circle,rgba(255,255,255,.10),rgba(103,232,249,.08) 46%,transparent 73%);
+    }
     .sparkle::before,.sparkle::after{content:"✦";position:absolute;color:#fff7b2;font-size:18px;animation:twinkle 1.2s infinite alternate}
     .sparkle::before{left:10px;top:12px}.sparkle::after{right:12px;bottom:18px;animation-delay:.4s}
     @keyframes twinkle{from{opacity:.25;transform:scale(.7)}to{opacity:1;transform:scale(1.25)}}
@@ -41,12 +71,14 @@
     .stat{background:#0a1626;border:1px solid #203b59;border-radius:14px;padding:10px}
     .stat small{color:var(--muted)} .stat b{display:block;font-size:22px;margin-top:2px}
     .row{display:flex;gap:9px;flex-wrap:wrap}
+    .row.spread{justify-content:space-between;align-items:center}
     input{flex:1;min-width:220px;padding:13px 14px;border-radius:13px;border:1px solid #36506f;background:#081421;color:#fff;outline:none}
     input:focus{border-color:var(--accent)}
     .btn{border:0;border-radius:14px;padding:12px 15px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#052521}
     .btn.secondary{background:#1a304c;color:#fff;border:1px solid #2d4d72}
     .btn.pink{background:linear-gradient(135deg,#f9a8d4,#fbcfe8);color:#4a1230}
     .btn.danger{background:var(--danger);color:#fff}
+    .btn.gold{background:linear-gradient(135deg,#fde68a,#fbbf24);color:#583b00}
     .btn:disabled{opacity:.45;cursor:not-allowed}
     .muted{color:var(--muted);font-size:13px}
     .section-title{font-size:18px;font-weight:950;margin:3px 0 10px}
@@ -54,10 +86,13 @@
     .progress{height:10px;background:#1d2c42;border-radius:999px;overflow:hidden}
     .progress>div{height:100%;background:linear-gradient(90deg,#60a5fa,#67e8f9,#a7f3d0);width:0}
     .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
     .monster-mini{background:#0c1828;border:1px solid #203a58;border-radius:18px;padding:10px;position:relative;color:#fff;text-align:left}
     .monster-mini.selected{outline:2px solid var(--accent)}
+    .active-ribbon{position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#fde68a,#fbbf24);color:#553000;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:900}
     .miniimg{aspect-ratio:1/1;border-radius:14px;background:#081321;overflow:hidden;margin-bottom:8px}
-    .miniimg svg{width:100%;height:100%}.mini-name{font-weight:900;font-size:14px}.tiny{font-size:11px;color:var(--muted)}
+    .miniimg svg{width:100%;height:100%}
+    .mini-name{font-weight:900;font-size:14px}.tiny{font-size:11px;color:var(--muted)}
     .battlefield{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .fighter{background:#091522;border:1px solid #294762;border-radius:18px;padding:12px}
     .fighter .portrait{max-width:180px;margin:0 auto 8px}
@@ -66,13 +101,16 @@
     .battle-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
     .action{border-radius:13px;padding:13px 8px;border:1px solid #2e4e73;background:#142944;color:#fff;font-weight:900}
     .action.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#052521;border:0}
-    .action.guard{background:#263a57}.log{margin-top:12px;background:#030b14;border:1px solid #20364e;border-radius:14px;padding:10px;min-height:160px;max-height:220px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.55}
+    .action.guard{background:#263a57}
+    .log{margin-top:12px;background:#030b14;border:1px solid #20364e;border-radius:14px;padding:10px;min-height:160px;max-height:220px;overflow:auto;white-space:pre-wrap;font-size:13px;line-height:1.55}
     .result{font-size:22px;font-weight:950;text-align:center;padding:8px}.xpbox{margin-top:10px}.level{font-weight:950;color:#c4e8ff}
-    .empty{text-align:center;color:var(--muted);padding:25px 10px}.notice{background:#102238;border-left:4px solid var(--accent);padding:10px 12px;border-radius:10px;font-size:13px;color:#c9dbef}
+    .empty{text-align:center;color:var(--muted);padding:25px 10px}
+    .notice{background:#102238;border-left:4px solid var(--accent);padding:10px 12px;border-radius:10px;font-size:13px;color:#c9dbef}
+    .moneybar{display:flex;gap:10px;flex-wrap:wrap}
+    .pill{display:flex;align-items:center;gap:8px;background:#0d2035;border:1px solid #234260;padding:8px 12px;border-radius:999px;font-weight:800}
     #reader{width:100%;overflow:hidden;border-radius:16px;margin-top:10px;background:#000}
     #reader video{border-radius:16px}
-    .scanner-wrap{position:relative}
-    .scan-frame{pointer-events:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72%;aspect-ratio:1.7/1;border:3px solid #67e8f9;border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.28),0 0 20px rgba(103,232,249,.55);display:none;z-index:5}
+    .scanner-wrap{position:relative}.scan-frame{pointer-events:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:72%;aspect-ratio:1.7/1;border:3px solid #67e8f9;border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.28),0 0 20px rgba(103,232,249,.55);display:none;z-index:5}
     .summon-stage{position:relative;min-height:180px;display:grid;place-items:center;overflow:hidden}
     .summon-orb{width:104px;height:104px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#bae6fd 22%,#67e8f9 45%,#1d4ed8 85%);box-shadow:0 0 35px #67e8f9;animation:pulse 1s infinite alternate}
     @keyframes pulse{from{transform:scale(.92);filter:brightness(.9)}to{transform:scale(1.08);filter:brightness(1.25)}}
@@ -80,18 +118,30 @@
     @keyframes reveal{0%{transform:scale(.35) rotate(-8deg);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
     .damage-pop{animation:shake .25s linear}
     @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-    @media(max-width:680px){
-      .hero{grid-template-columns:120px 1fr}.name{font-size:21px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}
-      .fighter .portrait{max-width:130px}.battle-actions{grid-template-columns:1fr}
-    }
-    @media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.tabs{gap:5px}.tab{font-size:12px;padding:10px 3px}.hero{grid-template-columns:100px 1fr}}
+    .upgrade-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .upgrade-item{background:#0b1829;border:1px solid #223d59;border-radius:16px;padding:12px}
+    .dungeon-top{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}
+    .floor-num{font-size:30px;font-weight:950;color:#fff}
+    .reward-banner{background:linear-gradient(135deg,#102a41,#153555);border:1px solid #26557c;padding:10px;border-radius:14px}
+    .run-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    @media(max-width:820px){.tabs{grid-template-columns:repeat(3,1fr)}.dungeon-top{grid-template-columns:1fr}.upgrade-list{grid-template-columns:1fr 1fr}}
+    @media(max-width:680px){.hero{grid-template-columns:120px 1fr}.name{font-size:21px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}.fighter .portrait{max-width:130px}.battle-actions{grid-template-columns:1fr}.upgrade-list{grid-template-columns:1fr}.top{align-items:flex-start}}
+    @media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.tabs{gap:5px}.tab{font-size:12px;padding:10px 3px}.hero{grid-template-columns:100px 1fr}.brand{font-size:20px}}
   </style>
 </head>
 <body>
 <div class="app">
   <div class="top">
-    <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">Prototype v0.3 / Cute Monster Edition</div></div>
+    <div class="brand-wrap">
+      <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v0.5 / Premium Monster Art</div></div>
+    </div>
     <button id="resetBtn" class="btn danger" type="button">初期化</button>
+  </div>
+
+  <div class="moneybar">
+    <div class="pill">💰 <span id="goldText">0</span> G</div>
+    <div class="pill">🏆 ダンジョン最高階 <span id="bestFloorText">0</span></div>
   </div>
 
   <nav class="tabs">
@@ -99,6 +149,7 @@
     <button class="tab" data-tab="box">BOX</button>
     <button class="tab" data-tab="dex">図鑑</button>
     <button class="tab" data-tab="battle">バトル</button>
+    <button class="tab" data-tab="dungeon">∞ダンジョン</button>
   </nav>
 
   <section id="scan" class="screen active">
@@ -113,10 +164,7 @@
         <button id="stopCameraBtn" class="btn danger" disabled>停止</button>
       </div>
       <div class="muted" style="margin-top:8px">スマホでは背面カメラからJANコードを読み取れます。読み取り枠にバーコードを合わせてください。</div>
-      <div class="scanner-wrap">
-        <div id="scanFrame" class="scan-frame"></div>
-        <div id="reader"></div>
-      </div>
+      <div class="scanner-wrap"><div id="scanFrame" class="scan-frame"></div><div id="reader"></div></div>
     </div>
 
     <div id="summonAnim" class="card" hidden>
@@ -148,7 +196,7 @@
     <div id="selectedCard" class="card" hidden>
       <div class="hero"><div id="boxPortrait" class="portrait"></div><div><div id="boxName" class="name"></div><div id="boxMeta" class="badges"></div><div id="boxLevel" class="level"></div><div class="xpbox"><div id="boxXpText" class="muted"></div><div class="progress"><div id="boxXpBar"></div></div></div></div></div>
       <div id="boxStats" class="stats" style="margin-top:12px"></div><div id="boxSkill" class="skillbox"></div>
-      <div class="row" style="margin-top:12px"><button id="setBattleBtn" class="btn">このキャラで戦う</button><button id="deleteMonsterBtn" class="btn danger">削除</button></div>
+      <div class="row" style="margin-top:12px"><button id="setActiveBtn" class="btn">お気に入り/使用モンスターにする</button><button id="deleteMonsterBtn" class="btn danger">削除</button></div>
     </div>
   </section>
 
@@ -157,7 +205,7 @@
   <section id="battle" class="screen">
     <div class="card">
       <div class="section-title">COMバトル</div>
-      <div id="battleEmpty" class="notice">BOXから戦うキャラクターを選んでください。</div>
+      <div id="battleEmpty" class="notice">BOXから使用モンスターを選んでください。</div>
       <div id="battleArea" hidden>
         <div class="battlefield">
           <div class="fighter" id="pFighter"><div id="pPortrait" class="portrait"></div><div id="pName" class="mini-name"></div><div id="pLevel" class="tiny"></div><div class="tiny">HP <span id="pHpText"></span></div><div class="hpbar"><div id="pHpBar"></div></div></div>
@@ -169,14 +217,46 @@
       </div>
     </div>
   </section>
+
+  <section id="dungeon" class="screen">
+    <div class="dungeon-top">
+      <div class="card">
+        <div class="section-title">∞ダンジョン</div>
+        <div id="dungeonInfo" class="notice">お気に入りのモンスターでひたすら進むやりこみモード。勝つほど報酬GET！</div>
+        <div id="dungeonActiveWrap" style="margin-top:12px"></div>
+        <div class="run-controls">
+          <button id="startDungeonBtn" class="btn">ダンジョン開始</button>
+          <button id="nextFloorBtn" class="btn gold" hidden>次の階へ</button>
+          <button id="retireDungeonBtn" class="btn secondary" hidden>撤退</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-title">強化ショップ</div>
+        <div class="muted" id="upgradeHint">ダンジョン報酬のゴールドでお気に入りモンスターを永続強化できます。</div>
+        <div id="upgradeArea" class="upgrade-list" style="margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div class="card" id="dungeonRunCard" hidden>
+      <div class="row spread"><div><div class="muted">現在階</div><div class="floor-num" id="floorNowText">1F</div></div><div id="dungeonRewardBanner" class="reward-banner">勝利するとゴールドとEXPを獲得！</div></div>
+      <div class="battlefield" style="margin-top:12px">
+        <div class="fighter" id="dpFighter"><div id="dpPortrait" class="portrait"></div><div id="dpName" class="mini-name"></div><div id="dpLevel" class="tiny"></div><div class="tiny">HP <span id="dpHpText"></span></div><div class="hpbar"><div id="dpHpBar"></div></div></div>
+        <div class="fighter" id="deFighter"><div id="dePortrait" class="portrait"></div><div id="deName" class="mini-name"></div><div id="deLevel" class="tiny"></div><div class="tiny">HP <span id="deHpText"></span></div><div class="hpbar"><div id="deHpBar"></div></div></div>
+      </div>
+      <div class="battle-actions"><button id="dungeonAttackBtn" class="action primary">⚔ 通常攻撃</button><button id="dungeonSkillBtn" class="action">✨ 特殊攻撃</button><button id="dungeonGuardBtn" class="action guard">🛡 防御</button></div>
+      <div id="dungeonResult" class="result"></div><div id="dungeonLog" class="log"></div>
+    </div>
+  </section>
 </div>
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const STORAGE_KEY="barcodeBattle_v03";
-const old=localStorage.getItem(STORAGE_KEY);
-const state=old?JSON.parse(old):{monsters:[],dex:{},battleMonsterId:null};
-let currentSummon=null,selectedId=null,battle=null,scanner=null,scanning=false;
+const STORAGE_KEY="barcodeBattle_v05";
+const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
+const state = legacy ? JSON.parse(legacy) : {monsters:[], dex:{}, activeMonsterId:null, gold:0, bestFloor:0};
+state.monsters ||= []; state.dex ||= {}; state.gold ||= 0; state.bestFloor ||= 0; state.activeMonsterId ||= null;
+state.monsters.forEach(m=>{m.bonus ||= {hp:0,atk:0,def:0,spd:0}; if(m.favorite===undefined) m.favorite=false;});
+let currentSummon=null, selectedId=null, scanner=null, scanning=false, battle=null, dungeonRun=null;
 
 const elements=["炎","水","雷","風","土","光","闇"];
 const types=["スライム","ドラゴン","ビースト","バード","ゴースト","マシン","ナイト"];
@@ -190,124 +270,141 @@ const skills=[
 {name:"キラキラ会心",desc:"20%でダメージ1.8倍",kind:"crit"},
 {name:"ピンチパワー",desc:"HP30%以下で攻撃35%強化",kind:"pinch"},
 {name:"もぐもぐ再生",desc:"行動後に最大HPの5%回復",kind:"regen"},
-{name:"すばやいしっぽ",desc:"素早さが高いほど追加ダメージ",kind:"speed"}];
-
-function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
-function hashString(str){let h=2166136261>>>0;for(let c of str){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
-function rng(seed){return function(){let t=seed+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
-function uid(){return"m_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8)}
-function xpNeed(l){return 80+l*45} function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
-function makeSpecies(code){const c=String(code).replace(/\D/g,""),seed=hashString(c),r=rng(seed);return{seed,element:elements[Math.floor(r()*elements.length)],type:types[Math.floor(r()*types.length)],name:nameA[Math.floor(r()*nameA.length)]+nameB[Math.floor(r()*nameB.length)],speciesId:(seed%9999).toString().padStart(4,"0")}}
-function makeMonster(code){
- const clean=String(code).replace(/\D/g,"");if(clean.length<4)throw Error("4桁以上の数字を入力してください。");
- const sp=makeSpecies(clean),r=rng((sp.seed^Date.now()^Math.floor(Math.random()*0xffffffff))>>>0);
- let stars=((sp.seed%1000)/1000>.985)?5:((sp.seed%1000)/1000>.92)?4:((sp.seed%1000)/1000>.74)?3:((sp.seed%1000)/1000>.42)?2:1;if(r()>.94&&stars<5)stars++;
- let hp=Math.round(78+((sp.seed>>>3)%55)+r()*28+stars*11),atk=Math.round(38+((sp.seed>>>7)%48)+r()*24+stars*7),def=Math.round(35+((sp.seed>>>11)%44)+r()*22+stars*7),spd=Math.round(34+((sp.seed>>>15)%52)+r()*25+stars*7);
- const iv=Math.round((hp+atk+def+spd)/4),rank=iv>125?"S":iv>108?"A":iv>92?"B":"C";
- return{id:uid(),barcode:clean,...sp,stars,rank,base:{hp,atk,def,spd},level:1,xp:0,skill:skills[Math.floor(r()*skills.length)],createdAt:Date.now()}
-}
-function statAt(m,k){return Math.round(m.base[k]*(1+(m.level-1)*.055))}
-function displayStats(m){return{hp:statAt(m,"hp"),atk:statAt(m,"atk"),def:statAt(m,"def"),spd:statAt(m,"spd")}}
-function rarityText(m){return"★".repeat(m.stars)+"☆".repeat(5-m.stars)} function xpPercent(m){return Math.min(100,m.xp/xpNeed(m.level)*100)}
-
+{name:"すばやいしっぽ",desc:"素早さが高いほど追加ダメージ",kind:"speed"}
+];
 const colors={
  "炎":["#ff8a65","#ffcc80","#7f1d1d"],"水":["#67e8f9","#bae6fd","#155e75"],"雷":["#fde047","#fff7ae","#854d0e"],
  "風":["#86efac","#d1fae5","#166534"],"土":["#d6b98c","#f2dfbf","#6b4f2c"],"光":["#fff1a8","#ffffff","#b08900"],"闇":["#c4b5fd","#e9d5ff","#4c1d95"]
 };
+
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function hashString(str){ let h=2166136261>>>0; for(const c of str){ h^=c.charCodeAt(0); h=Math.imul(h,16777619);} return h>>>0; }
+function rng(seed){ return function(){ let t=seed+=0x6D2B79F5; t=Math.imul(t^t>>>15, t|1); t^=t+Math.imul(t^t>>>7, t|61); return ((t^t>>>14)>>>0)/4294967296; } }
+function uid(){ return "m_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8); }
+function xpNeed(l){ return 80+l*45; }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function activeMonster(){ return state.monsters.find(m=>m.id===state.activeMonsterId) || null; }
+function formatStars(n){ return "★".repeat(n)+"☆".repeat(5-n); }
+function updateTopBar(){ $("#goldText").textContent = state.gold; $("#bestFloorText").textContent = state.bestFloor; }
+
+function makeSpecies(code){
+  const c=String(code).replace(/\D/g,"");
+  const seed=hashString(c), r=rng(seed);
+  return { seed, element:elements[Math.floor(r()*elements.length)], type:types[Math.floor(r()*types.length)], name:nameA[Math.floor(r()*nameA.length)]+nameB[Math.floor(r()*nameB.length)], speciesId:(seed%9999).toString().padStart(4,"0") };
+}
+function makeMonster(code){
+  const clean=String(code).replace(/\D/g,""); if(clean.length<4) throw Error("4桁以上の数字を入力してください。");
+  const sp=makeSpecies(clean), r=rng((sp.seed ^ Date.now() ^ Math.floor(Math.random()*0xffffffff))>>>0);
+  const rarity=(sp.seed%1000)/1000;
+  let stars=rarity>.985?5:rarity>.92?4:rarity>.74?3:rarity>.42?2:1; if(r()>.94&&stars<5)stars++;
+  let hp=Math.round(78+((sp.seed>>>3)%55)+r()*28+stars*11), atk=Math.round(38+((sp.seed>>>7)%48)+r()*24+stars*7), def=Math.round(35+((sp.seed>>>11)%44)+r()*22+stars*7), spd=Math.round(34+((sp.seed>>>15)%52)+r()*25+stars*7);
+  const iv=Math.round((hp+atk+def+spd)/4), rank=iv>125?"S":iv>108?"A":iv>92?"B":"C";
+  return {id:uid(), barcode:clean, ...sp, stars, rank, base:{hp,atk,def,spd}, bonus:{hp:0,atk:0,def:0,spd:0}, level:1, xp:0, skill:skills[Math.floor(r()*skills.length)], createdAt:Date.now(), favorite:false};
+}
+function statAt(m,k){
+  const scaled = Math.round(m.base[k]*(1+(m.level-1)*.055));
+  return scaled + (m.bonus?.[k]||0);
+}
+function displayStats(m){ return {hp:statAt(m,"hp"), atk:statAt(m,"atk"), def:statAt(m,"def"), spd:statAt(m,"spd")}; }
+function xpPercent(m){ return Math.min(100, m.xp/xpNeed(m.level)*100); }
+function registerDex(m){ if(!state.dex[m.speciesId]) state.dex[m.speciesId]={speciesId:m.speciesId,name:m.name,element:m.element,type:m.type,seed:m.seed,seen:0}; state.dex[m.speciesId].seen++; save(); }
+function levelUp(m,gain){ m.xp += gain; let ups=0; while(m.xp>=xpNeed(m.level)&&m.level<50){ m.xp -= xpNeed(m.level); m.level++; ups++; } if(m.level>=50)m.xp=0; return ups; }
+
 function portraitSVG(m){
- const [main,soft,dark]=colors[m.element]||colors["水"]; const r=rng(m.seed); const cheek=r()>.2,mark=r()>.55; let body="",ears="",tail="",extra="";
- const eyeY=49, eyeL=40, eyeR=60;
- if(m.type==="スライム"){body=`<path d="M24 67 Q24 36 50 28 Q76 36 76 67 Q72 83 50 85 Q28 83 24 67Z" fill="${main}"/>`;extra=`<ellipse cx="50" cy="77" rx="20" ry="5" fill="${soft}" opacity=".35"/>`}
- if(m.type==="ドラゴン"){body=`<ellipse cx="50" cy="57" rx="27" ry="30" fill="${main}"/>`;ears=`<path d="M31 35 L22 16 L41 31Z" fill="${dark}"/><path d="M69 35 L78 16 L59 31Z" fill="${dark}"/>`;tail=`<path d="M72 70 Q92 75 84 88 Q75 83 70 76" fill="${main}"/>`;extra=`<path d="M33 42 Q50 27 67 42" fill="${soft}" opacity=".75"/>`}
- if(m.type==="ビースト"){body=`<ellipse cx="50" cy="58" rx="29" ry="28" fill="${main}"/>`;ears=`<path d="M29 39 Q18 16 39 29Z" fill="${main}"/><path d="M71 39 Q82 16 61 29Z" fill="${main}"/>`;tail=`<path d="M76 68 Q93 59 91 78 Q86 88 77 82" fill="${main}"/>`}
- if(m.type==="バード"){body=`<ellipse cx="50" cy="60" rx="27" ry="26" fill="${main}"/>`;ears=`<path d="M28 58 Q12 51 20 68 Q28 76 36 65" fill="${soft}"/><path d="M72 58 Q88 51 80 68 Q72 76 64 65" fill="${soft}"/>`;extra=`<path d="M44 58 L56 58 L50 66Z" fill="#f59e0b"/>`}
- if(m.type==="ゴースト"){body=`<path d="M24 64 Q24 34 50 28 Q76 34 76 64 L71 84 L61 77 L52 85 L43 77 L33 84Z" fill="${main}"/>`;extra=`<path d="M29 40 Q50 22 71 40" fill="${soft}" opacity=".45"/>`}
- if(m.type==="マシン"){body=`<rect x="24" y="31" width="52" height="50" rx="20" fill="${main}"/>`;ears=`<circle cx="24" cy="52" r="8" fill="${dark}"/><circle cx="76" cy="52" r="8" fill="${dark}"/>`;extra=`<path d="M50 31 V19" stroke="${soft}" stroke-width="4"/><circle cx="50" cy="16" r="5" fill="#fde047"/>`}
- if(m.type==="ナイト"){body=`<ellipse cx="50" cy="61" rx="27" ry="25" fill="${main}"/>`;ears=`<path d="M28 42 Q50 16 72 42 L68 50 H32Z" fill="${dark}"/>`;extra=`<path d="M36 35 H64" stroke="${soft}" stroke-width="5" stroke-linecap="round"/><circle cx="50" cy="28" r="5" fill="${soft}"/>`}
- const eyes=`<ellipse cx="${eyeL}" cy="${eyeY}" rx="5" ry="7" fill="#fff"/><ellipse cx="${eyeR}" cy="${eyeY}" rx="5" ry="7" fill="#fff"/><circle cx="${eyeL+1}" cy="${eyeY+1}" r="2.5" fill="#172033"/><circle cx="${eyeR+1}" cy="${eyeY+1}" r="2.5" fill="#172033"/>`;
- const cheeks=cheek?`<circle cx="30" cy="60" r="5" fill="#fb7185" opacity=".5"/><circle cx="70" cy="60" r="5" fill="#fb7185" opacity=".5"/>`:"";
- const face=`${eyes}${cheeks}<path d="M41 65 Q50 72 59 65" fill="none" stroke="#172033" stroke-width="3.5" stroke-linecap="round"/>`;
- const markEl=mark?`<path d="M45 37 Q50 31 55 37 Q50 41 45 37" fill="${soft}"/>`:"";
- const stars=m.stars>=4?`<g fill="#fff7ae"><circle cx="17" cy="20" r="2"/><circle cx="84" cy="24" r="2"/><circle cx="82" cy="77" r="2"/></g>`:"";
- return `<svg viewBox="0 0 100 100" role="img" aria-label="${m.name}">
- <rect width="100" height="100" rx="20" fill="#07111f"/>
- <circle cx="50" cy="50" r="42" fill="${soft}" opacity=".12"/>
- ${tail}${ears}${body}${extra}${markEl}${face}${stars}
- </svg>`;
-}
-function registerDex(m){if(!state.dex[m.speciesId])state.dex[m.speciesId]={speciesId:m.speciesId,name:m.name,element:m.element,type:m.type,seed:m.seed,seen:0};state.dex[m.speciesId].seen++;save()}
-function showSummon(m){
- currentSummon=m;$("#summonAnim").hidden=false;$("#summonResult").hidden=true;
- setTimeout(()=>{$("#summonAnim").hidden=true;renderSummon(m);$("#summonResult").hidden=false},700)
-}
-function summonFromCode(code){
- try{$("#barcodeInput").value=code;const m=makeMonster(code);registerDex(m);showSummon(m);renderDex();$("#saveBtn").disabled=false;$("#saveBtn").textContent="BOXに保存"}
- catch(e){alert(e.message)}
-}
-function summon(){summonFromCode($("#barcodeInput").value.trim())}
-function renderSummon(m){
- $("#summonPortrait").innerHTML=portraitSVG(m);$("#summonPortrait").classList.toggle("sparkle",m.stars>=4);
- $("#summonName").textContent=m.name;$("#summonStars").textContent=rarityText(m);$("#summonElement").textContent=m.element;$("#summonType").textContent=m.type;$("#summonRank").textContent="個体 "+m.rank;
- $("#summonLevel").textContent=m.level;$("#summonXpText").textContent=`${m.xp}/${xpNeed(m.level)}`;$("#summonXpBar").style.width=xpPercent(m)+"%";
- const s=displayStats(m);$("#summonHp").textContent=s.hp;$("#summonAtk").textContent=s.atk;$("#summonDef").textContent=s.def;$("#summonSpd").textContent=s.spd;
- $("#summonSkill").innerHTML=`<b>${m.skill.name}</b><div class="muted">${m.skill.desc}</div>`;
-}
-function addToBox(){if(!currentSummon)return;if(state.monsters.length>=60){alert("BOX上限は60体です。");return}state.monsters.push(currentSummon);state.battleMonsterId=currentSummon.id;save();renderBox();alert("BOXに保存しました！");$("#saveBtn").disabled=true;$("#saveBtn").textContent="保存済み"}
-function renderBox(){
- $("#boxInfo").textContent=`${state.monsters.length}/60体`;const g=$("#boxGrid");g.innerHTML="";
- if(!state.monsters.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">まだキャラクターがいません。</div>';$("#selectedCard").hidden=true;return}
- state.monsters.forEach(m=>{const d=document.createElement("button");d.type="button";d.className="monster-mini"+(m.id===selectedId?" selected":"");d.innerHTML=`<div class="miniimg">${portraitSVG(m)}</div><div class="mini-name">${m.name}</div><div class="tiny">Lv.${m.level} / ${m.element} / ${rarityText(m)}</div>`;d.addEventListener("click",()=>{selectedId=m.id;renderBox();renderSelected(m)});g.appendChild(d)})
- if(selectedId){const m=state.monsters.find(x=>x.id===selectedId);if(m)renderSelected(m)}
-}
-function renderSelected(m){
- $("#selectedCard").hidden=false;$("#boxPortrait").innerHTML=portraitSVG(m);$("#boxName").textContent=m.name;$("#boxMeta").innerHTML=`<span class="badge stars">${rarityText(m)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge">個体 ${m.rank}</span>`;
- $("#boxLevel").textContent=`Lv.${m.level}`;$("#boxXpText").textContent=`EXP ${m.xp}/${xpNeed(m.level)}`;$("#boxXpBar").style.width=xpPercent(m)+"%";const s=displayStats(m);
- $("#boxStats").innerHTML=`<div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div>`;$("#boxSkill").innerHTML=`<b>${m.skill.name}</b><div class="muted">${m.skill.desc}</div>`;
-}
-function renderDex(){const entries=Object.values(state.dex);$("#dexProgress").textContent=`発見した種族：${entries.length}種`;const g=$("#dexGrid");g.innerHTML="";if(!entries.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">バーコードを読み取ると図鑑が埋まります。</div>';return}
- entries.sort((a,b)=>a.speciesId.localeCompare(b.speciesId)).forEach(d=>{const faux={...d,stars:1,rank:"?",level:1,skill:{name:"?"},base:{hp:0,atk:0,def:0,spd:0}};const div=document.createElement("div");div.className="monster-mini";div.innerHTML=`<div class="miniimg">${portraitSVG(faux)}</div><div class="mini-name">No.${d.speciesId} ${d.name}</div><div class="tiny">${d.element} / ${d.type} / 遭遇 ${d.seen}回</div>`;g.appendChild(div)})}
-function switchTab(id){$$(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));$$(".screen").forEach(s=>s.classList.toggle("active",s.id===id));if(id==="box")renderBox();if(id==="dex")renderDex();if(id==="battle")renderBattleSelection()}
+  const artByType={
+    "スライム":"assets/monsters/slime.png",
+    "ドラゴン":"assets/monsters/dragon.png",
+    "ビースト":"assets/monsters/beast.png",
+    "バード":"assets/monsters/bird.png",
+    "ゴースト":"assets/monsters/ghost.png",
+    "マシン":"assets/monsters/machine.png",
+    "ナイト":"assets/monsters/knight.png"
+  };
 
-function levelUp(m,gain){m.xp+=gain;let ups=0;while(m.xp>=xpNeed(m.level)&&m.level<50){m.xp-=xpNeed(m.level);m.level++;ups++}if(m.level>=50)m.xp=0;return ups}
-function makeEnemyFor(m){const r=rng((Date.now()^hashString(m.id))>>>0),e=makeMonster(String(Math.floor(1000000000000+r()*8999999999999)));e.level=clamp(m.level+Math.floor(r()*5)-2,1,50);return e}
-function battleUnit(m){const s=displayStats(m);return{...m,maxHp:s.hp,currentHp:s.hp,atk:s.atk,def:s.def,spd:s.spd,first:true,guarding:false}}
-function startBattle(){const src=state.monsters.find(m=>m.id===state.battleMonsterId);if(!src){$("#battleEmpty").hidden=false;$("#battleArea").hidden=true;return}battle={player:battleUnit(src),enemy:battleUnit(makeEnemyFor(src)),over:false,sourceId:src.id};$("#battleArea").hidden=false;$("#battleEmpty").hidden=true;$("#battleResult").textContent="";$("#battleLog").textContent="";logBattle(`⚔ バトル開始！\n${battle.player.name} vs ${battle.enemy.name}`);updateBattleUI();if(battle.enemy.spd>battle.player.spd)setTimeout(()=>enemyTurn(true),300)}
-function renderBattleSelection(){const m=state.monsters.find(x=>x.id===state.battleMonsterId);if(!m){$("#battleEmpty").hidden=false;$("#battleArea").hidden=true;return}startBattle()}
-function calcDamage(a,d,skill=false){let power=a.atk*(.9+Math.random()*.2),note="";if(a.skill.kind==="pinch"&&a.currentHp/a.maxHp<=.3){power*=1.35;note+="ピンチパワー! "}if(a.skill.kind==="first"&&a.first){power*=1.4;note+="スタートダッシュ! "}if(a.skill.kind==="speed")power*=1+Math.min(.3,a.spd/700);let dmg=Math.max(1,Math.round(power-d.def*.38));if(skill)dmg=Math.round(dmg*1.3);if(a.skill.kind==="crit"&&Math.random()<.2){dmg=Math.round(dmg*1.8);note+="キラキラ会心! "}if(d.guarding){dmg=Math.round(dmg*.52);note+="防御! "}if(d.skill.kind==="guard")dmg=Math.round(dmg*.82);d.currentHp=Math.max(0,d.currentHp-dmg);if(a.skill.kind==="drain"){const heal=Math.max(1,Math.round(dmg*.18));a.currentHp=Math.min(a.maxHp,a.currentHp+heal);note+=`回復+${heal} `}a.first=false;d.guarding=false;if(a.skill.kind==="double"&&Math.random()<.22&&d.currentHp>0){const extra=Math.max(1,Math.round(dmg*.55));d.currentHp=Math.max(0,d.currentHp-extra);note+=`追加+${extra} `}return{dmg,note}}
-function regen(u){if(u.skill.kind==="regen"&&u.currentHp>0){const h=Math.max(1,Math.round(u.maxHp*.05));u.currentHp=Math.min(u.maxHp,u.currentHp+h);return h}return 0}
-function bump(id){const el=$(id);el.classList.remove("damage-pop");void el.offsetWidth;el.classList.add("damage-pop")}
-function playerAction(kind){if(!battle||battle.over)return;const p=battle.player,e=battle.enemy;if(kind==="guard"){p.guarding=true;logBattle(`${p.name}は防御態勢！`)}else{const r=calcDamage(p,e,kind==="skill");logBattle(`${p.name}の${kind==="skill"?"特殊攻撃":"攻撃"}！ ${r.dmg}ダメージ ${r.note}`);bump("#eFighter")}const h=regen(p);if(h)logBattle(`${p.name}は${h}回復`);updateBattleUI();if(checkBattleEnd())return;setTimeout(()=>enemyTurn(false),450)}
-function enemyTurn(){if(!battle||battle.over)return;const e=battle.enemy,p=battle.player;if(Math.random()<.18){e.guarding=true;logBattle(`${e.name}は防御態勢！`)}else{const useSkill=Math.random()<.38,r=calcDamage(e,p,useSkill);logBattle(`COM ${e.name}の${useSkill?"特殊攻撃":"攻撃"}！ ${r.dmg}ダメージ ${r.note}`);bump("#pFighter")}const h=regen(e);if(h)logBattle(`${e.name}は${h}回復`);updateBattleUI();checkBattleEnd()}
-function checkBattleEnd(){if(battle.enemy.currentHp<=0){finishBattle(true);return true}if(battle.player.currentHp<=0){finishBattle(false);return true}return false}
-function finishBattle(win){battle.over=true;const src=state.monsters.find(m=>m.id===battle.sourceId);if(win){const gain=35+battle.enemy.level*10+battle.enemy.stars*5,ups=levelUp(src,gain);$("#battleResult").textContent=`🏆 WIN! +${gain} EXP${ups?` / LEVEL UP! Lv.${src.level}`:""}`;logBattle(`勝利！ 経験値を${gain}獲得。`)}else{$("#battleResult").textContent="💫 LOSE";logBattle("敗北…。育成して再挑戦しよう。")}save();renderBox();updateBattleUI()}
-function updateBattleUI(){if(!battle)return;const p=battle.player,e=battle.enemy;$("#pPortrait").innerHTML=portraitSVG(p);$("#ePortrait").innerHTML=portraitSVG(e);$("#pName").textContent=p.name;$("#eName").textContent=e.name;$("#pLevel").textContent=`Lv.${p.level}`;$("#eLevel").textContent=`Lv.${e.level}`;$("#pHpText").textContent=`${p.currentHp}/${p.maxHp}`;$("#eHpText").textContent=`${e.currentHp}/${e.maxHp}`;$("#pHpBar").style.width=(100*p.currentHp/p.maxHp)+"%";$("#eHpBar").style.width=(100*e.currentHp/e.maxHp)+"%";["#attackBtn","#skillBtn","#guardBtn"].forEach(s=>$(s).disabled=battle.over)}
-function logBattle(t){$("#battleLog").textContent+=t+"\n";$("#battleLog").scrollTop=$("#battleLog").scrollHeight}
+  // Same species art, but element changes the overall color impression.
+  const elementFx={
+    "水":{h:0,s:1.08,b:1.00},
+    "風":{h:24,s:1.12,b:1.02},
+    "雷":{h:58,s:1.18,b:1.06},
+    "炎":{h:150,s:1.18,b:1.02},
+    "土":{h:198,s:.90,b:.94},
+    "光":{h:-16,s:.88,b:1.11},
+    "闇":{h:244,s:1.28,b:.92}
+  };
+  const fx=elementFx[m.element]||elementFx["水"];
+  const src=artByType[m.type]||artByType["ビースト"];
+  const rare=m.stars||1;
 
-async function startScanner(){
- if(scanning)return;
- if(typeof Html5Qrcode==="undefined"){alert("カメラ読み取り機能の読み込みに失敗しました。通信状態を確認してください。");return}
- try{
-   scanner=new Html5Qrcode("reader");scanning=true;$("#cameraBtn").disabled=true;$("#stopCameraBtn").disabled=false;$("#scanFrame").style.display="block";
-   await scanner.start({facingMode:"environment"},{fps:10,qrbox:{width:280,height:130},aspectRatio:1.7},
-     decoded=>{stopScanner();summonFromCode(decoded)},()=>{});
- }catch(e){scanning=false;$("#cameraBtn").disabled=false;$("#stopCameraBtn").disabled=true;$("#scanFrame").style.display="none";alert("カメラを開始できませんでした。Safariのカメラ権限を確認してください。")}
+  return `<div class="monster-glow"></div>
+    <img class="monster-art rarity-${rare}"
+      src="${src}"
+      alt="${m.name}"
+      style="filter:hue-rotate(${fx.h}deg) saturate(${fx.s}) brightness(${fx.b}) drop-shadow(0 12px 18px rgba(0,0,0,.40))">`;
 }
-async function stopScanner(){
- if(!scanner||!scanning)return;
- try{await scanner.stop();await scanner.clear()}catch(e){}
- scanner=null;scanning=false;$("#cameraBtn").disabled=false;$("#stopCameraBtn").disabled=true;$("#scanFrame").style.display="none";$("#reader").innerHTML="";
-}
+function switchTab(id){ $$('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id)); $$('.screen').forEach(s=>s.classList.toggle('active', s.id===id)); if(id==='box') renderBox(); if(id==='dex') renderDex(); if(id==='battle') renderBattleSelection(); if(id==='dungeon') renderDungeon(); }
 
-$$(".tab").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
-$("#summonBtn").addEventListener("click",summon);$("#rerollBtn").addEventListener("click",summon);$("#saveBtn").addEventListener("click",addToBox);
-$("#barcodeInput").addEventListener("keydown",e=>{if(e.key==="Enter")summon()});
-$("#cameraBtn").addEventListener("click",startScanner);$("#stopCameraBtn").addEventListener("click",stopScanner);
-$("#setBattleBtn").addEventListener("click",()=>{if(selectedId){state.battleMonsterId=selectedId;save();switchTab("battle")}});
-$("#deleteMonsterBtn").addEventListener("click",()=>{if(!selectedId)return;if(confirm("このキャラクターを削除しますか？")){state.monsters=state.monsters.filter(m=>m.id!==selectedId);if(state.battleMonsterId===selectedId)state.battleMonsterId=state.monsters[0]?.id||null;selectedId=null;save();renderBox()}});
-$("#attackBtn").addEventListener("click",()=>playerAction("attack"));$("#skillBtn").addEventListener("click",()=>playerAction("skill"));$("#guardBtn").addEventListener("click",()=>playerAction("guard"));$("#newEnemyBtn").addEventListener("click",startBattle);
-$("#resetBtn").addEventListener("click",()=>{if(confirm("BOX・図鑑・育成データをすべて初期化しますか？")){localStorage.removeItem(STORAGE_KEY);location.reload()}});
-if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
-renderBox();renderDex();
+function showSummon(m){ currentSummon=m; $('#summonAnim').hidden=false; $('#summonResult').hidden=true; setTimeout(()=>{ $('#summonAnim').hidden=true; renderSummon(m); $('#summonResult').hidden=false; },700); }
+function summonFromCode(code){ try{ $('#barcodeInput').value=code; const m=makeMonster(code); registerDex(m); showSummon(m); renderDex(); $('#saveBtn').disabled=false; $('#saveBtn').textContent='BOXに保存'; } catch(e){ alert(e.message); } }
+function summon(){ summonFromCode($('#barcodeInput').value.trim()); }
+function renderSummon(m){ $('#summonPortrait').innerHTML=portraitSVG(m); $('#summonPortrait').classList.toggle('sparkle', m.stars>=4); $('#summonName').textContent=m.name; $('#summonStars').textContent=formatStars(m.stars); $('#summonElement').textContent=m.element; $('#summonType').textContent=m.type; $('#summonRank').textContent='個体 '+m.rank; $('#summonLevel').textContent=m.level; $('#summonXpText').textContent=`${m.xp}/${xpNeed(m.level)}`; $('#summonXpBar').style.width=xpPercent(m)+'%'; const s=displayStats(m); $('#summonHp').textContent=s.hp; $('#summonAtk').textContent=s.atk; $('#summonDef').textContent=s.def; $('#summonSpd').textContent=s.spd; $('#summonSkill').innerHTML=`<b>${m.skill.name}</b><div class='muted'>${m.skill.desc}</div>`; }
+function addToBox(){ if(!currentSummon)return; if(state.monsters.length>=60){ alert('BOX上限は60体です。'); return; } state.monsters.push(currentSummon); if(!state.activeMonsterId){ state.activeMonsterId=currentSummon.id; currentSummon.favorite=true; } save(); renderBox(); renderDungeon(); alert('BOXに保存しました！'); $('#saveBtn').disabled=true; $('#saveBtn').textContent='保存済み'; updateTopBar(); }
+
+function renderBox(){ $('#boxInfo').textContent=`${state.monsters.length}/60体`; const g=$('#boxGrid'); g.innerHTML=''; if(!state.monsters.length){ g.innerHTML='<div class="empty" style="grid-column:1/-1">まだキャラクターがいません。</div>'; $('#selectedCard').hidden=true; return; }
+  state.monsters.forEach(m=>{ const d=document.createElement('button'); d.type='button'; d.className='monster-mini'+(m.id===selectedId?' selected':''); d.innerHTML=`${m.id===state.activeMonsterId?'<span class="active-ribbon">お気に入り</span>':''}<div class="miniimg">${portraitSVG(m)}</div><div class="mini-name">${m.name}</div><div class="tiny">Lv.${m.level} / ${m.element} / ${formatStars(m.stars)}</div>`; d.addEventListener('click',()=>{ selectedId=m.id; renderBox(); renderSelected(m); }); g.appendChild(d); });
+  const selected = state.monsters.find(m=>m.id===selectedId) || state.monsters[0]; if(selected){ selectedId = selected.id; renderSelected(selected); }
+}
+function renderSelected(m){ $('#selectedCard').hidden=false; $('#boxPortrait').innerHTML=portraitSVG(m); $('#boxName').textContent=m.name; $('#boxMeta').innerHTML=`<span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge">個体 ${m.rank}</span>${m.id===state.activeMonsterId?'<span class="badge">お気に入り</span>':''}`; $('#boxLevel').textContent=`Lv.${m.level}`; $('#boxXpText').textContent=`EXP ${m.xp}/${xpNeed(m.level)}`; $('#boxXpBar').style.width=xpPercent(m)+'%'; const s=displayStats(m); $('#boxStats').innerHTML=`<div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div>`; $('#boxSkill').innerHTML=`<b>${m.skill.name}</b><div class="muted">${m.skill.desc}</div>`; }
+function setActiveMonster(id){ state.monsters.forEach(m=>m.favorite=false); const target=state.monsters.find(m=>m.id===id); if(target){ target.favorite=true; state.activeMonsterId=id; save(); renderBox(); renderBattleSelection(); renderDungeon(); } }
+function deleteSelected(){ if(!selectedId) return; if(confirm('このキャラクターを削除しますか？')){ state.monsters = state.monsters.filter(m=>m.id!==selectedId); if(state.activeMonsterId===selectedId){ state.activeMonsterId=state.monsters[0]?.id || null; if(state.activeMonsterId){ const first=state.monsters.find(m=>m.id===state.activeMonsterId); if(first) first.favorite=true; } } selectedId=null; save(); renderBox(); renderBattleSelection(); renderDungeon(); } }
+
+function renderDex(){ const entries=Object.values(state.dex); $('#dexProgress').textContent=`発見した種族：${entries.length}種`; const g=$('#dexGrid'); g.innerHTML=''; if(!entries.length){ g.innerHTML='<div class="empty" style="grid-column:1/-1">バーコードを読み取ると図鑑が埋まります。</div>'; return; } entries.sort((a,b)=>a.speciesId.localeCompare(b.speciesId)).forEach(d=>{ const faux={...d,stars:1,rank:'?',level:1,skill:{name:'?'},base:{hp:0,atk:0,def:0,spd:0},bonus:{hp:0,atk:0,def:0,spd:0}}; const div=document.createElement('div'); div.className='monster-mini'; div.innerHTML=`<div class="miniimg">${portraitSVG(faux)}</div><div class="mini-name">No.${d.speciesId} ${d.name}</div><div class="tiny">${d.element} / ${d.type} / 遭遇 ${d.seen}回</div>`; g.appendChild(div); }); }
+
+function makeEnemyForMonster(m, bonusLevel=0){ const seed = hashString(m.id + ':' + bonusLevel + ':' + Date.now()); const fake = String(1000000000000 + (seed % 8999999999999)); const e=makeMonster(fake); e.level = clamp(m.level + bonusLevel, 1, 50); return e; }
+function unitFromMonster(m){ const s=displayStats(m); return {...m, maxHp:s.hp, currentHp:s.hp, atk:s.atk, def:s.def, spd:s.spd, first:true, guarding:false}; }
+function calcDamage(a,d,skill=false){ let power=a.atk*(.9+Math.random()*.2), note=''; if(a.skill.kind==='pinch'&&a.currentHp/a.maxHp<=.3){ power*=1.35; note+='ピンチパワー! '; } if(a.skill.kind==='first'&&a.first){ power*=1.4; note+='スタートダッシュ! '; } if(a.skill.kind==='speed') power*=1+Math.min(.3,a.spd/700); let dmg=Math.max(1, Math.round(power-d.def*.38)); if(skill) dmg=Math.round(dmg*1.3); if(a.skill.kind==='crit'&&Math.random()<.2){ dmg=Math.round(dmg*1.8); note+='キラキラ会心! '; } if(d.guarding){ dmg=Math.round(dmg*.52); note+='防御! '; } if(d.skill.kind==='guard') dmg=Math.round(dmg*.82); d.currentHp=Math.max(0,d.currentHp-dmg); if(a.skill.kind==='drain'){ const heal=Math.max(1,Math.round(dmg*.18)); a.currentHp=Math.min(a.maxHp,a.currentHp+heal); note+=`吸収+${heal} `; } a.first=false; d.guarding=false; if(a.skill.kind==='double'&&Math.random()<.22&&d.currentHp>0){ const extra=Math.max(1,Math.round(dmg*.55)); d.currentHp=Math.max(0,d.currentHp-extra); note+=`連撃+${extra} `; } return {dmg,note}; }
+function regen(u){ if(u.skill.kind==='regen'&&u.currentHp>0){ const h=Math.max(1,Math.round(u.maxHp*.05)); u.currentHp=Math.min(u.maxHp,u.currentHp+h); return h; } return 0; }
+function bump(id){ const el=$(id); if(!el) return; el.classList.remove('damage-pop'); void el.offsetWidth; el.classList.add('damage-pop'); }
+
+function renderBattleSelection(){ const m=activeMonster(); if(!m){ $('#battleEmpty').hidden=false; $('#battleArea').hidden=true; return; } startBattle(); }
+function startBattle(){ const src=activeMonster(); if(!src){ $('#battleEmpty').hidden=false; $('#battleArea').hidden=true; return; } battle={player:unitFromMonster(src), enemy:unitFromMonster(makeEnemyForMonster(src, Math.floor(Math.random()*3))), over:false}; $('#battleArea').hidden=false; $('#battleEmpty').hidden=true; $('#battleResult').textContent=''; $('#battleLog').textContent=''; logBattle(`⚔ バトル開始！\n${battle.player.name} vs ${battle.enemy.name}`); updateBattleUI(); if(battle.enemy.spd>battle.player.spd) setTimeout(enemyTurnBattle, 350); }
+function updateBattleUI(){ if(!battle) return; const p=battle.player,e=battle.enemy; $('#pPortrait').innerHTML=portraitSVG(p); $('#ePortrait').innerHTML=portraitSVG(e); $('#pPortrait').classList.toggle('sparkle', p.stars>=4); $('#ePortrait').classList.toggle('sparkle', e.stars>=4); $('#pName').textContent=p.name; $('#eName').textContent=e.name; $('#pLevel').textContent=`Lv.${p.level}`; $('#eLevel').textContent=`Lv.${e.level}`; $('#pHpText').textContent=`${p.currentHp}/${p.maxHp}`; $('#eHpText').textContent=`${e.currentHp}/${e.maxHp}`; $('#pHpBar').style.width=(100*p.currentHp/p.maxHp)+'%'; $('#eHpBar').style.width=(100*e.currentHp/e.maxHp)+'%'; ['#attackBtn','#skillBtn','#guardBtn'].forEach(id=>$(id).disabled=battle.over); }
+function logBattle(t){ $('#battleLog').textContent += t+'\n'; $('#battleLog').scrollTop = $('#battleLog').scrollHeight; }
+function playerActionBattle(kind){ if(!battle||battle.over) return; const p=battle.player,e=battle.enemy; if(kind==='guard'){ p.guarding=true; logBattle(`${p.name}は防御態勢！`); } else { const r=calcDamage(p,e,kind==='skill'); logBattle(`${p.name}の${kind==='skill'?'特殊攻撃':'攻撃'}！ ${r.dmg}ダメージ ${r.note}`); bump('#eFighter'); } const h=regen(p); if(h) logBattle(`${p.name}は${h}回復`); updateBattleUI(); if(checkBattleEnd()) return; setTimeout(enemyTurnBattle, 450); }
+function enemyTurnBattle(){ if(!battle||battle.over) return; const e=battle.enemy,p=battle.player; if(Math.random()<.18){ e.guarding=true; logBattle(`${e.name}は防御態勢！`); } else { const useSkill=Math.random()<.38; const r=calcDamage(e,p,useSkill); logBattle(`COM ${e.name}の${useSkill?'特殊攻撃':'攻撃'}！ ${r.dmg}ダメージ ${r.note}`); bump('#pFighter'); } const h=regen(e); if(h) logBattle(`${e.name}は${h}回復`); updateBattleUI(); checkBattleEnd(); }
+function checkBattleEnd(){ if(battle.enemy.currentHp<=0){ finishBattle(true); return true; } if(battle.player.currentHp<=0){ finishBattle(false); return true; } return false; }
+function finishBattle(win){ battle.over=true; const src=activeMonster(); if(src && win){ const gain=35+battle.enemy.level*10+battle.enemy.stars*5; const gold=12+battle.enemy.level*4; const ups=levelUp(src,gain); state.gold += gold; $('#battleResult').textContent=`🏆 WIN! +${gain} EXP / +${gold}G${ups?` / LEVEL UP! Lv.${src.level}`:''}`; logBattle(`勝利！ 経験値${gain}・ゴールド${gold}獲得。`); save(); updateTopBar(); renderBox(); renderDungeon(); } else { $('#battleResult').textContent='💫 LOSE'; logBattle('敗北…。育成して再挑戦しよう。'); } updateBattleUI(); }
+
+function renderDungeon(){ updateTopBar(); const m=activeMonster(); const wrap=$('#dungeonActiveWrap'); if(!m){ wrap.innerHTML='<div class="empty">まずBOXからお気に入りモンスターを設定してください。</div>'; $('#upgradeArea').innerHTML=''; $('#dungeonRunCard').hidden=true; return; } const s=displayStats(m); wrap.innerHTML=`<div class="hero"><div class="portrait ${m.stars>=4?'sparkle':''}">${portraitSVG(m)}</div><div><div class="name" style="font-size:22px">${m.name}</div><div class="badges"><span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge">Lv.${m.level}</span></div><div class="stats"><div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div></div></div></div>`; renderUpgradeArea(); renderDungeonRun(); }
+function upgradeCost(monster, key){ const bonus=monster.bonus?.[key]||0; const base={hp:50, atk:60, def:60, spd:60}[key]; const step={hp:Math.floor(bonus/8)*12, atk:Math.floor(bonus/2)*12, def:Math.floor(bonus/2)*12, spd:Math.floor(bonus/2)*12}[key]; return base+step; }
+function upgradeAmount(key){ return {hp:8, atk:2, def:2, spd:2}[key]; }
+function renderUpgradeArea(){ const m=activeMonster(); if(!m){ $('#upgradeArea').innerHTML=''; return; } const labels={hp:'HP強化', atk:'攻撃強化', def:'防御強化', spd:'素早さ強化'}; const list=['hp','atk','def','spd'].map(key=>{ const cost=upgradeCost(m,key), plus=upgradeAmount(key), current=m.bonus?.[key]||0; return `<div class="upgrade-item"><div style="font-weight:900">${labels[key]}</div><div class="muted">永続ボーナス +${current}</div><div class="muted">次回強化: +${plus} / ${cost}G</div><button class="btn gold" style="margin-top:10px;width:100%" onclick="upgradeActive('${key}')">強化する</button></div>`; }).join(''); $('#upgradeArea').innerHTML=list; }
+window.upgradeActive = function(key){ const m=activeMonster(); if(!m) return; const cost=upgradeCost(m,key); if(state.gold<cost){ alert('ゴールドが足りません。'); return; } state.gold -= cost; m.bonus[key] = (m.bonus[key]||0) + upgradeAmount(key); save(); updateTopBar(); renderBox(); renderBattleSelection(); renderDungeon(); };
+
+function renderDungeonRun(){ if(!dungeonRun){ $('#dungeonRunCard').hidden=true; $('#nextFloorBtn').hidden=true; $('#retireDungeonBtn').hidden=true; $('#startDungeonBtn').hidden=false; $('#dungeonRewardBanner').textContent='勝利するとゴールドとEXPを獲得！'; return; } $('#dungeonRunCard').hidden=false; $('#startDungeonBtn').hidden=true; $('#retireDungeonBtn').hidden=false; $('#nextFloorBtn').hidden=!dungeonRun.readyForNext; $('#floorNowText').textContent=dungeonRun.floor+'F'; const nextGold=20+dungeonRun.floor*12, nextExp=20+dungeonRun.floor*15; $('#dungeonRewardBanner').textContent=`この階の報酬: ${nextGold}G / ${nextExp}EXP`; const p=dungeonRun.player,e=dungeonRun.enemy; $('#dpPortrait').innerHTML=portraitSVG(p); $('#dePortrait').innerHTML=portraitSVG(e); $('#dpPortrait').classList.toggle('sparkle', p.stars>=4); $('#dePortrait').classList.toggle('sparkle', e.stars>=4); $('#dpName').textContent=p.name; $('#deName').textContent=e.name; $('#dpLevel').textContent=`Lv.${p.level}`; $('#deLevel').textContent=`Lv.${e.level}`; $('#dpHpText').textContent=`${p.currentHp}/${p.maxHp}`; $('#deHpText').textContent=`${e.currentHp}/${e.maxHp}`; $('#dpHpBar').style.width=(100*p.currentHp/p.maxHp)+'%'; $('#deHpBar').style.width=(100*e.currentHp/e.maxHp)+'%'; ['#dungeonAttackBtn','#dungeonSkillBtn','#dungeonGuardBtn'].forEach(id=>$(id).disabled=dungeonRun.over||dungeonRun.readyForNext); }
+function logDungeon(t){ $('#dungeonLog').textContent += t+'\n'; $('#dungeonLog').scrollTop = $('#dungeonLog').scrollHeight; }
+function startDungeon(){ const src=activeMonster(); if(!src){ alert('お気に入りモンスターを設定してください。'); return; } dungeonRun={ floor:1, player:unitFromMonster(src), enemy:null, over:false, readyForNext:false, sourceId:src.id }; dungeonRun.enemy = makeDungeonEnemy(); $('#dungeonLog').textContent=''; $('#dungeonResult').textContent=''; logDungeon(`∞ダンジョン開始！\n${dungeonRun.player.name}が1Fへ突入！`); renderDungeonRun(); if(dungeonRun.enemy.spd>dungeonRun.player.spd) setTimeout(enemyTurnDungeon, 350); }
+function makeDungeonEnemy(){ const src=activeMonster(); const floor=dungeonRun.floor; const enemy = unitFromMonster(makeEnemyForMonster(src, Math.floor(floor/2)+Math.floor(Math.random()*2))); enemy.level = clamp(src.level + Math.floor(floor/2), 1, 50); const r = rng(hashString(src.id+':'+floor)); enemy.maxHp += floor*8; enemy.currentHp = enemy.maxHp; enemy.atk += floor*2; enemy.def += floor*2; enemy.spd += Math.floor(floor/3); if(floor>=10 && enemy.stars<5 && r()>.5) enemy.stars++; return enemy; }
+function playerActionDungeon(kind){ if(!dungeonRun||dungeonRun.over||dungeonRun.readyForNext) return; const p=dungeonRun.player,e=dungeonRun.enemy; if(kind==='guard'){ p.guarding=true; logDungeon(`${p.name}は防御態勢！`); } else { const r=calcDamage(p,e,kind==='skill'); logDungeon(`${p.name}の${kind==='skill'?'特殊攻撃':'攻撃'}！ ${r.dmg}ダメージ ${r.note}`); bump('#deFighter'); } const h=regen(p); if(h) logDungeon(`${p.name}は${h}回復`); renderDungeonRun(); if(checkDungeonEnd()) return; setTimeout(enemyTurnDungeon, 450); }
+function enemyTurnDungeon(){ if(!dungeonRun||dungeonRun.over||dungeonRun.readyForNext) return; const e=dungeonRun.enemy,p=dungeonRun.player; if(Math.random()<.16){ e.guarding=true; logDungeon(`${e.name}は防御態勢！`); } else { const useSkill=Math.random()<.36; const r=calcDamage(e,p,useSkill); logDungeon(`${e.name}の${useSkill?'特殊攻撃':'攻撃'}！ ${r.dmg}ダメージ ${r.note}`); bump('#dpFighter'); } const h=regen(e); if(h) logDungeon(`${e.name}は${h}回復`); renderDungeonRun(); checkDungeonEnd(); }
+function checkDungeonEnd(){ if(dungeonRun.enemy.currentHp<=0){ finishDungeonFloor(true); return true; } if(dungeonRun.player.currentHp<=0){ finishDungeonFloor(false); return true; } return false; }
+function finishDungeonFloor(win){ const src=activeMonster(); if(win){ dungeonRun.readyForNext=true; const gold=20+dungeonRun.floor*12; const exp=20+dungeonRun.floor*15; state.gold += gold; const ups=levelUp(src, exp); state.bestFloor = Math.max(state.bestFloor, dungeonRun.floor); $('#dungeonResult').textContent=`🏆 ${dungeonRun.floor}Fクリア！ +${gold}G / +${exp}EXP${ups?` / LEVEL UP! Lv.${src.level}`:''}`; logDungeon(`${dungeonRun.floor}F突破！ ゴールド${gold}・EXP${exp}獲得。`); save(); updateTopBar(); renderBox(); } else { dungeonRun.over=true; $('#dungeonResult').textContent=`💀 ${dungeonRun.floor}Fで力尽きた…`; logDungeon('ダンジョン攻略失敗…。報酬は持ち帰れた！'); if(dungeonRun.floor-1>0) state.bestFloor=Math.max(state.bestFloor, dungeonRun.floor-1); save(); updateTopBar(); } renderDungeon(); }
+function nextDungeonFloor(){ if(!dungeonRun||!dungeonRun.readyForNext) return; dungeonRun.floor += 1; dungeonRun.readyForNext=false; dungeonRun.over=false; const heal = Math.round(dungeonRun.player.maxHp*0.25); dungeonRun.player.currentHp = Math.min(dungeonRun.player.maxHp, dungeonRun.player.currentHp + heal); dungeonRun.player.guarding=false; dungeonRun.player.first=true; dungeonRun.enemy = makeDungeonEnemy(); $('#dungeonResult').textContent=''; logDungeon(`\n▶ ${dungeonRun.floor}Fへ進んだ！ HPが${heal}回復。`); renderDungeonRun(); if(dungeonRun.enemy.spd>dungeonRun.player.spd) setTimeout(enemyTurnDungeon, 350); }
+function retireDungeon(){ if(!dungeonRun) return; if(confirm('ダンジョンから撤退しますか？')){ dungeonRun=null; $('#dungeonResult').textContent=''; renderDungeon(); } }
+
+async function startScanner(){ if(scanning) return; if(typeof Html5Qrcode==='undefined'){ alert('カメラ読み取り機能の読み込みに失敗しました。'); return; } try{ scanner=new Html5Qrcode('reader'); scanning=true; $('#cameraBtn').disabled=true; $('#stopCameraBtn').disabled=false; $('#scanFrame').style.display='block'; await scanner.start({facingMode:'environment'}, {fps:10, qrbox:{width:280,height:130}, aspectRatio:1.7}, decoded=>{ stopScanner(); summonFromCode(decoded); }, ()=>{}); } catch(e){ scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; alert('カメラを開始できませんでした。Safariのカメラ権限を確認してください。'); } }
+async function stopScanner(){ if(!scanner||!scanning) return; try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner=null; scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; $('#reader').innerHTML=''; }
+
+$$('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+$('#summonBtn').addEventListener('click', summon); $('#rerollBtn').addEventListener('click', summon); $('#saveBtn').addEventListener('click', addToBox); $('#barcodeInput').addEventListener('keydown', e=>{ if(e.key==='Enter') summon(); });
+$('#cameraBtn').addEventListener('click', startScanner); $('#stopCameraBtn').addEventListener('click', stopScanner);
+$('#setActiveBtn').addEventListener('click', ()=>{ if(selectedId) setActiveMonster(selectedId); });
+$('#deleteMonsterBtn').addEventListener('click', deleteSelected);
+$('#attackBtn').addEventListener('click', ()=>playerActionBattle('attack')); $('#skillBtn').addEventListener('click', ()=>playerActionBattle('skill')); $('#guardBtn').addEventListener('click', ()=>playerActionBattle('guard')); $('#newEnemyBtn').addEventListener('click', startBattle);
+$('#startDungeonBtn').addEventListener('click', startDungeon); $('#nextFloorBtn').addEventListener('click', nextDungeonFloor); $('#retireDungeonBtn').addEventListener('click', retireDungeon); $('#dungeonAttackBtn').addEventListener('click', ()=>playerActionDungeon('attack')); $('#dungeonSkillBtn').addEventListener('click', ()=>playerActionDungeon('skill')); $('#dungeonGuardBtn').addEventListener('click', ()=>playerActionDungeon('guard'));
+$('#resetBtn').addEventListener('click', ()=>{ if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){ localStorage.removeItem(STORAGE_KEY); location.reload(); } });
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if(state.monsters.length && !state.activeMonsterId){ state.activeMonsterId=state.monsters[0].id; state.monsters[0].favorite=true; save(); }
+updateTopBar(); renderBox(); renderDex(); renderBattleSelection(); renderDungeon();
 </script>
 </body>
 </html>
