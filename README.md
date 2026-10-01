@@ -1,26 +1,28 @@
-# Barcode Battle v1.8 — Cinematic 2D Battle
+# Barcode Battle v1.8.1 — Battle UI Hotfix
 
-## Main changes
-- COM / Adventure / Infinite Dungeon now use the same cinematic 2D battle presentation.
-- Large monster art: player left-bottom, enemy right-top.
-- Stage background images from assets/backgrounds.
-- Image battle effects from assets/effects.
-- Damage / CRIT popups and hit shake.
-- Monster battle art no longer uses the busy square-card decorations.
-- Rare art fallback chain: Mythic -> Legendary -> Rare -> Normal.
-- Supports both flat rare paths and species-folder rare paths.
-- Infinite Dungeon now uses the new battle scene.
-- Every 10th Infinite Dungeon floor is a boss floor.
-- Boss floor gets stronger enemy, special presentation, and x3 reward.
-- Battle speed x1 / x2 / x3 affects Infinite Dungeon too.
-- v1.7 save data migrates into v1.8.
+## Fixed
+- BOX / summon / COM battle / Adventure / Infinite Dungeon now use the SAME monster art source.
+- Battles use the existing high-resolution 1254px base monster assets instead of the low-resolution cropped rare sheet art.
+- Legendary/Mythic are shown with special glow/frame while keeping the high-resolution source image.
+- Fixed HUD, HP bar and character overlap on iPhone.
+- Moved enemy HUD below the stage label and kept player HUD at the bottom edge.
+- Removed the sticky speed-control bar that could cover lower content.
+- Fixed malformed duplicate Infinite Dungeon battle-log markup.
+- Fixed duplicate `dungeonLog` ID.
+- Added extra bottom space so the Infinite Dungeon upgrade shop can be reached above the fixed navigation.
+- Added a `強化ショップへ` jump button.
+- Infinite Dungeon portrait DOM is no longer recreated every battle tick, reducing flicker and unnecessary image reloads.
+- Switching tabs returns to the top, preventing headings from opening under the iPhone status bar.
 
-## GitHub upload
-The assets folder should already exist from v1.7.
-For this patch, overwrite ONLY:
+## Important
+The storage key remains `barcodeBattle_v18`.
+Existing v1.8 save data is reused.
+
+## GitHub
+Overwrite only:
 - index.html
 - sw.js
 - manifest.webmanifest
 - README.md
 
-Do not delete the assets folder.
+Keep the existing assets folder unchanged.

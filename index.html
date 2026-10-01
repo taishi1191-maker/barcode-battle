@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v1.8</title>
+  <title>Barcode Battle v1.8.1</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -454,6 +454,148 @@
       .hud-card{width:min(76%,330px)}
     }
 
+
+    /* ===== v1.8.1 Battle UI / scroll / clarity hotfix ===== */
+    .app{
+      padding-bottom:calc(150px + env(safe-area-inset-bottom))!important;
+    }
+    #dungeon{
+      padding-bottom:70px;
+    }
+    #dungeonShop{
+      scroll-margin-bottom:calc(120px + env(safe-area-inset-bottom));
+      margin-bottom:30px;
+    }
+    .battle-controls-fixed{
+      position:relative!important;
+      bottom:auto!important;
+      z-index:10;
+      margin-top:8px;
+    }
+    .battle-scene{
+      min-height:500px!important;
+      border-radius:22px;
+      border:1px solid #47647a;
+      box-shadow:0 14px 34px rgba(0,0,0,.28),inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    .battle-stage-label{
+      left:10px!important;
+      top:10px!important;
+      max-width:58%;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      font-size:11px!important;
+      padding:7px 10px!important;
+    }
+    .battle-boss{
+      left:auto!important;
+      right:10px!important;
+      top:10px!important;
+      transform:none!important;
+      font-size:10px!important;
+      padding:6px 10px!important;
+    }
+    .battle-hud.enemy{
+      top:52px!important;
+      left:auto!important;
+      right:10px!important;
+      width:57%;
+      display:block!important;
+    }
+    .battle-hud.player{
+      bottom:10px!important;
+      left:10px!important;
+      right:auto!important;
+      width:58%;
+      display:block!important;
+    }
+    .battle-hud .hud-card{
+      width:100%!important;
+      margin:0!important;
+      padding:8px 10px!important;
+    }
+    .battle-unit{
+      width:48%!important;
+      max-width:none!important;
+      pointer-events:none;
+    }
+    .battle-unit.enemy{
+      right:-1%!important;
+      top:105px!important;
+    }
+    .battle-unit.player{
+      left:-2%!important;
+      bottom:82px!important;
+    }
+    .battle-unit .portrait{
+      height:270px!important;
+      width:100%!important;
+      overflow:visible!important;
+      background:transparent!important;
+      border:0!important;
+    }
+    .battle-unit .portrait img.battle-art{
+      width:100%!important;
+      height:100%!important;
+      object-fit:contain!important;
+      image-rendering:auto!important;
+      transform:translateZ(0);
+      backface-visibility:hidden;
+    }
+    .battle-unit.enemy .portrait img.battle-art{
+      transform:scaleX(-1) translateZ(0);
+    }
+    .battle-scene .damage-number{
+      z-index:20;
+    }
+    .hud-name{
+      font-size:14px;
+      line-height:1.2;
+    }
+    .hud-meta,.hud-equipped{
+      font-size:9px!important;
+      line-height:1.35;
+    }
+    .battle-hp{
+      margin-top:5px!important;
+      height:10px!important;
+    }
+    .battle-scene .status-row{
+      max-width:120px;
+      justify-content:flex-end;
+    }
+    .monster-mini .miniimg,
+    .roster-card .miniimg{
+      background:radial-gradient(circle at 50% 45%,rgba(103,232,249,.14),rgba(9,20,35,.72) 62%,rgba(4,10,18,.98) 100%)!important;
+    }
+    .monster-consistent-art{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      image-rendering:auto;
+      filter:drop-shadow(0 10px 15px rgba(0,0,0,.38));
+    }
+    .rare-frame-legend{
+      box-shadow:inset 0 0 0 2px #fbbf24,0 0 16px rgba(251,191,36,.30);
+    }
+    .rare-frame-mythic{
+      box-shadow:inset 0 0 0 2px #c084fc,0 0 20px rgba(192,132,252,.36);
+    }
+    .dungeon-shop summary{
+      min-height:54px;
+    }
+    @media(max-width:430px){
+      .battle-scene{min-height:470px!important}
+      .battle-hud.enemy{top:50px!important;width:61%}
+      .battle-hud.player{bottom:8px!important;width:62%}
+      .battle-unit.enemy{top:100px!important;right:-5%!important;width:51%!important}
+      .battle-unit.player{bottom:76px!important;left:-5%!important;width:51%!important}
+      .battle-unit .portrait{height:245px!important}
+      .battle-stage-label{max-width:52%}
+    }
+
 </style>
 </head>
 <body>
@@ -461,7 +603,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.8 / Cinematic 2D Battle</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.8.1 / Battle UI Hotfix</div></div>
     </div>
     
   </div>
@@ -663,14 +805,11 @@
       <button id="dungeonAutoBattleBtn" class="auto-battle-btn">⚔ この階をオートバトル</button>
       <div id="dungeonAiState" class="ai-state">AIが自動で最後まで戦います。</div>
       <div id="dungeonInstantLog" class="instant-log">戦闘ログはここに表示されます。</div>
-      <div id="dungeonResult" class="result"></div>
+      <div id="dungeonResult" class="result"></div><button id="jumpDungeonShopBtn" class="btn secondary" style="width:100%;margin-top:8px">🔧 強化ショップへ</button>
       <details class="compact-details"><summary>戦闘ログ</summary><div class="details-body"><div id="dungeonLog" class="log"></div></div></details>
     </div>
 
-    <details class="compact-details"><summary>戦闘ログ</summary><div class="details-body"><div id="dungeonLog" class="log"></div></div></details>
-    </div>
-
-    <details class="compact-details">
+    <details class="compact-details dungeon-shop" id="dungeonShop">
       <summary>🔧 強化ショップ <span class="muted">ゴールドで永続強化</span></summary>
       <div class="details-body"><div id="upgradeArea" class="upgrade-list"></div></div>
     </details>
@@ -929,41 +1068,47 @@ function monsterSpeciesKey(m){
   const map={"スライム":"slime","ドラゴン":"dragon","ビースト":"beast","バード":"bird","ゴースト":"ghost","マシン":"machine","ナイト":"knight"};
   return map[m?.type]||"beast";
 }
-function monsterArtCandidates(m){
-  const key=monsterSpeciesKey(m),g=visualGenes(m),arr=[];
-  const legendary = (m?.stars||1)>=5 && m?.rank==="SS";
-  const mythic = legendary && g.rarityArt==="mythic";
-  if(mythic){
-    arr.push(`assets/monsters/legendary/${key}/${key}_mythic.png`);
-    arr.push(`assets/monsters/legendary/${key}/mythic.png`);
-  }
-  if(legendary){
-    arr.push(`assets/monsters/legendary/${key}/${key}_legendary.png`);
-    arr.push(`assets/monsters/legendary/${key}/legendary.png`);
-  }
-  if((m?.stars||1)>=4){
-    arr.push(`assets/monsters/rare/${key}_rare.png`);
-    arr.push(`assets/monsters/rare/${key}/rare.png`);
-  }
+function highResMonsterBasePath(m){
+  const key=monsterSpeciesKey(m);
   if(key==="rabi"){
-    arr.push("assets/monsters/rare/rabi_rare.png");
-    arr.push("assets/monsters/knight.png");
-  }else{
-    arr.push(`assets/monsters/normal/${key}.png`);
-    arr.push(`assets/monsters/${key}.png`);
+    // Rabi currently uses the high-resolution knight-family source art.
+    return "assets/monsters/knight.png";
   }
-  return [...new Set(arr)];
+  return `assets/monsters/${key}.png`;
+}
+function monsterVisualStyle(m){
+  const g=visualGenes(m);
+  const elementHue={"水":0,"風":22,"雷":52,"炎":145,"土":190,"光":-12,"闇":238}[m?.element]||0;
+  const hue=elementHue+(g.tone||0)*4;
+  const sat=1.02+(g.tone||0)*.025;
+  const brightness=g.rarityArt==="mythic"?1.10:g.rarityArt==="legend"?1.06:1;
+  const glow=g.rarityArt==="mythic"
+    ?"drop-shadow(0 0 20px rgba(192,132,252,.82))"
+    :g.rarityArt==="legend"
+      ?"drop-shadow(0 0 15px rgba(251,191,36,.68))"
+      :"drop-shadow(0 10px 15px rgba(0,0,0,.38))";
+  return `hue-rotate(${hue}deg) saturate(${sat}) brightness(${brightness}) ${glow}`;
+}
+function monsterRarityFrameClass(m){
+  const g=visualGenes(m);
+  return g.rarityArt==="mythic"?"rare-frame-mythic":g.rarityArt==="legend"?"rare-frame-legend":"";
+}
+function consistentMonsterArtHTML(m,context="card"){
+  const src=highResMonsterBasePath(m);
+  const cls=context==="battle"?"battle-art":"monster-consistent-art";
+  return `<img class="${cls}" src="${src}" alt="${displayName(m)}" style="filter:${monsterVisualStyle(m)}" onerror="this.onerror=null;this.src='assets/monsters/beast.png'">`;
+}
+function monsterArtCandidates(m){
+  // Kept for compatibility. The first/current path is always the same high-resolution art
+  // used by BOX, summon, battle, adventure and infinite dungeon.
+  return [highResMonsterBasePath(m)];
 }
 function monsterArtFallback(img){
-  const list=JSON.parse(img.dataset.candidates||"[]");
-  let i=Number(img.dataset.idx||0)+1;
-  if(i>=list.length){img.onerror=null;img.style.opacity=".35";return;}
-  img.dataset.idx=String(i);img.src=list[i];
+  img.onerror=null;
+  img.src="assets/monsters/beast.png";
 }
 function battlePortraitHTML(m){
-  const list=monsterArtCandidates(m),g=visualGenes(m);
-  const glow=g.rarityArt==="mythic"?"drop-shadow(0 0 24px #c084fc)":g.rarityArt==="legend"?"drop-shadow(0 0 18px #fbbf24)":"";
-  return `<img class="battle-art" src="${list[0]}" data-candidates='${JSON.stringify(list)}' data-idx="0" onerror="monsterArtFallback(this)" alt="${displayName(m)}" style="filter:${glow} drop-shadow(0 14px 17px rgba(0,0,0,.55))">`;
+  return consistentMonsterArtHTML(m,"battle");
 }
 function battleBackground(mode,meta={}){
   if(mode==="com")return"assets/backgrounds/arena/arena.jpg";
@@ -987,6 +1132,17 @@ function battleBackground(mode,meta={}){
   }
   return"assets/backgrounds/arena/arena.jpg";
 }
+function setBattlePortrait(selector,m){
+  const el=$(selector);if(!el)return;
+  const visualKey=[
+    m?.id||m?.name||"",
+    m?.stars||0,m?.rank||"",m?.element||"",
+    highResMonsterBasePath(m),visualGenes(m).tone,visualGenes(m).rarityArt
+  ].join("|");
+  if(el.dataset.visualKey===visualKey)return;
+  el.dataset.visualKey=visualKey;
+  el.innerHTML=battlePortraitHTML(m);
+}
 function setSceneBackground(selector,path){
   const el=$(selector);if(el)el.style.backgroundImage=`linear-gradient(rgba(5,12,20,.06),rgba(5,12,20,.30)),url("${path}")`;
 }
@@ -1002,26 +1158,14 @@ function effectAsset(type){
 }
 
 function portraitSVG(m){
-  const artByType={
-    "スライム":"assets/monsters/slime.png","ドラゴン":"assets/monsters/dragon.png","ビースト":"assets/monsters/beast.png",
-    "バード":"assets/monsters/bird.png","ゴースト":"assets/monsters/ghost.png","マシン":"assets/monsters/machine.png","ナイト":"assets/monsters/knight.png"
-  };
-  const elementFx={
-    "水":{h:0,s:1.08,b:1.00},"風":{h:24,s:1.12,b:1.02},"雷":{h:58,s:1.18,b:1.06},"炎":{h:150,s:1.18,b:1.02},
-    "土":{h:198,s:.90,b:.94},"光":{h:-16,s:.88,b:1.11},"闇":{h:244,s:1.28,b:.92}
-  };
-  const g=visualGenes(m),fx=elementFx[m.element]||elementFx["水"],src=artByType[m.type]||artByType["ビースト"],rare=m.stars||1;
+  const g=visualGenes(m);
   const form=m.form?.id||"normal";
   const marks={normal:"✦",royal:"♛",crystal:"◆",shadow:"☾",primal:"▲"};
-  const weaponMarks={blade:"⚔",staff:"✧",claw:"爪",cannon:"▣",spear:"♢"};
-  const auraMarks={spark:"✦",mist:"≈",flame:"🔥",leaf:"❧",void:"◉"};
   return `<div class="monster-glow"></div>
     <div class="form-mark">${marks[form]||"✦"}</div>
-    <div style="position:absolute;left:7px;bottom:7px;z-index:4;font-size:13px">${weaponMarks[g.weapon]||"✦"}</div>
-    <div style="position:absolute;right:8px;bottom:8px;z-index:4;font-size:12px">${auraMarks[g.aura]||"✦"}</div>
-    <div class="form-${form} ${g.rarityArt==="legend"?"rare-legend":""} ${g.rarityArt==="mythic"?"rare-mythic":""}" style="width:100%;height:100%;display:grid;place-items:center;border-radius:18px">
-    <img class="monster-art rarity-${rare}" src="${src}" alt="${displayName(m)}"
-      style="filter:hue-rotate(${fx.h+g.tone*5}deg) saturate(${fx.s+(g.tone*.02)}) brightness(${fx.b}) drop-shadow(0 12px 18px rgba(0,0,0,.40))"></div>`;
+    <div class="${monsterRarityFrameClass(m)}" style="width:100%;height:100%;display:grid;place-items:center;border-radius:18px;overflow:hidden">
+      ${consistentMonsterArtHTML(m,"card")}
+    </div>`;
 }
 function rosterHtml(selectedId){
   if(!state.monsters.length)return'<div class="empty">BOXにモンスターがいません。</div>';
@@ -1046,7 +1190,7 @@ function bindRoster(containerId,key,onPick){
     state[key]=btn.dataset.monster;save();if(navigator.vibrate)navigator.vibrate(15);onPick();
   }));
 }
-function switchTab(id){ $$('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id)); $$('.screen').forEach(s=>s.classList.toggle('active', s.id===id)); if(id==='box')renderBox();if(id==='dex')renderDex();if(id==='story')renderStory();if(id==='battle')renderBattleSelection();if(id==='dungeon')renderDungeon(); }
+function switchTab(id){ window.scrollTo({top:0,left:0,behavior:'instant'}); $$('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id)); $$('.screen').forEach(s=>s.classList.toggle('active', s.id===id)); if(id==='box')renderBox();if(id==='dex')renderDex();if(id==='story')renderStory();if(id==='battle')renderBattleSelection();if(id==='dungeon')renderDungeon(); }
 
 function showSummon(m){ currentSummon=m; $('#summonAnim').hidden=false; $('#summonResult').hidden=true; setTimeout(()=>{$('#summonAnim').hidden=true;renderSummon(m);$('#summonResult').hidden=false;if(navigator.vibrate)navigator.vibrate([20,25,45]);},700); }
 function summonFromCode(code){ try{ $('#barcodeInput').value=code; const m=makeMonster(code); registerDex(m); showSummon(m); renderDex(); $('#saveBtn').disabled=false; $('#saveBtn').textContent='BOXに保存'; } catch(e){ alert(e.message); } }
@@ -1311,8 +1455,8 @@ function prepareBattle(){
 }
 function updateBattleUI(){
   if(!battle)return;const p=battle.player,e=battle.enemy;
-  $('#pPortrait').innerHTML=battlePortraitHTML(p);$('#ePortrait').innerHTML=battlePortraitHTML(e);setSceneBackground('#battleScene',battleBackground('com'));
-  $('#pName').textContent=p.name;$('#eName').textContent=e.name;const pe=p.item?`${p.item.icon||'🎒'} ${p.item.name}`:'装備なし';$('#pLevel').textContent=`Lv.${p.level} / ${p.element||''} / ${pe}`;$('#eLevel').textContent=`Lv.${e.level} / ${e.element||''}`;
+  setBattlePortrait('#pPortrait',p);setBattlePortrait('#ePortrait',e);setSceneBackground('#battleScene',battleBackground('com'));
+  $('#pName').textContent=p.name;$('#eName').textContent=e.name;const pe=p.item?`${p.item.icon||'🎒'} ${p.item.name}`:'装備なし';$('#pLevel').textContent=`Lv.${p.level} / ${p.element||''}`;$('#eLevel').textContent=`Lv.${e.level} / ${e.element||''}`;
   $('#pHpText').textContent=`${p.currentHp}/${p.maxHp}`;$('#eHpText').textContent=`${e.currentHp}/${e.maxHp}`;
   $('#pHpBar').style.width=(100*p.currentHp/p.maxHp)+'%';$('#eHpBar').style.width=(100*e.currentHp/e.maxHp)+'%';$('#pStatus').innerHTML=statusHtml(p);$('#eStatus').innerHTML=statusHtml(e);
   $('#autoBattleBtn').disabled=battle.over||battle.autoRunning;$('#newEnemyBtn').disabled=battle.autoRunning;
@@ -1423,7 +1567,7 @@ function renderDungeonRun(){
   $('#dungeonRewardBanner').textContent=`この階の報酬: ${nextGold}G / ${nextExp}EXP${isBoss?' / BOSS BONUS':''}`;
 
   const p=dungeonRun.player,e=dungeonRun.enemy;
-  $('#dpPortrait').innerHTML=battlePortraitHTML(p);$('#dePortrait').innerHTML=battlePortraitHTML(e);
+  setBattlePortrait('#dpPortrait',p);setBattlePortrait('#dePortrait',e);
   setSceneBackground('#dungeonBattleScene',battleBackground('dungeon',{floor}));
   $('#dpName').textContent=p.name;$('#deName').textContent=e.name;
   $('#dpLevel').textContent=`Lv.${p.level} / ${p.element||''}`;$('#deLevel').textContent=`Lv.${e.level} / ${e.element||''}`;
@@ -1669,7 +1813,7 @@ function selectStoryStage(id){
 }
 function updateStoryUI(){
   if(!storyRun)return;const p=storyRun.player,e=storyRun.enemy;
-  $('#spPortrait').innerHTML=battlePortraitHTML(p);$('#sePortrait').innerHTML=battlePortraitHTML(e);setSceneBackground('#storyBattleScene',battleBackground('story',{stageId:storyRun.stage.id}));$('#spName').textContent=p.name;$('#seName').textContent=e.name;
+  setBattlePortrait('#spPortrait',p);setBattlePortrait('#sePortrait',e);setSceneBackground('#storyBattleScene',battleBackground('story',{stageId:storyRun.stage.id}));$('#spName').textContent=p.name;$('#seName').textContent=e.name;
   $('#spLevel').textContent=`Lv.${p.level}`;$('#seLevel').textContent=`Lv.${e.level}`;
   $('#spHpText').textContent=`${p.currentHp}/${p.maxHp}`;$('#seHpText').textContent=`${e.currentHp}/${e.maxHp}`;
   $('#spHpBar').style.width=(100*p.currentHp/p.maxHp)+'%';$('#seHpBar').style.width=(100*e.currentHp/e.maxHp)+'%';
@@ -1788,7 +1932,7 @@ $('#storyRetryBtn').addEventListener('click',()=>{
 $('#storyNextBtn').addEventListener('click',()=>{
   const next=Number($('#storyNextBtn').dataset.nextStage||0);
   if(next)selectStoryStage(next);
-});$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonAutoBattleBtn').addEventListener('click',startDungeonAutoBattle);$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
+});$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonAutoBattleBtn').addEventListener('click',startDungeonAutoBattle);$('#jumpDungeonShopBtn').addEventListener('click',()=>{const s=$('#dungeonShop');if(s){s.open=true;s.scrollIntoView({behavior:'smooth',block:'center'});}});$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
 $('#resetBtn').addEventListener('click',()=>{if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){localStorage.removeItem(STORAGE_KEY);location.reload();}});
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 if(state.monsters.length){if(!state.battleMonsterId)state.battleMonsterId=state.monsters[0].id;if(!state.dungeonMonsterId)state.dungeonMonsterId=state.monsters[0].id;if(!state.storyMonsterId)state.storyMonsterId=state.monsters[0].id;save();}
