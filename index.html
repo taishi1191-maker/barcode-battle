@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v1.3</title>
+  <title>Barcode Battle v1.4</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -259,6 +259,15 @@
     .exp-quick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}
     .exp-quick button{min-height:40px}
 
+
+    .rerolling{position:relative;overflow:hidden}
+    .rerolling::after{
+      content:"再召喚中…";
+      position:absolute;inset:0;display:grid;place-items:center;
+      background:rgba(5,14,25,.72);backdrop-filter:blur(2px);
+      font-weight:950;font-size:18px;z-index:20;
+    }
+
 </style>
 </head>
 <body>
@@ -266,7 +275,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.3 / Equipment & EXP Bank</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.4 / Reroll UX Fix</div></div>
     </div>
     
   </div>
@@ -434,8 +443,8 @@
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const STORAGE_KEY="barcodeBattle_v13";
-const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v12") || localStorage.getItem("barcodeBattle_v11") || localStorage.getItem("barcodeBattle_v10") || localStorage.getItem("barcodeBattle_v09") || localStorage.getItem("barcodeBattle_v08") || localStorage.getItem("barcodeBattle_v07") || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
+const STORAGE_KEY="barcodeBattle_v14";
+const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v13") || localStorage.getItem("barcodeBattle_v12") || localStorage.getItem("barcodeBattle_v11") || localStorage.getItem("barcodeBattle_v10") || localStorage.getItem("barcodeBattle_v09") || localStorage.getItem("barcodeBattle_v08") || localStorage.getItem("barcodeBattle_v07") || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
 const state = legacy ? JSON.parse(legacy) : {monsters:[], dex:{}, activeMonsterId:null, gold:0, bestFloor:0};
 state.monsters ||= []; state.dex ||= {}; state.gold ||= 0; state.bestFloor ||= 0;
 state.favoriteMonsterIds ||= [];
@@ -667,6 +676,35 @@ function switchTab(id){ $$('.tab').forEach(b=>b.classList.toggle('active', b.dat
 function showSummon(m){ currentSummon=m; $('#summonAnim').hidden=false; $('#summonResult').hidden=true; setTimeout(()=>{$('#summonAnim').hidden=true;renderSummon(m);$('#summonResult').hidden=false;if(navigator.vibrate)navigator.vibrate([20,25,45]);},700); }
 function summonFromCode(code){ try{ $('#barcodeInput').value=code; const m=makeMonster(code); registerDex(m); showSummon(m); renderDex(); $('#saveBtn').disabled=false; $('#saveBtn').textContent='BOXに保存'; } catch(e){ alert(e.message); } }
 function summon(){ summonFromCode($('#barcodeInput').value.trim()); }
+function rerollSameCode(){
+  const code=$('#barcodeInput').value.trim();
+  if(!code)return;
+  const result=$('#summonResult');
+  const button=$('#rerollBtn');
+  const keepY=window.scrollY;
+  try{
+    const m=makeMonster(code);
+    registerDex(m);
+    result.hidden=false;
+    result.classList.add('rerolling');
+    button.disabled=true;
+    setTimeout(()=>{
+      currentSummon=m;
+      renderSummon(m);
+      renderDex();
+      $('#saveBtn').disabled=false;
+      $('#saveBtn').textContent='BOXに保存';
+      result.classList.remove('rerolling');
+      button.disabled=false;
+      requestAnimationFrame(()=>window.scrollTo({top:keepY,left:0,behavior:'auto'}));
+      if(navigator.vibrate)navigator.vibrate([20,20,35]);
+    },420);
+  }catch(e){
+    result.classList.remove('rerolling');
+    button.disabled=false;
+    alert(e.message);
+  }
+}
 function renderSummon(m){
   $('#summonPortrait').innerHTML=portraitSVG(m);$('#summonPortrait').classList.toggle('sparkle',m.stars>=4);
   $('#summonName').textContent=m.name;$('#summonStars').textContent=formatStars(m.stars);$('#summonElement').textContent=m.element;$('#summonType').textContent=m.type;
@@ -1120,7 +1158,7 @@ async function startScanner(){ if(scanning) return; if(typeof Html5Qrcode==='und
 async function stopScanner(){ if(!scanner||!scanning) return; try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner=null; scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; $('#reader').innerHTML=''; }
 
 $$('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
-$('#summonBtn').addEventListener('click',summon);$('#gachaOneBtn').addEventListener('click',()=>doGacha(1));$('#gachaTenBtn').addEventListener('click',()=>doGacha(10));$('#rerollBtn').addEventListener('click',summon);$('#saveBtn').addEventListener('click',addToBox);
+$('#summonBtn').addEventListener('click',summon);$('#gachaOneBtn').addEventListener('click',()=>doGacha(1));$('#gachaTenBtn').addEventListener('click',()=>doGacha(10));$('#rerollBtn').addEventListener('click',rerollSameCode);$('#saveBtn').addEventListener('click',addToBox);
 $('#barcodeInput').addEventListener('keydown',e=>{if(e.key==='Enter')summon();});
 $('#cameraBtn').addEventListener('click',startScanner);$('#stopCameraBtn').addEventListener('click',stopScanner);
 $('#favoriteBtn').addEventListener('click',()=>{if(selectedId)toggleFavorite(selectedId);});$('#expAllocateBtn').addEventListener('click',()=>{if(selectedId)allocateExp(selectedId,$('#expAllocateInput').value);});$$('.expQuickBtn').forEach(b=>b.addEventListener('click',()=>{if(!selectedId)return;const v=b.dataset.exp==='all'?state.expBank:Number(b.dataset.exp);allocateExp(selectedId,Math.min(v,state.expBank));}));$('#deleteMonsterBtn').addEventListener('click',deleteSelected);
