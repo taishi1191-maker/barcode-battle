@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v1.5</title>
+  <title>Barcode Battle v1.6</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -286,6 +286,107 @@
     .item-effect-title{font-size:10px;font-weight:900;color:#d7ebff}
     .item-effect-text{font-size:11px;color:#a9bdd3;line-height:1.5;margin-top:2px}
 
+
+    /* v1.6 battle scene */
+    .battle-scene{
+      position:relative;min-height:430px;border-radius:24px;overflow:hidden;
+      background:
+        radial-gradient(circle at 65% 25%,rgba(103,232,249,.14),transparent 34%),
+        linear-gradient(180deg,#172a44 0%,#0e1c2f 46%,#09131f 100%);
+      border:1px solid #31526e;margin-top:10px;
+      box-shadow:inset 0 -60px 100px rgba(0,0,0,.24);
+    }
+    .battle-bg-grid{
+      position:absolute;inset:0;opacity:.16;
+      background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);
+      background-size:38px 38px;
+      transform:perspective(400px) rotateX(62deg) scale(1.4) translateY(145px);
+      transform-origin:center bottom;
+    }
+    .battle-unit{
+      position:absolute;width:43%;max-width:310px;z-index:3;
+      transition:transform .22s ease,filter .22s ease;
+    }
+    .battle-unit.player{left:3%;bottom:52px}
+    .battle-unit.enemy{right:3%;top:72px}
+    .battle-unit.enemy .portrait{transform:scaleX(-1)}
+    .battle-unit .portrait{width:100%;aspect-ratio:1/1;background:transparent;border:0;overflow:visible}
+    .battle-unit .portrait img{object-fit:contain}
+    .battle-hud{
+      position:absolute;left:12px;right:12px;z-index:5;
+      display:flex;justify-content:space-between;gap:12px;pointer-events:none;
+    }
+    .battle-hud.enemy{top:10px}
+    .battle-hud.player{bottom:10px}
+    .hud-card{
+      width:min(72%,360px);background:rgba(5,13,23,.88);border:1px solid #395b78;
+      border-radius:15px;padding:8px 10px;backdrop-filter:blur(8px)
+    }
+    .battle-hud.enemy .hud-card{margin-left:auto}
+    .hud-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .hud-name{font-weight:950}.hud-meta{font-size:10px;color:#a9bfd4}
+    .battle-hp{height:9px;border-radius:999px;background:#432536;overflow:hidden;margin-top:6px}
+    .battle-hp>div{height:100%;background:linear-gradient(90deg,#56e38a,#b6f33d);transition:width .25s ease}
+    .battle-fx{
+      position:absolute;inset:0;pointer-events:none;z-index:8;overflow:hidden
+    }
+    .damage-number{
+      position:absolute;font-weight:1000;font-size:30px;color:#fff;
+      text-shadow:0 3px 0 rgba(0,0,0,.35),0 0 12px rgba(255,255,255,.7);
+      animation:damageFloat .72s ease forwards;
+    }
+    .damage-number.crit{font-size:38px;color:#ffe36e}
+    @keyframes damageFloat{0%{opacity:0;transform:translateY(10px) scale(.7)}20%{opacity:1;transform:translateY(0) scale(1.15)}100%{opacity:0;transform:translateY(-48px) scale(.9)}}
+    .slash-fx,.fire-fx,.poison-fx,.lightning-fx{
+      position:absolute;width:170px;height:170px;border-radius:50%;opacity:0;
+      animation:fxBurst .45s ease forwards;
+    }
+    .slash-fx{background:linear-gradient(135deg,transparent 42%,#e9fbff 48%,#79dfff 54%,transparent 60%);transform:rotate(-28deg)}
+    .fire-fx{background:radial-gradient(circle,#fff3a3 0 12%,#ff9c37 35%,#ef4444 62%,transparent 72%)}
+    .poison-fx{background:radial-gradient(circle,#d9f99d 0 10%,#84cc16 35%,#3f6212 60%,transparent 72%)}
+    .lightning-fx{background:conic-gradient(from 20deg,transparent 0 12%,#fff 13% 15%,#67e8f9 16% 18%,transparent 19% 100%)}
+    @keyframes fxBurst{0%{opacity:0;transform:scale(.4)}35%{opacity:.95;transform:scale(1)}100%{opacity:0;transform:scale(1.35)}}
+    .battle-unit.hit{animation:unitHit .25s ease}
+    .battle-unit.attack{animation:unitAttack .28s ease}
+    @keyframes unitHit{0%,100%{transform:translateX(0)}30%{transform:translateX(-10px)}60%{transform:translateX(7px)}}
+    @keyframes unitAttack{0%,100%{transform:translateX(0) scale(1)}50%{transform:translateX(18px) scale(1.05)}}
+    .battle-scene.shake{animation:sceneShake .24s ease}
+    @keyframes sceneShake{0%,100%{transform:translate(0)}25%{transform:translate(-4px,2px)}50%{transform:translate(4px,-2px)}75%{transform:translate(-2px,-1px)}}
+    .battle-speed{display:flex;gap:6px;justify-content:flex-end;margin-top:8px}
+    .speed-btn.active{background:#67e8f9;color:#06231f}
+    .battle-banner{
+      position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);
+      z-index:10;background:rgba(5,13,23,.86);border:1px solid #6be8e0;
+      border-radius:999px;padding:10px 18px;font-weight:1000;opacity:0;pointer-events:none;
+    }
+    .battle-banner.show{animation:bannerPop .85s ease}
+    @keyframes bannerPop{0%{opacity:0;transform:translate(-50%,-50%) scale(.7)}20%,75%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.05)}}
+
+    /* visual genetics */
+    .visual-chip{font-size:9px;padding:2px 5px;border-radius:999px;background:#1c3450;color:#c7def2}
+    .rare-legend{
+      box-shadow:0 0 0 2px #fbbf24 inset,0 0 24px rgba(251,191,36,.34);
+      background:radial-gradient(circle at 50% 35%,rgba(255,231,142,.16),transparent 50%)
+    }
+    .rare-mythic{
+      box-shadow:0 0 0 2px #c084fc inset,0 0 28px rgba(192,132,252,.42);
+      background:radial-gradient(circle at 50% 35%,rgba(192,132,252,.18),transparent 50%)
+    }
+
+    /* adventure+ */
+    .difficulty-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+    .difficulty-btn{border:1px solid #31516d;background:#0b1929;color:#a8bfd5;border-radius:13px;padding:9px 4px;font-weight:900}
+    .difficulty-btn.active{background:#1d4960;color:#9df6e9;border-color:#67e8f9}
+    .stage-stars{color:#fbbf24;font-size:12px;letter-spacing:1px;margin-top:3px}
+    .mission-box{margin-top:10px;background:#0b1828;border:1px solid #274966;border-radius:14px;padding:10px}
+    .mission-title{font-weight:950}.mission-row{font-size:11px;color:#aec2d5;margin-top:5px}
+    .mission-row.done{color:#8bf2bd}
+    .chapter-reward{margin-top:10px;border:1px solid #8a6a20;background:#2c250f;border-radius:15px;padding:11px}
+    .run-badge{font-size:10px;padding:3px 6px;border-radius:999px;background:#17304a;color:#bfe0f5}
+    .enemy-mods{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+    .enemy-mod{font-size:10px;padding:3px 6px;border-radius:999px;background:#39253c;color:#ffc8ec}
+
 </style>
 </head>
 <body>
@@ -293,7 +394,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.5 / Identity & Item Detail</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.6 / Battle FX & Adventure+</div></div>
     </div>
     
   </div>
@@ -391,20 +492,25 @@
   
   <section id="story" class="screen">
     <div class="card">
-      <div class="section-title">冒険モード</div>
+      <div class="section-title">冒険モード</div><div class="difficulty-row"><button class="difficulty-btn active" data-diff="normal">NORMAL</button><button class="difficulty-btn" data-diff="hard">HARD</button><button class="difficulty-btn" data-diff="nightmare">NIGHTMARE</button></div>
       <div class="notice">ダンジョンを攻略して道を開き、物語を進めよう。</div>
       <div class="muted" style="margin-top:10px">出撃モンスターを1体選択</div><div id="storyRoster" class="monster-roster"></div>
     </div>
 
     <div class="card">
-      <div class="section-title">第一章：バーコードの森</div><div class="muted">分岐・宝箱・ボス城を攻略して道を開こう。</div><div id="storyMap" class="story-map" style="margin-top:10px"></div>
+      <div class="section-title">第一章：バーコードの森</div><div class="muted">分岐・宝箱・ボス城を攻略して道を開こう。</div><div id="storyMap" class="story-map" style="margin-top:10px"></div><div id="chapterReward" class="chapter-reward"></div>
     </div>
 
     <div id="storyStageCard" class="card" hidden>
-      <div id="storyScene" class="story-scene"></div>
-      <div class="battlefield">
-        <div class="fighter" id="spFighter"><div id="spPortrait" class="portrait"></div><div id="spName" class="mini-name"></div><div id="spLevel" class="tiny"></div><div class="tiny">HP <span id="spHpText"></span></div><div class="hpbar"><div id="spHpBar"></div></div><div id="spStatus" class="status-row"></div></div>
-        <div class="fighter" id="seFighter"><div id="sePortrait" class="portrait"></div><div id="seName" class="mini-name"></div><div id="seLevel" class="tiny"></div><div class="tiny">HP <span id="seHpText"></span></div><div class="hpbar"><div id="seHpBar"></div></div><div id="seStatus" class="status-row"></div></div>
+      <div id="storyScene" class="story-scene"></div><div id="storyMissionBox" class="mission-box"></div>
+      <div id="storyBattleScene" class="battle-scene">
+        <div class="battle-bg-grid"></div>
+        <div class="battle-hud enemy"><div class="hud-card"><div class="hud-top"><div><div id="seName" class="hud-name"></div><div id="seLevel" class="hud-meta"></div></div><div id="seStatus" class="status-row"></div></div><div class="battle-hp"><div id="seHpBar"></div></div><div class="hud-meta">HP <span id="seHpText"></span></div></div></div>
+        <div id="seFighter" class="battle-unit enemy"><div id="sePortrait" class="portrait"></div></div>
+        <div id="spFighter" class="battle-unit player"><div id="spPortrait" class="portrait"></div></div>
+        <div class="battle-hud player"><div class="hud-card"><div class="hud-top"><div><div id="spName" class="hud-name"></div><div id="spLevel" class="hud-meta"></div></div><div id="spStatus" class="status-row"></div></div><div class="battle-hp"><div id="spHpBar"></div></div><div class="hud-meta">HP <span id="spHpText"></span></div></div></div>
+        <div id="storyBattleFx" class="battle-fx"></div>
+        <div id="storyBattleBanner" class="battle-banner">ADVENTURE</div>
       </div>
       <button id="storyBattleBtn" class="auto-battle-btn">⚔ 攻略開始</button>
       <div id="storyAiState" class="ai-state">AIが自動で最後まで戦います。</div>
@@ -421,10 +527,16 @@
       <div class="section-title">COMバトル</div><div class="muted">出撃するモンスターを選択</div><div id="battleRoster" class="monster-roster"></div>
       <div id="battleEmpty" class="notice">BOXから出撃モンスターを選んでください。</div>
       <div id="battleArea" hidden>
-        <div class="battlefield">
-          <div class="fighter" id="pFighter"><div id="pPortrait" class="portrait"></div><div id="pName" class="mini-name"></div><div id="pLevel" class="tiny"></div><div class="tiny">HP <span id="pHpText"></span></div><div class="hpbar"><div id="pHpBar"></div></div><div id="pStatus" class="status-row"></div></div>
-          <div class="fighter" id="eFighter"><div id="ePortrait" class="portrait"></div><div id="eName" class="mini-name"></div><div id="eLevel" class="tiny"></div><div class="tiny">HP <span id="eHpText"></span></div><div class="hpbar"><div id="eHpBar"></div></div><div id="eStatus" class="status-row"></div></div>
+        <div id="battleScene" class="battle-scene">
+          <div class="battle-bg-grid"></div>
+          <div class="battle-hud enemy"><div class="hud-card"><div class="hud-top"><div><div id="eName" class="hud-name"></div><div id="eLevel" class="hud-meta"></div></div><div id="eStatus" class="status-row"></div></div><div class="battle-hp"><div id="eHpBar"></div></div><div class="hud-meta">HP <span id="eHpText"></span></div></div></div>
+          <div id="eFighter" class="battle-unit enemy"><div id="ePortrait" class="portrait"></div></div>
+          <div id="pFighter" class="battle-unit player"><div id="pPortrait" class="portrait"></div></div>
+          <div class="battle-hud player"><div class="hud-card"><div class="hud-top"><div><div id="pName" class="hud-name"></div><div id="pLevel" class="hud-meta"></div></div><div id="pStatus" class="status-row"></div></div><div class="battle-hp"><div id="pHpBar"></div></div><div class="hud-meta">HP <span id="pHpText"></span></div></div></div>
+          <div id="battleFx" class="battle-fx"></div>
+          <div id="battleBanner" class="battle-banner">BATTLE START</div>
         </div>
+        <div class="battle-speed"><button class="btn secondary speed-btn active" data-speed="1">×1</button><button class="btn secondary speed-btn" data-speed="1.8">×2</button><button class="btn secondary speed-btn" data-speed="3">×3</button></div>
         <button id="autoBattleBtn" class="auto-battle-btn">⚔ バトルスタート</button>
         <div id="battleAiState" class="ai-state">開始するとAIが自動で最後まで戦います。</div>
         <div class="row" style="margin-top:10px"><button id="newEnemyBtn" class="btn secondary">対戦相手を変更</button></div>
@@ -467,8 +579,8 @@
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const STORAGE_KEY="barcodeBattle_v15";
-const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v14") || localStorage.getItem("barcodeBattle_v13") || localStorage.getItem("barcodeBattle_v12") || localStorage.getItem("barcodeBattle_v11") || localStorage.getItem("barcodeBattle_v10") || localStorage.getItem("barcodeBattle_v09") || localStorage.getItem("barcodeBattle_v08") || localStorage.getItem("barcodeBattle_v07") || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
+const STORAGE_KEY="barcodeBattle_v16";
+const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v15") || localStorage.getItem("barcodeBattle_v14") || localStorage.getItem("barcodeBattle_v13") || localStorage.getItem("barcodeBattle_v12") || localStorage.getItem("barcodeBattle_v11") || localStorage.getItem("barcodeBattle_v10") || localStorage.getItem("barcodeBattle_v09") || localStorage.getItem("barcodeBattle_v08") || localStorage.getItem("barcodeBattle_v07") || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
 const state = legacy ? JSON.parse(legacy) : {monsters:[], dex:{}, activeMonsterId:null, gold:0, bestFloor:0};
 state.monsters ||= []; state.dex ||= {}; state.gold ||= 0; state.bestFloor ||= 0;
 state.favoriteMonsterIds ||= [];
@@ -481,6 +593,11 @@ state.items ||= [];
 state.items.forEach(i=>normalizeLegacyItem(i));
 state.storyMonsterId ||= state.battleMonsterId || null;
 state.gachaCount ||= 0;
+state.storyDifficulty ||= "normal";
+state.storyStars ||= {};
+state.storyRuns ||= {};
+state.storyChestClaimed ||= {};
+state.chapter1Cleared ||= false;
 if(state.activeMonsterId && !state.favoriteMonsterIds.includes(state.activeMonsterId)) state.favoriteMonsterIds.push(state.activeMonsterId);
 state.monsters.forEach(m=>{
   m.bonus ||= {hp:0,atk:0,def:0,spd:0};
@@ -678,28 +795,18 @@ function portraitSVG(m){
     "水":{h:0,s:1.08,b:1.00},"風":{h:24,s:1.12,b:1.02},"雷":{h:58,s:1.18,b:1.06},"炎":{h:150,s:1.18,b:1.02},
     "土":{h:198,s:.90,b:.94},"光":{h:-16,s:.88,b:1.11},"闇":{h:244,s:1.28,b:.92}
   };
-  const fx=elementFx[m.element]||elementFx["水"],src=artByType[m.type]||artByType["ビースト"],rare=m.stars||1;
+  const g=visualGenes(m),fx=elementFx[m.element]||elementFx["水"],src=artByType[m.type]||artByType["ビースト"],rare=m.stars||1;
   const form=m.form?.id||"normal";
   const marks={normal:"✦",royal:"♛",crystal:"◆",shadow:"☾",primal:"▲"};
-  return `<div class="monster-glow"></div><div class="form-mark">${marks[form]||"✦"}</div>
-    <div class="form-${form}" style="width:100%;height:100%;display:grid;place-items:center">
-    <img class="monster-art rarity-${rare}" src="${src}" alt="${m.name}"
-      style="filter:hue-rotate(${fx.h}deg) saturate(${fx.s}) brightness(${fx.b}) drop-shadow(0 12px 18px rgba(0,0,0,.40))"></div>`;
-}
-function displayName(m){return (m.nickname&&m.nickname.trim())?m.nickname.trim():m.name;}
-function shortMonsterId(m){
-  const raw=String(m.id||"");
-  return raw.length>6?raw.slice(-6).toUpperCase():raw.toUpperCase();
-}
-function monsterCardMeta(m){
-  const s=displayStats(m),item=equippedItem(m);
-  return {stats:s,itemText:item?`${item.icon}${item.name}`:"装備なし",id:shortMonsterId(m)};
-}
-function renameMonster(monsterId,newName){
-  const m=monsterById(monsterId);if(!m)return;
-  const clean=String(newName||"").trim().slice(0,12);
-  m.nickname=clean;
-  save();renderBox();renderBattleSelection();renderDungeon();renderStory();
+  const weaponMarks={blade:"⚔",staff:"✧",claw:"爪",cannon:"▣",spear:"♢"};
+  const auraMarks={spark:"✦",mist:"≈",flame:"🔥",leaf:"❧",void:"◉"};
+  return `<div class="monster-glow"></div>
+    <div class="form-mark">${marks[form]||"✦"}</div>
+    <div style="position:absolute;left:7px;bottom:7px;z-index:4;font-size:13px">${weaponMarks[g.weapon]||"✦"}</div>
+    <div style="position:absolute;right:8px;bottom:8px;z-index:4;font-size:12px">${auraMarks[g.aura]||"✦"}</div>
+    <div class="form-${form} ${g.rarityArt==="legend"?"rare-legend":""} ${g.rarityArt==="mythic"?"rare-mythic":""}" style="width:100%;height:100%;display:grid;place-items:center;border-radius:18px">
+    <img class="monster-art rarity-${rare}" src="${src}" alt="${displayName?displayName(m):m.name}"
+      style="filter:hue-rotate(${fx.h+g.tone*5}deg) saturate(${fx.s+(g.tone*.02)}) brightness(${fx.b}) drop-shadow(0 12px 18px rgba(0,0,0,.40))"></div>`;
 }
 function rosterHtml(selectedId){
   if(!state.monsters.length)return'<div class="empty">BOXにモンスターがいません。</div>';
@@ -798,7 +905,7 @@ function renderSelected(m){
   $('#boxSpeciesName').textContent=m.name;
   $('#boxIndividualId').textContent=shortMonsterId(m);
   $('#nicknameInput').value=m.nickname||"";
-  $('#boxMeta').innerHTML=`<span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge archetype-badge">${m.archetype?.name||"旧世代型"}</span><span class="badge">${m.form?.name||"ノーマル"}</span><span class="badge">個体 ${m.rank}</span>${isFavorite(m.id)?'<span class="badge">お気に入り</span>':''}`;
+  $('#boxMeta').innerHTML=`<span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge archetype-badge">${m.archetype?.name||"旧世代型"}</span><span class="badge">${m.form?.name||"ノーマル"}</span><span class="badge">個体 ${m.rank}</span><span class="badge">${visualGeneLabel(m)}</span>${isFavorite(m.id)?'<span class="badge">お気に入り</span>':''}`;
   $('#boxLevel').textContent=`Lv.${m.level}`;
   $('#boxXpText').textContent=`EXP ${m.xp}/${xpNeed(m.level)}`;
   $('#boxXpBar').style.width=xpPercent(m)+'%';
@@ -1005,28 +1112,53 @@ function chooseAiAction(unit,enemy){
   if(Math.random()<.16)return"guard";
   return Math.random()<.46?"skill":"attack";
 }
+let battleSpeed=1;
+function showBattleBanner(sceneId,bannerId,text){
+  const b=$(bannerId);if(!b)return;b.textContent=text;b.classList.remove("show");void b.offsetWidth;b.classList.add("show");
+}
+function battleFx(targetId,type,dmg=0,note=""){
+  const target=$(targetId);if(!target)return;
+  const scene=target.closest(".battle-scene");if(!scene)return;
+  const fx=scene.querySelector(".battle-fx");
+  target.classList.remove("hit");void target.offsetWidth;target.classList.add("hit");
+  scene.classList.remove("shake");void scene.offsetWidth;scene.classList.add("shake");
+  const rect=target.getBoundingClientRect(),srect=scene.getBoundingClientRect();
+  const cx=rect.left-srect.left+rect.width*.5,cy=rect.top-srect.top+rect.height*.45;
+  const el=document.createElement("div");
+  el.className=(type||"slash")+"-fx";el.style.left=(cx-85)+"px";el.style.top=(cy-85)+"px";fx.appendChild(el);setTimeout(()=>el.remove(),600);
+  if(dmg>0){
+    const num=document.createElement("div");num.className="damage-number"+(String(note).includes("会心")?" crit":"");
+    num.textContent=(String(note).includes("会心")?"CRIT ":"")+dmg;num.style.left=(cx-28)+"px";num.style.top=(cy-20)+"px";fx.appendChild(num);setTimeout(()=>num.remove(),850);
+  }
+}
+function fxTypeFor(actor,action){
+  if(action!=="skill")return"slash";
+  if(hasAbility(actor,"burn")||actor.item?.effect==="burn")return"fire";
+  if(hasAbility(actor,"poison")||actor.item?.effect==="poison")return"poison";
+  if(hasAbility(actor,"stun")||actor.item?.effect==="stun")return"lightning";
+  return"slash";
+}
 function doAiAction(actor,target,action,label,targetId,logger){
   if(actor.currentHp<=0||target.currentHp<=0)return;
   if(startOfAction(actor,logger)){endOfAction(actor,target,logger);return;}
   if(actor.currentHp<=0)return;
-
   if(action==="guard"){
     actor.guarding=true;logger(`${label}は防御態勢！`);
   }else{
     const r=calcDamage(actor,target,action==="skill",logger);
     logger(`${label}の${action==="skill"?"特殊攻撃":"攻撃"}！ ${r.dmg}ダメージ ${r.note}`);
-    bump(targetId);
+    battleFx(targetId,fxTypeFor(actor,action),r.dmg,r.note);
   }
   endOfAction(actor,target,logger);
 }
-function startAutoBattle(){if(!battle||battle.over||battle.autoRunning)return;battle.autoRunning=true;$('#battleAiState').textContent='AIバトル中…';updateBattleUI();runAutoBattleTurn();}
+function startAutoBattle(){if(!battle||battle.over||battle.autoRunning)return;battle.autoRunning=true;$('#battleAiState').textContent='AIバトル中…';updateBattleUI();showBattleBanner('#battleScene','#battleBanner','BATTLE START');setTimeout(runAutoBattleTurn,Math.round(650/battleSpeed));}
 function runAutoBattleTurn(){
   if(!battle||battle.over||!battle.autoRunning)return;
   const p=battle.player,e=battle.enemy,pAction=chooseAiAction(p,e),eAction=chooseAiAction(e,p),playerFirst=p.spd>=e.spd;
   const first=playerFirst?()=>doAiAction(p,e,pAction,p.name,'#eFighter',logBattle):()=>doAiAction(e,p,eAction,`COM ${e.name}`,'#pFighter',logBattle);
   const second=playerFirst?()=>doAiAction(e,p,eAction,`COM ${e.name}`,'#pFighter',logBattle):()=>doAiAction(p,e,pAction,p.name,'#eFighter',logBattle);
   first();updateBattleUI();if(checkBattleEnd())return;
-  battle.timer=setTimeout(()=>{second();updateBattleUI();if(checkBattleEnd())return;battle.timer=setTimeout(runAutoBattleTurn,480);},330);
+  battle.timer=setTimeout(()=>{second();updateBattleUI();if(checkBattleEnd())return;battle.timer=setTimeout(runAutoBattleTurn,Math.round(480/battleSpeed));},Math.round(330/battleSpeed));
 }
 function checkBattleEnd(){if(battle.enemy.currentHp<=0){finishBattle(true);return true;}if(battle.player.currentHp<=0){finishBattle(false);return true;}return false;}
 function finishBattle(win){
@@ -1196,34 +1328,91 @@ function renderEquippedItem(m){
   if(item)$('#unequipBtn').addEventListener('click',()=>equipItem(m.id,null));
 }
 const storyStages=[
-  {id:1,title:"草原の門",icon:"🌿",text:"バーコードの森へ続く最初の門。",level:0,reward:120,gold:80,gimmick:"通常エリア",next:[2,3]},
-  {id:2,title:"毒霧の城",icon:"☠️",text:"紫の霧に覆われた城。毒を操る敵が待つ。",level:2,reward:170,gold:120,gimmick:"毒特化",next:[4],treasure:true},
-  {id:3,title:"雷鳴の塔",icon:"⚡",text:"雷が落ち続ける塔。俊足の敵が多い。",level:3,reward:170,gold:120,gimmick:"素早さ+20%",next:[4],treasure:true},
-  {id:4,title:"古代の砦",icon:"🏰",text:"二つの道が合流する古い砦。",level:6,reward:280,gold:200,gimmick:"防御+25%",next:[5]},
-  {id:5,title:"森王の城",icon:"👑",text:"第一章の主・森の守護獣が待つ。",level:10,reward:520,gold:380,gimmick:"BOSS：全能力強化",next:[],boss:true}
+  {id:1,title:"草原の門",icon:"🌿",text:"バーコードの森へ続く最初の門。",level:0,reward:130,gold:90,gimmick:"通常エリア",next:[2,3],missions:["勝利する","HP50%以上で勝利","特殊攻撃を1回以上使う"]},
+  {id:2,title:"毒霧の城",icon:"☠️",text:"紫の霧に覆われた城。毒を操る敵が待つ。",level:3,reward:190,gold:140,gimmick:"毒特化",next:[4],treasure:true,missions:["勝利する","毒状態にならず勝利","15ターン以内に勝利"]},
+  {id:3,title:"雷鳴の塔",icon:"⚡",text:"雷が落ち続ける塔。俊足の敵が多い。",level:4,reward:200,gold:145,gimmick:"素早さ+30%",next:[4],treasure:true,missions:["勝利する","先手を取る","HP60%以上で勝利"]},
+  {id:4,title:"古代の砦",icon:"🏰",text:"二つの道が合流する古い砦。",level:8,reward:320,gold:230,gimmick:"防御+40%",next:[5],missions:["勝利する","会心を1回以上出す","20ターン以内に勝利"]},
+  {id:5,title:"森王の城",icon:"👑",text:"第一章の主・森の守護獣が待つ。",level:13,reward:600,gold:450,gimmick:"BOSS：全能力大幅強化",next:[],boss:true,missions:["勝利する","HP30%以上で勝利","状態異常を1回以上付与"]}
 ];
+function difficultyConfig(){
+  return {
+    normal:{name:"NORMAL",stat:1.00,level:0,reward:1.00},
+    hard:{name:"HARD",stat:1.32,level:7,reward:1.65},
+    nightmare:{name:"NIGHTMARE",stat:1.72,level:15,reward:2.60}
+  }[state.storyDifficulty]||{name:"NORMAL",stat:1,level:0,reward:1};
+}
+function storyKey(stageId){return `${state.storyDifficulty}:${stageId}`;}
+function stageStars(stageId){return state.storyStars[storyKey(stageId)]||0;}
+function stageRuns(stageId){return state.storyRuns[storyKey(stageId)]||0;}
+function renderStoryMissions(stage){
+  const stars=stageStars(stage.id);
+  $('#storyMissionBox').innerHTML=`<div class="mission-title">⭐ ステージミッション</div>${stage.missions.map((m,i)=>`<div class="mission-row ${stars>i?'done':''}">${stars>i?'✓':'○'} ${m}</div>`).join('')}<div class="mission-row">攻略回数：${stageRuns(stage.id)}回</div>`;
+}
+function updateChapterReward(){
+  const allNormal=storyStages.every(s=>(state.storyStars[`normal:${s.id}`]||0)>=1);
+  const allHard=storyStages.every(s=>(state.storyStars[`hard:${s.id}`]||0)>=1);
+  const allNight=storyStages.every(s=>(state.storyStars[`nightmare:${s.id}`]||0)>=1);
+  let text="第一章踏破報酬：";
+  if(!allNormal)text+="NORMAL全ステージクリアで 1,000G + 育成EXP1,500";
+  else if(!allHard)text+="NORMAL踏破済み。次はHARD全クリアで 2,500G + 育成EXP3,500";
+  else if(!allNight)text+="HARD踏破済み。次はNIGHTMARE全クリアで 5,000G + 育成EXP7,000";
+  else text+="👑 第一章 完全制覇！";
+  $('#chapterReward').textContent=text;
+}
 function renderStory(){
   bindRoster('#storyRoster','storyMonsterId',renderStory);
+  $$('.difficulty-btn').forEach(b=>b.classList.toggle('active',b.dataset.diff===state.storyDifficulty));
   const unlocked=new Set([1]);
-  state.storyCleared.forEach(id=>{const s=storyStages.find(x=>x.id===id);(s?.next||[]).forEach(n=>unlocked.add(n));});
+  state.storyCleared.forEach(id=>{
+    if(typeof id==="string"&&id.includes(":")){
+      const [diff,sid]=id.split(":");if(diff!==state.storyDifficulty)return;
+      const st=storyStages.find(x=>x.id===Number(sid));(st?.next||[]).forEach(n=>unlocked.add(n));
+    }else if(state.storyDifficulty==="normal"){
+      const st=storyStages.find(x=>x.id===id);(st?.next||[]).forEach(n=>unlocked.add(n));
+    }
+  });
   const map=$('#storyMap');
   map.innerHTML=storyStages.map(s=>{
-    const open=unlocked.has(s.id)||state.storyCleared.includes(s.id),cleared=state.storyCleared.includes(s.id);
-    return `<button class="story-node ${open?'':'locked'} ${cleared?'cleared':''} ${s.boss?'boss':''}" data-stage="${s.id}" ${open?'':'disabled'}><div class="node-icon">${s.icon}</div><div><div class="story-title">${s.title}</div><div class="story-sub">${s.gimmick}</div>${s.treasure?'<span class="treasure-badge">🎁 宝箱城</span>':''}</div><span class="story-status">${cleared?'CLEAR':open?'挑戦':'LOCK'}</span></button>`;
+    const clearKey=`${state.storyDifficulty}:${s.id}`;
+    const cleared=state.storyCleared.includes(clearKey)||(state.storyDifficulty==="normal"&&state.storyCleared.includes(s.id));
+    const open=unlocked.has(s.id)||cleared;
+    const stars=stageStars(s.id);
+    return `<button class="story-node ${open?'':'locked'} ${cleared?'cleared':''} ${s.boss?'boss':''}" data-stage="${s.id}" ${open?'':'disabled'}>
+      <div class="node-icon">${s.icon}</div>
+      <div><div class="story-title">${s.title}</div><div class="story-sub">${s.gimmick}</div>
+      <div class="stage-stars">${"★".repeat(stars)}${"☆".repeat(3-stars)}</div>
+      ${s.treasure?'<span class="treasure-badge">🎁 宝箱城</span>':''}</div>
+      <span class="story-status">${cleared?'CLEAR':open?'挑戦':'LOCK'}</span></button>`;
   }).join('');
   map.querySelectorAll('[data-stage]:not([disabled])').forEach(b=>b.addEventListener('click',()=>selectStoryStage(Number(b.dataset.stage))));
+  updateChapterReward();
 }
 function selectStoryStage(id){
   const s=storyStages.find(x=>x.id===id);if(!s)return;selectedStoryStage=id;
   const src=storyMonster();if(!src){alert('出撃モンスターを選んでください。');return;}
-  let enemy=makeEnemyForMonster(src,s.level);
-  if(id===2&&!hasAbility(enemy,'poison'))enemy.skills.push({kind:'poison',name:'どくどくボディ',tag:'毒',value:4,chance:42,turns:4,desc:'特殊攻撃時42%で毒'});
-  if(id===3)enemy.base.spd=Math.round(enemy.base.spd*1.20);
-  if(id===4)enemy.base.def=Math.round(enemy.base.def*1.25);
-  if(id===5){enemy.base.hp=Math.round(enemy.base.hp*1.40);enemy.base.atk=Math.round(enemy.base.atk*1.28);enemy.base.def=Math.round(enemy.base.def*1.28);}
-  storyRun={stage:s,player:unitFromMonster(src),enemy:unitFromMonster(enemy),over:false,autoRunning:false,timer:null};
+  const dc=difficultyConfig();
+  let enemy=makeEnemyForMonster(src,s.level+dc.level);
+  enemy.base.hp=Math.round(enemy.base.hp*dc.stat);
+  enemy.base.atk=Math.round(enemy.base.atk*dc.stat);
+  enemy.base.def=Math.round(enemy.base.def*dc.stat);
+  enemy.base.spd=Math.round(enemy.base.spd*(1+(dc.stat-1)*.72));
+
+  const mods=[];
+  if(id===2&&!hasAbility(enemy,'poison')){enemy.skills.push({kind:'poison',name:'どくどくボディ',tag:'毒',value:5,chance:48,turns:4,desc:'特殊攻撃時48%で毒'});mods.push("毒強化");}
+  if(id===3){enemy.base.spd=Math.round(enemy.base.spd*1.30);mods.push("神速");}
+  if(id===4){enemy.base.def=Math.round(enemy.base.def*1.40);mods.push("鉄壁");}
+  if(id===5){enemy.base.hp=Math.round(enemy.base.hp*1.50);enemy.base.atk=Math.round(enemy.base.atk*1.35);enemy.base.def=Math.round(enemy.base.def*1.35);mods.push("BOSS強化");}
+  if(state.storyDifficulty==="hard"){enemy.base.atk=Math.round(enemy.base.atk*1.08);mods.push("HARD補正");}
+  if(state.storyDifficulty==="nightmare"){
+    enemy.base.atk=Math.round(enemy.base.atk*1.18);enemy.base.spd=Math.round(enemy.base.spd*1.10);
+    if(!hasAbility(enemy,"guard"))enemy.skills.push({kind:"guard",name:"悪夢の守り",tag:"防御",value:16,desc:"被ダメージ16%軽減"});
+    mods.push("NIGHTMARE");
+  }
+
+  storyRun={stage:s,player:unitFromMonster(src),enemy:unitFromMonster(enemy),over:false,autoRunning:false,timer:null,turns:0,usedSkill:false,inflictedStatus:false,crit:false,startedFirst:null};
   $('#storyStageCard').hidden=false;
-  $('#storyScene').innerHTML=`<b>${s.title}</b><br>${s.text}<div class="muted" style="margin-top:6px">特性：${s.gimmick} ／ 初回報酬 ${s.gold}G・${s.reward}育成EXP</div>`;
+  $('#storyScene').innerHTML=`<b>${difficultyConfig().name} / ${s.title}</b><br>${s.text}<div class="muted" style="margin-top:6px">特性：${s.gimmick} ／ 初回報酬倍率 ×${dc.reward.toFixed(2)}</div><div class="enemy-mods">${mods.map(x=>`<span class="enemy-mod">${x}</span>`).join('')}</div>`;
+  renderStoryMissions(s);
   $('#storyResult').textContent='';$('#storyLog').textContent='';$('#storyNextActions').hidden=true;$('#storyAiState').textContent='「攻略開始」でAI戦闘開始';updateStoryUI();
   $('#storyStageCard').scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -1235,15 +1424,21 @@ function updateStoryUI(){
   $('#spHpBar').style.width=(100*p.currentHp/p.maxHp)+'%';$('#seHpBar').style.width=(100*e.currentHp/e.maxHp)+'%';
   $('#spStatus').innerHTML=statusHtml(p);$('#seStatus').innerHTML=statusHtml(e);$('#storyBattleBtn').disabled=storyRun.over||storyRun.autoRunning;
 }
-function logStory(t){$('#storyLog').textContent+=t+'\n';$('#storyLog').scrollTop=$('#storyLog').scrollHeight;}
-function startStoryBattle(){if(!storyRun||storyRun.over||storyRun.autoRunning)return;storyRun.autoRunning=true;$('#storyAiState').textContent='AI攻略中…';updateStoryUI();runStoryTurn();}
+function logStory(t){
+  if(storyRun){
+    if(String(t).includes("会心"))storyRun.crit=true;
+    if(/炎上|毒|麻痺|DOWN/.test(String(t))&&!String(t).includes("ダメージ"))storyRun.inflictedStatus=true;
+  }
+  $('#storyLog').textContent+=t+'\n';$('#storyLog').scrollTop=$('#storyLog').scrollHeight;
+}
+function startStoryBattle(){if(!storyRun||storyRun.over||storyRun.autoRunning)return;storyRun.autoRunning=true;$('#storyAiState').textContent='AI攻略中…';updateStoryUI();showBattleBanner('#storyBattleScene','#storyBattleBanner',storyRun.stage.title);setTimeout(runStoryTurn,Math.round(650/battleSpeed));}
 function runStoryTurn(){
   if(!storyRun||storyRun.over||!storyRun.autoRunning)return;
-  const p=storyRun.player,e=storyRun.enemy,pa=chooseAiAction(p,e),ea=chooseAiAction(e,p),pf=p.spd>=e.spd;
+  const p=storyRun.player,e=storyRun.enemy,pa=chooseAiAction(p,e),ea=chooseAiAction(e,p),pf=p.spd>=e.spd;storyRun.turns++;if(storyRun.startedFirst===null)storyRun.startedFirst=pf;if(pa==='skill')storyRun.usedSkill=true;
   const first=pf?()=>doAiAction(p,e,pa,p.name,'#seFighter',logStory):()=>doAiAction(e,p,ea,e.name,'#spFighter',logStory);
   const second=pf?()=>doAiAction(e,p,ea,e.name,'#spFighter',logStory):()=>doAiAction(p,e,pa,p.name,'#seFighter',logStory);
   first();updateStoryUI();if(checkStoryEnd())return;
-  storyRun.timer=setTimeout(()=>{second();updateStoryUI();if(checkStoryEnd())return;storyRun.timer=setTimeout(runStoryTurn,470);},330);
+  storyRun.timer=setTimeout(()=>{second();updateStoryUI();if(checkStoryEnd())return;storyRun.timer=setTimeout(runStoryTurn,Math.round(470/battleSpeed));},Math.round(330/battleSpeed));
 }
 function checkStoryEnd(){
   if(storyRun.enemy.currentHp<=0){finishStory(true);return true;}
@@ -1251,52 +1446,62 @@ function checkStoryEnd(){
   return false;
 }
 function finishStory(win){
-  storyRun.over=true;
-  storyRun.autoRunning=false;
-  if(storyRun.timer)clearTimeout(storyRun.timer);
+  storyRun.over=true;storyRun.autoRunning=false;if(storyRun.timer)clearTimeout(storyRun.timer);
   $('#storyAiState').textContent='攻略終了';
-
+  const s=storyRun.stage,dc=difficultyConfig(),key=storyKey(s.id);
   if(win){
-    const first=!state.storyCleared.includes(storyRun.stage.id);
+    const clearKey=`${state.storyDifficulty}:${s.id}`;
+    const first=!state.storyCleared.includes(clearKey);
     const src=storyMonster();
-    const exp=first?storyRun.stage.reward:Math.round(storyRun.stage.reward*.35);
-    const gold=first?storyRun.stage.gold:Math.round(storyRun.stage.gold*.30);
-
+    const exp=Math.round((first?s.reward:s.reward*.42)*dc.reward);
+    const gold=Math.round((first?s.gold:s.gold*.38)*dc.reward);
     state.gold+=gold;state.expBank+=exp;
-    
-    if(first)state.storyCleared.push(storyRun.stage.id);
+    if(first)state.storyCleared.push(clearKey);
+    state.storyRuns[key]=(state.storyRuns[key]||0)+1;
 
-    $('#storyResult').textContent=`🏆 CLEAR! +${gold}G / +${exp}EXP`;
-    logStory(first?'初回クリア！ 新しい道が開いた。':'再攻略クリア！');
-    save();
-    updateTopBar();
-    renderStory();
+    const hpRate=storyRun.player.currentHp/storyRun.player.maxHp;
+    const conditions=[
+      true,
+      s.id===1?hpRate>=.5:s.id===2?!storyRun.player.statuses.poison:s.id===3?storyRun.startedFirst:s.id===4?storyRun.crit:hpRate>=.3,
+      s.id===1?storyRun.usedSkill:s.id===2?storyRun.turns<=15:s.id===3?hpRate>=.6:s.id===4?storyRun.turns<=20:storyRun.inflictedStatus
+    ];
+    let stars=conditions.filter(Boolean).length;
+    state.storyStars[key]=Math.max(state.storyStars[key]||0,stars);
 
-    const idx=storyStages.findIndex(s=>s.id===storyRun.stage.id);
-    const hasNext=idx>=0 && idx<storyStages.length-1;
-    $('#storyNextActions').hidden=false;
-    $('#storyNextBtn').hidden=!hasNext;
-    $('#storyRetryBtn').textContent=hasNext?'もう一度':'再戦する';
-
-    if(hasNext){
-      $('#storyNextBtn').textContent='次のステージへ';
-      $('#storyNextBtn').dataset.nextStage=storyStages[idx+1].id;
-    }else{
-      $('#storyNextBtn').dataset.nextStage='';
+    let chestBonus="";
+    if(s.treasure&&!state.storyChestClaimed[key]){
+      state.storyChestClaimed[key]=true;
+      const bonusGold=Math.round(300*dc.reward),bonusExp=Math.round(350*dc.reward);
+      state.gold+=bonusGold;state.expBank+=bonusExp;
+      chestBonus=` / 🎁宝箱 +${bonusGold}G +${bonusExp}EXP`;
     }
 
+    // chapter milestone rewards
+    const all=storyStages.every(st=>(state.storyStars[`${state.storyDifficulty}:${st.id}`]||0)>=1);
+    let chapterBonus="";
+    const flag=`chapter_${state.storyDifficulty}`;
+    if(all&&!state[flag]){
+      state[flag]=true;
+      const rewards={normal:[1000,1500],hard:[2500,3500],nightmare:[5000,7000]}[state.storyDifficulty];
+      state.gold+=rewards[0];state.expBank+=rewards[1];
+      chapterBonus=` / 👑章踏破 +${rewards[0]}G +${rewards[1]}EXP`;
+    }
+
+    $('#storyResult').textContent=`🏆 CLEAR! ★${stars} +${gold}G / +${exp}育成EXP${chestBonus}${chapterBonus}`;
+    logStory(first?'初回クリア！ 新しい道が開いた。':'再攻略クリア！');
+    save();updateTopBar();renderStory();renderStoryMissions(s);
+
+    const idx=storyStages.findIndex(x=>x.id===s.id),hasNext=idx>=0&&idx<storyStages.length-1;
+    $('#storyNextActions').hidden=false;$('#storyNextBtn').hidden=!hasNext;$('#storyRetryBtn').textContent=hasNext?'もう一度':'再戦する';
+    if(hasNext){$('#storyNextBtn').textContent='次のステージへ';$('#storyNextBtn').dataset.nextStage=storyStages[idx+1].id;}
     $('#storyNextActions').scrollIntoView({behavior:'smooth',block:'center'});
   }else{
-    $('#storyResult').textContent='💀 攻略失敗';
-    logStory('育成や別のモンスターで再挑戦しよう。');
-    $('#storyNextActions').hidden=false;
-    $('#storyNextBtn').hidden=true;
-    $('#storyRetryBtn').textContent='もう一度挑戦';
+    state.storyRuns[key]=(state.storyRuns[key]||0)+1;save();
+    $('#storyResult').textContent='💀 攻略失敗';logStory('育成・装備・別個体で再挑戦しよう。');
+    $('#storyNextActions').hidden=false;$('#storyNextBtn').hidden=true;$('#storyRetryBtn').textContent='もう一度挑戦';
     $('#storyNextActions').scrollIntoView({behavior:'smooth',block:'center'});
   }
-
-  updateStoryUI();
-  if(navigator.vibrate)navigator.vibrate(win?[40,40,80]:[120]);
+  updateStoryUI();if(navigator.vibrate)navigator.vibrate(win?[40,40,80]:[120]);
 }
 
 function doGacha(count){
@@ -1319,7 +1524,7 @@ function allocateExp(monsterId,amount){
 async function startScanner(){ if(scanning) return; if(typeof Html5Qrcode==='undefined'){ alert('カメラ読み取り機能の読み込みに失敗しました。'); return; } try{ scanner=new Html5Qrcode('reader'); scanning=true; $('#cameraBtn').disabled=true; $('#stopCameraBtn').disabled=false; $('#scanFrame').style.display='block'; await scanner.start({facingMode:'environment'}, {fps:10, qrbox:{width:280,height:130}, aspectRatio:1.7}, decoded=>{ stopScanner(); summonFromCode(decoded); }, ()=>{}); } catch(e){ scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; alert('カメラを開始できませんでした。Safariのカメラ権限を確認してください。'); } }
 async function stopScanner(){ if(!scanner||!scanning) return; try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner=null; scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; $('#reader').innerHTML=''; }
 
-$$('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+$$('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));$$('.difficulty-btn').forEach(b=>b.addEventListener('click',()=>{state.storyDifficulty=b.dataset.diff;save();renderStory();}));$$('.speed-btn').forEach(b=>b.addEventListener('click',()=>{battleSpeed=Number(b.dataset.speed)||1;$$('.speed-btn').forEach(x=>x.classList.toggle('active',x===b));}));
 $('#summonBtn').addEventListener('click',summon);$('#gachaOneBtn').addEventListener('click',()=>doGacha(1));$('#gachaTenBtn').addEventListener('click',()=>doGacha(10));$('#rerollBtn').addEventListener('click',rerollSameCode);$('#saveBtn').addEventListener('click',addToBox);
 $('#barcodeInput').addEventListener('keydown',e=>{if(e.key==='Enter')summon();});$('#nicknameInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&selectedId)renameMonster(selectedId,$('#nicknameInput').value);});
 $('#cameraBtn').addEventListener('click',startScanner);$('#stopCameraBtn').addEventListener('click',stopScanner);
