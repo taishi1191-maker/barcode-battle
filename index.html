@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v0.9</title>
+  <title>Barcode Battle v1.0</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -22,17 +22,28 @@
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{margin:0;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans JP",sans-serif;background:radial-gradient(circle at top,#112447 0,#07111f 42%,#050a12 100%);color:var(--text)}
-    button,input{font:inherit} button{cursor:pointer}
-    .app{max-width:980px;margin:auto;padding:16px 16px 90px}
+    button,input{font:inherit} button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:46px} input{font-size:16px}
+    .app{max-width:980px;margin:auto;padding:calc(10px + env(safe-area-inset-top)) 14px calc(96px + env(safe-area-inset-bottom))}
     .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 14px}
     .brand-wrap{display:flex;align-items:center;gap:12px}
     .top-icon{width:54px;height:54px;border-radius:18px;border:1px solid #355278;overflow:hidden;flex:none;box-shadow:0 10px 25px rgba(0,0,0,.25)}
     .top-icon img{width:100%;height:100%;display:block}
     .brand{font-weight:950;font-size:24px;letter-spacing:.4px}
     .ver{color:var(--muted);font-size:12px}
-    .tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:30;background:rgba(7,17,31,.94);backdrop-filter:blur(12px);padding:8px 0 10px}.tabs::-webkit-scrollbar{display:none}
-    .tab{flex:0 0 auto;min-width:92px;border:1px solid var(--line);background:#0d1a2b;color:var(--muted);padding:10px 12px;border-radius:14px;font-weight:850;white-space:nowrap}
-    .tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#042027;border-color:transparent}
+    .tabs{
+      position:fixed;left:0;right:0;bottom:0;z-index:60;
+      display:grid;grid-template-columns:repeat(6,1fr);gap:3px;
+      padding:7px 6px calc(7px + env(safe-area-inset-bottom));
+      background:rgba(5,12,22,.96);backdrop-filter:blur(16px);
+      border-top:1px solid #274766;
+    }
+    .tab{
+      min-width:0;min-height:54px;border:0;background:transparent;color:var(--muted);
+      padding:5px 2px;border-radius:12px;font-weight:850;font-size:10px;white-space:nowrap;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    }
+    .tab .nav-icon{font-size:19px;line-height:1}
+    .tab.active{background:#132c45;color:#86f7e6;border:1px solid #2e5f78}
     .screen{display:none}.screen.active{display:block}
     .card{background:linear-gradient(180deg,rgba(18,32,52,.98),rgba(9,21,36,.98));border:1px solid var(--line);border-radius:22px;padding:14px;margin:10px 0}
     .hero{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:center}
@@ -121,6 +132,43 @@
     details.compact-details summary::after{content:'▼';font-size:12px;color:var(--muted)}
     details.compact-details[open] summary::after{content:'▲'}
     details.compact-details .details-body{padding:0 12px 12px}
+    .monster-roster{display:flex;gap:9px;overflow-x:auto;padding:4px 1px 8px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+    .monster-roster::-webkit-scrollbar{display:none}
+    .roster-card{flex:0 0 112px;background:#0a1727;border:1px solid #294966;border-radius:16px;padding:8px;color:#fff;scroll-snap-align:start;text-align:left}
+    .roster-card.selected{outline:3px solid #67e8f9;background:#10253b}
+    .roster-card .miniimg{margin-bottom:5px}
+    .roster-card b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .favorite-btn{border:1px solid #365574;background:#11253a;color:#fff;border-radius:12px;padding:10px 12px;font-weight:900}
+    .favorite-btn.on{background:linear-gradient(135deg,#fde68a,#fbbf24);color:#4a3400;border-color:transparent}
+    .selection-box{background:#0b1a2b;border:1px solid #2b4e6d;border-radius:16px;padding:11px;margin-top:9px}
+    .story-map{display:grid;gap:10px}
+    .story-node{display:grid;grid-template-columns:50px 1fr auto;gap:10px;align-items:center;background:#0b192a;border:1px solid #284967;border-radius:17px;padding:11px;text-align:left;color:#fff}
+    .story-node.locked{opacity:.42}
+    .story-node.cleared{border-color:#4fbf91}
+    .node-icon{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:#17304c;font-size:23px}
+    .story-title{font-weight:950}.story-sub{font-size:11px;color:#9db4cb;margin-top:3px}
+    .story-status{font-size:11px;font-weight:900;padding:5px 8px;border-radius:999px;background:#18324d}
+    .story-scene{background:linear-gradient(180deg,#132740,#091626);border:1px solid #315371;border-radius:18px;padding:15px;line-height:1.7;margin-bottom:10px}
+    .form-mark{position:absolute;right:6px;top:6px;width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:rgba(4,12,22,.75);border:1px solid rgba(255,255,255,.2);font-size:15px;z-index:3}
+    .form-royal img{transform:scale(1.00) rotate(-2deg)}
+    .form-shadow img{transform:scale(.97) scaleX(-1);filter:brightness(.82) saturate(1.25) !important}
+    .form-crystal img{transform:scale(1.01);filter:contrast(1.08) saturate(1.28) !important}
+    .form-primal img{transform:scale(1.04) rotate(2deg);filter:contrast(1.07) saturate(.92) !important}
+    .safe-settings{margin-top:12px}
+    .top{margin-top:0}
+    body{overscroll-behavior-y:none;-webkit-touch-callout:none}
+    .btn,.auto-battle-btn,.favorite-btn{user-select:none;-webkit-user-select:none}
+    @media(max-width:430px){
+      .top-icon{width:46px;height:46px;border-radius:14px}
+      .brand{font-size:18px}
+      .moneybar{gap:6px}
+      .pill{font-size:12px;padding:7px 9px}
+      .hero{grid-template-columns:92px 1fr}
+      .card{padding:12px}
+      .stats{gap:6px}
+      .stat{padding:9px}
+      .stat b{font-size:20px}
+    }
     .log{margin-top:10px;background:#030b14;border:1px solid #20364e;border-radius:14px;padding:10px;min-height:100px;max-height:145px;overflow:auto;white-space:pre-wrap;font-size:12px;line-height:1.45}
     .result{font-size:22px;font-weight:950;text-align:center;padding:8px}.xpbox{margin-top:10px}.level{font-weight:950;color:#c4e8ff}
     .empty{text-align:center;color:var(--muted);padding:25px 10px}
@@ -153,9 +201,9 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v0.9 / Synergy & Status</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.0 / Adventure Update</div></div>
     </div>
-    <button id="resetBtn" class="btn danger" type="button">初期化</button>
+    
   </div>
 
   <div class="moneybar">
@@ -164,11 +212,12 @@
   </div>
 
   <nav class="tabs">
-    <button class="tab active" data-tab="scan">召喚</button>
-    <button class="tab" data-tab="box">BOX</button>
-    <button class="tab" data-tab="dex">図鑑</button>
-    <button class="tab" data-tab="battle">バトル</button>
-    <button class="tab" data-tab="dungeon">∞ダンジョン</button>
+    <button class="tab active" data-tab="scan"><span class="nav-icon">📷</span><span>召喚</span></button>
+    <button class="tab" data-tab="box"><span class="nav-icon">📦</span><span>BOX</span></button>
+    <button class="tab" data-tab="dex"><span class="nav-icon">📖</span><span>図鑑</span></button>
+    <button class="tab" data-tab="story"><span class="nav-icon">🗺️</span><span>冒険</span></button>
+    <button class="tab" data-tab="battle"><span class="nav-icon">⚔️</span><span>バトル</span></button>
+    <button class="tab" data-tab="dungeon"><span class="nav-icon">∞</span><span>無限</span></button>
   </nav>
 
   <section id="scan" class="screen active">
@@ -215,16 +264,42 @@
     <div id="selectedCard" class="card" hidden>
       <div class="hero"><div id="boxPortrait" class="portrait"></div><div><div id="boxName" class="name"></div><div id="boxMeta" class="badges"></div><div id="boxLevel" class="level"></div><div class="xpbox"><div id="boxXpText" class="muted"></div><div class="progress"><div id="boxXpBar"></div></div></div></div></div>
       <div id="boxStats" class="stats" style="margin-top:12px"></div><div id="boxSkill" class="skillbox"></div>
-      <div class="row" style="margin-top:12px"><button id="setActiveBtn" class="btn">お気に入り/使用モンスターにする</button><button id="deleteMonsterBtn" class="btn danger">削除</button></div>
+      <div class="row" style="margin-top:12px"><button id="favoriteBtn" class="favorite-btn">☆ お気に入り</button><button id="deleteMonsterBtn" class="btn danger">削除</button></div><details class="compact-details safe-settings"><summary>⚙️ 設定</summary><div class="details-body"><button id="resetBtn" class="btn danger" type="button">保存データを初期化</button></div></details>
     </div>
   </section>
 
   <section id="dex" class="screen"><div class="card"><div class="section-title">キャラ図鑑</div><div id="dexProgress" class="muted"></div><div id="dexGrid" class="grid" style="margin-top:12px"></div></div></section>
 
-  <section id="battle" class="screen">
+  
+  <section id="story" class="screen">
     <div class="card">
-      <div class="section-title">COMバトル</div>
-      <div id="battleEmpty" class="notice">BOXから使用モンスターを選んでください。</div>
+      <div class="section-title">冒険モード</div>
+      <div class="notice">ダンジョンを攻略して道を開き、物語を進めよう。</div>
+      <div class="muted" style="margin-top:10px">出撃モンスター</div>
+      <div id="storyRoster" class="monster-roster"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">第一章：バーコードの森</div>
+      <div id="storyMap" class="story-map"></div>
+    </div>
+
+    <div id="storyStageCard" class="card" hidden>
+      <div id="storyScene" class="story-scene"></div>
+      <div class="battlefield">
+        <div class="fighter" id="spFighter"><div id="spPortrait" class="portrait"></div><div id="spName" class="mini-name"></div><div id="spLevel" class="tiny"></div><div class="tiny">HP <span id="spHpText"></span></div><div class="hpbar"><div id="spHpBar"></div></div><div id="spStatus" class="status-row"></div></div>
+        <div class="fighter" id="seFighter"><div id="sePortrait" class="portrait"></div><div id="seName" class="mini-name"></div><div id="seLevel" class="tiny"></div><div class="tiny">HP <span id="seHpText"></span></div><div class="hpbar"><div id="seHpBar"></div></div><div id="seStatus" class="status-row"></div></div>
+      </div>
+      <button id="storyBattleBtn" class="auto-battle-btn">⚔ 攻略開始</button>
+      <div id="storyAiState" class="ai-state">AIが自動で最後まで戦います。</div>
+      <div id="storyResult" class="result"></div>
+      <details class="compact-details"><summary>冒険ログ</summary><div class="details-body"><div id="storyLog" class="log"></div></div></details>
+    </div>
+  </section>
+<section id="battle" class="screen">
+    <div class="card">
+      <div class="section-title">COMバトル</div><div class="muted">出撃するモンスターを選択</div><div id="battleRoster" class="monster-roster"></div>
+      <div id="battleEmpty" class="notice">BOXから出撃モンスターを選んでください。</div>
       <div id="battleArea" hidden>
         <div class="battlefield">
           <div class="fighter" id="pFighter"><div id="pPortrait" class="portrait"></div><div id="pName" class="mini-name"></div><div id="pLevel" class="tiny"></div><div class="tiny">HP <span id="pHpText"></span></div><div class="hpbar"><div id="pHpBar"></div></div><div id="pStatus" class="status-row"></div></div>
@@ -241,8 +316,8 @@
 
   <section id="dungeon" class="screen">
     <div class="card">
-      <div class="section-title">∞ダンジョン</div>
-      <div class="notice">お気に入りモンスターでどこまで進めるか挑戦。戦闘はAIにおまかせ！</div>
+      <div class="section-title">∞ダンジョン</div><div class="muted">挑戦するモンスターを選択</div><div id="dungeonRoster" class="monster-roster"></div>
+      <div class="notice">選んだモンスターでどこまで進めるか挑戦。戦闘はAIにおまかせ！</div>
       <div id="dungeonActiveWrap" style="margin-top:10px"></div>
       <div class="run-controls">
         <button id="startDungeonBtn" class="btn">ダンジョン開始</button>
@@ -272,10 +347,16 @@
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const STORAGE_KEY="barcodeBattle_v09";
-const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v08") || localStorage.getItem("barcodeBattle_v07") || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
+const STORAGE_KEY="barcodeBattle_v10";
+const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v09") || localStorage.getItem("barcodeBattle_v08") || localStorage.getItem("barcodeBattle_v07") || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
 const state = legacy ? JSON.parse(legacy) : {monsters:[], dex:{}, activeMonsterId:null, gold:0, bestFloor:0};
-state.monsters ||= []; state.dex ||= {}; state.gold ||= 0; state.bestFloor ||= 0; state.activeMonsterId ||= null;
+state.monsters ||= []; state.dex ||= {}; state.gold ||= 0; state.bestFloor ||= 0;
+state.favoriteMonsterIds ||= [];
+state.battleMonsterId ||= state.activeMonsterId || null;
+state.dungeonMonsterId ||= state.activeMonsterId || null;
+state.storyMonsterId ||= state.activeMonsterId || null;
+state.storyCleared ||= [];
+if(state.activeMonsterId && !state.favoriteMonsterIds.includes(state.activeMonsterId)) state.favoriteMonsterIds.push(state.activeMonsterId);
 state.monsters.forEach(m=>{
   m.bonus ||= {hp:0,atk:0,def:0,spd:0};
   if(m.favorite===undefined)m.favorite=false;
@@ -283,13 +364,17 @@ state.monsters.forEach(m=>{
     m.skills=m.skill?[{...m.skill,value:20,chance:25,turns:2,tag:"LEGACY"}]:[];
   }
   if(!m.archetype)m.archetype={id:"legacy",name:"旧世代型"};
+  if(!m.form){
+    const forms=[{id:"normal",name:"ノーマル"},{id:"royal",name:"ロイヤル"},{id:"crystal",name:"クリスタル"},{id:"shadow",name:"シャドウ"},{id:"primal",name:"プライマル"}];
+    m.form=forms[(m.seed||hashString(m.name))%forms.length];
+  }
   // v0.8以前の小さい数値を新スケールへ移行
   if(m.base && !m.v09Scaled){
     if(m.base.hp<400){m.base.hp=Math.round(m.base.hp*5.2);m.base.atk=Math.round(m.base.atk*4.2);m.base.def=Math.round(m.base.def*4.2);m.base.spd=Math.round(m.base.spd*3.6);}
     m.v09Scaled=true;
   }
 });
-let currentSummon=null, selectedId=null, scanner=null, scanning=false, battle=null, dungeonRun=null;
+let currentSummon=null, selectedId=null, scanner=null, scanning=false, battle=null, dungeonRun=null, storyRun=null, selectedStoryStage=0;
 
 const elements=["炎","水","雷","風","土","光","闇"];
 const types=["スライム","ドラゴン","ビースト","バード","ゴースト","マシン","ナイト"];
@@ -345,7 +430,17 @@ function rng(seed){ return function(){ let t=seed+=0x6D2B79F5; t=Math.imul(t^t>>
 function uid(){ return "m_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8); }
 function xpNeed(l){ return 80+l*45; }
 function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
-function activeMonster(){ return state.monsters.find(m=>m.id===state.activeMonsterId) || null; }
+function monsterById(id){return state.monsters.find(m=>m.id===id)||null;}
+function battleMonster(){return monsterById(state.battleMonsterId);}
+function dungeonMonster(){return monsterById(state.dungeonMonsterId);}
+function storyMonster(){return monsterById(state.storyMonsterId);}
+function isFavorite(id){return state.favoriteMonsterIds.includes(id);}
+function toggleFavorite(id){
+  if(isFavorite(id))state.favoriteMonsterIds=state.favoriteMonsterIds.filter(x=>x!==id);
+  else state.favoriteMonsterIds.push(id);
+  save();renderBox();
+}
+function activeMonster(){return battleMonster();}
 function formatStars(n){ return "★".repeat(n)+"☆".repeat(5-n); }
 function updateTopBar(){ $("#goldText").textContent = state.gold; $("#bestFloorText").textContent = state.bestFloor; }
 
@@ -395,6 +490,14 @@ function makeMonster(code){
   // 能力数：レア度で増え、★5は最大4個。
   let abilityCount=stars===1?1:stars===2?(r()<.55?1:2):stars===3?2:stars===4?(r()<.45?2:3):(r()<.42?3:4);
   const skills=uniqueAbilities(r,abilityCount);
+  const formPool=[
+    {id:"normal",name:"ノーマル"},
+    {id:"royal",name:"ロイヤル"},
+    {id:"crystal",name:"クリスタル"},
+    {id:"shadow",name:"シャドウ"},
+    {id:"primal",name:"プライマル"}
+  ];
+  const form=formPool[Math.floor(fixed()*formPool.length)];
 
   // 型と能力の最低限シナジー補正
   if(archetype.id==="fortress"||archetype.id==="wall"){
@@ -417,7 +520,7 @@ function makeMonster(code){
   const total=hp+atk*2+def*2+spd*1.6;
   const rank=total>3600?"SS":total>2800?"S":total>2200?"A":total>1700?"B":"C";
   return {
-    id:uid(),barcode:clean,...sp,stars,rank,archetype:{id:archetype.id,name:archetype.name},
+    id:uid(),barcode:clean,...sp,stars,rank,archetype:{id:archetype.id,name:archetype.name},form,
     base:{hp,atk,def,spd},bonus:{hp:0,atk:0,def:0,spd:0},level:1,xp:0,skills,
     createdAt:Date.now(),favorite:false,v09Scaled:true
   };
@@ -439,38 +542,35 @@ function abilityListHtml(m){
 function hasAbility(m,kind){return (m.skills||[]).find(a=>a.kind===kind)||null;}
 function portraitSVG(m){
   const artByType={
-    "スライム":"assets/monsters/slime.png",
-    "ドラゴン":"assets/monsters/dragon.png",
-    "ビースト":"assets/monsters/beast.png",
-    "バード":"assets/monsters/bird.png",
-    "ゴースト":"assets/monsters/ghost.png",
-    "マシン":"assets/monsters/machine.png",
-    "ナイト":"assets/monsters/knight.png"
+    "スライム":"assets/monsters/slime.png","ドラゴン":"assets/monsters/dragon.png","ビースト":"assets/monsters/beast.png",
+    "バード":"assets/monsters/bird.png","ゴースト":"assets/monsters/ghost.png","マシン":"assets/monsters/machine.png","ナイト":"assets/monsters/knight.png"
   };
-
-  // Same species art, but element changes the overall color impression.
   const elementFx={
-    "水":{h:0,s:1.08,b:1.00},
-    "風":{h:24,s:1.12,b:1.02},
-    "雷":{h:58,s:1.18,b:1.06},
-    "炎":{h:150,s:1.18,b:1.02},
-    "土":{h:198,s:.90,b:.94},
-    "光":{h:-16,s:.88,b:1.11},
-    "闇":{h:244,s:1.28,b:.92}
+    "水":{h:0,s:1.08,b:1.00},"風":{h:24,s:1.12,b:1.02},"雷":{h:58,s:1.18,b:1.06},"炎":{h:150,s:1.18,b:1.02},
+    "土":{h:198,s:.90,b:.94},"光":{h:-16,s:.88,b:1.11},"闇":{h:244,s:1.28,b:.92}
   };
-  const fx=elementFx[m.element]||elementFx["水"];
-  const src=artByType[m.type]||artByType["ビースト"];
-  const rare=m.stars||1;
-
-  return `<div class="monster-glow"></div>
-    <img class="monster-art rarity-${rare}"
-      src="${src}"
-      alt="${m.name}"
-      style="filter:hue-rotate(${fx.h}deg) saturate(${fx.s}) brightness(${fx.b}) drop-shadow(0 12px 18px rgba(0,0,0,.40))">`;
+  const fx=elementFx[m.element]||elementFx["水"],src=artByType[m.type]||artByType["ビースト"],rare=m.stars||1;
+  const form=m.form?.id||"normal";
+  const marks={normal:"✦",royal:"♛",crystal:"◆",shadow:"☾",primal:"▲"};
+  return `<div class="monster-glow"></div><div class="form-mark">${marks[form]||"✦"}</div>
+    <div class="form-${form}" style="width:100%;height:100%;display:grid;place-items:center">
+    <img class="monster-art rarity-${rare}" src="${src}" alt="${m.name}"
+      style="filter:hue-rotate(${fx.h}deg) saturate(${fx.s}) brightness(${fx.b}) drop-shadow(0 12px 18px rgba(0,0,0,.40))"></div>`;
 }
-function switchTab(id){ $$('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id)); $$('.screen').forEach(s=>s.classList.toggle('active', s.id===id)); if(id==='box') renderBox(); if(id==='dex') renderDex(); if(id==='battle') renderBattleSelection(); if(id==='dungeon') renderDungeon(); }
+function rosterHtml(selectedId){
+  if(!state.monsters.length)return'<div class="empty">BOXにモンスターがいません。</div>';
+  return state.monsters.map(m=>`<button class="roster-card ${m.id===selectedId?'selected':''}" data-monster="${m.id}"><div class="miniimg">${portraitSVG(m)}</div><b>${m.name}</b><div class="tiny">Lv.${m.level} ${m.element} ${isFavorite(m.id)?'★':''}</div></button>`).join('');
+}
+function bindRoster(containerId,key,onPick){
+  const box=$(containerId);if(!box)return;
+  box.innerHTML=rosterHtml(state[key]);
+  box.querySelectorAll('[data-monster]').forEach(btn=>btn.addEventListener('click',()=>{
+    state[key]=btn.dataset.monster;save();if(navigator.vibrate)navigator.vibrate(15);onPick();
+  }));
+}
+function switchTab(id){ $$('.tab').forEach(b=>b.classList.toggle('active', b.dataset.tab===id)); $$('.screen').forEach(s=>s.classList.toggle('active', s.id===id)); if(id==='box')renderBox();if(id==='dex')renderDex();if(id==='story')renderStory();if(id==='battle')renderBattleSelection();if(id==='dungeon')renderDungeon(); }
 
-function showSummon(m){ currentSummon=m; $('#summonAnim').hidden=false; $('#summonResult').hidden=true; setTimeout(()=>{ $('#summonAnim').hidden=true; renderSummon(m); $('#summonResult').hidden=false; },700); }
+function showSummon(m){ currentSummon=m; $('#summonAnim').hidden=false; $('#summonResult').hidden=true; setTimeout(()=>{$('#summonAnim').hidden=true;renderSummon(m);$('#summonResult').hidden=false;if(navigator.vibrate)navigator.vibrate([20,25,45]);},700); }
 function summonFromCode(code){ try{ $('#barcodeInput').value=code; const m=makeMonster(code); registerDex(m); showSummon(m); renderDex(); $('#saveBtn').disabled=false; $('#saveBtn').textContent='BOXに保存'; } catch(e){ alert(e.message); } }
 function summon(){ summonFromCode($('#barcodeInput').value.trim()); }
 function renderSummon(m){
@@ -478,25 +578,40 @@ function renderSummon(m){
   $('#summonName').textContent=m.name;$('#summonStars').textContent=formatStars(m.stars);$('#summonElement').textContent=m.element;$('#summonType').textContent=m.type;
   $('#summonRank').textContent='個体 '+m.rank;$('#summonLevel').textContent=m.level;$('#summonXpText').textContent=`${m.xp}/${xpNeed(m.level)}`;$('#summonXpBar').style.width=xpPercent(m)+'%';
   const s=displayStats(m);$('#summonHp').textContent=s.hp;$('#summonAtk').textContent=s.atk;$('#summonDef').textContent=s.def;$('#summonSpd').textContent=s.spd;
-  $('#summonSkill').innerHTML=`<div class="badges"><span class="badge archetype-badge">型：${m.archetype?.name||"不明"}</span><span class="badge">特殊能力 ${m.skills?.length||0}個</span></div>${abilityListHtml(m)}`;
+  $('#summonSkill').innerHTML=`<div class="badges"><span class="badge archetype-badge">型：${m.archetype?.name||"不明"}</span><span class="badge">${m.form?.name||"ノーマル"}</span><span class="badge">特殊能力 ${m.skills?.length||0}個</span></div>${abilityListHtml(m)}`;
 }
-function addToBox(){ if(!currentSummon)return; if(state.monsters.length>=60){ alert('BOX上限は60体です。'); return; } state.monsters.push(currentSummon); if(!state.activeMonsterId){ state.activeMonsterId=currentSummon.id; currentSummon.favorite=true; } save(); renderBox(); renderDungeon(); alert('BOXに保存しました！'); $('#saveBtn').disabled=true; $('#saveBtn').textContent='保存済み'; updateTopBar(); }
+function addToBox(){ if(!currentSummon)return; if(state.monsters.length>=60){ alert('BOX上限は60体です。'); return; } state.monsters.push(currentSummon); if(!state.battleMonsterId)state.battleMonsterId=currentSummon.id;if(!state.dungeonMonsterId)state.dungeonMonsterId=currentSummon.id;if(!state.storyMonsterId)state.storyMonsterId=currentSummon.id; save(); renderBox(); renderDungeon(); alert('BOXに保存しました！'); $('#saveBtn').disabled=true; $('#saveBtn').textContent='保存済み'; updateTopBar(); }
 
 function renderBox(){ $('#boxInfo').textContent=`${state.monsters.length}/60体`; const g=$('#boxGrid'); g.innerHTML=''; if(!state.monsters.length){ g.innerHTML='<div class="empty" style="grid-column:1/-1">まだキャラクターがいません。</div>'; $('#selectedCard').hidden=true; return; }
-  state.monsters.forEach(m=>{ const d=document.createElement('button'); d.type='button'; d.className='monster-mini'+(m.id===selectedId?' selected':''); d.innerHTML=`${m.id===state.activeMonsterId?'<span class="active-ribbon">お気に入り</span>':''}<div class="miniimg">${portraitSVG(m)}</div><div class="mini-name">${m.name}</div><div class="tiny">Lv.${m.level} / ${m.element} / ${m.archetype?.name||'旧世代型'}</div>`; d.addEventListener('click',()=>{ selectedId=m.id; renderBox(); renderSelected(m); }); g.appendChild(d); });
+  state.monsters.forEach(m=>{ const d=document.createElement('button'); d.type='button'; d.className='monster-mini'+(m.id===selectedId?' selected':''); d.innerHTML=`${isFavorite(m.id)?'<span class="active-ribbon">★</span>':''}<div class="miniimg">${portraitSVG(m)}</div><div class="mini-name">${m.name}</div><div class="tiny">Lv.${m.level} / ${m.element} / ${m.archetype?.name||'旧世代型'}</div>`; d.addEventListener('click',()=>{ selectedId=m.id; renderBox(); renderSelected(m); }); g.appendChild(d); });
   const selected = state.monsters.find(m=>m.id===selectedId) || state.monsters[0]; if(selected){ selectedId = selected.id; renderSelected(selected); }
 }
 function renderSelected(m){
   $('#selectedCard').hidden=false;$('#boxPortrait').innerHTML=portraitSVG(m);$('#boxName').textContent=m.name;
-  $('#boxMeta').innerHTML=`<span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge archetype-badge">${m.archetype?.name||"旧世代型"}</span><span class="badge">個体 ${m.rank}</span>${m.id===state.activeMonsterId?'<span class="badge">お気に入り</span>':''}`;
+  $('#boxMeta').innerHTML=`<span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge archetype-badge">${m.archetype?.name||"旧世代型"}</span><span class="badge">${m.form?.name||"ノーマル"}</span><span class="badge">個体 ${m.rank}</span>${isFavorite(m.id)?'<span class="badge">お気に入り</span>':''}`;
   $('#boxLevel').textContent=`Lv.${m.level}`;$('#boxXpText').textContent=`EXP ${m.xp}/${xpNeed(m.level)}`;$('#boxXpBar').style.width=xpPercent(m)+'%';
   const s=displayStats(m);$('#boxStats').innerHTML=`<div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div>`;
-  $('#boxSkill').innerHTML=`<div class="power-total">特殊能力 ${m.skills?.length||0}個</div>${abilityListHtml(m)}`;
+  $('#boxSkill').innerHTML=`<div class="power-total">特殊能力 ${m.skills?.length||0}個</div>${abilityListHtml(m)}`;refreshFavoriteButton(m);
 }
-function setActiveMonster(id){ state.monsters.forEach(m=>m.favorite=false); const target=state.monsters.find(m=>m.id===id); if(target){ target.favorite=true; state.activeMonsterId=id; save(); renderBox(); renderBattleSelection(); renderDungeon(); } }
-function deleteSelected(){ if(!selectedId) return; if(confirm('このキャラクターを削除しますか？')){ state.monsters = state.monsters.filter(m=>m.id!==selectedId); if(state.activeMonsterId===selectedId){ state.activeMonsterId=state.monsters[0]?.id || null; if(state.activeMonsterId){ const first=state.monsters.find(m=>m.id===state.activeMonsterId); if(first) first.favorite=true; } } selectedId=null; save(); renderBox(); renderBattleSelection(); renderDungeon(); } }
+function refreshFavoriteButton(m){
+  if(!m)return;
+  const b=$('#favoriteBtn');
+  b.classList.toggle('on',isFavorite(m.id));
+  b.textContent=isFavorite(m.id)?'★ お気に入り':'☆ お気に入り';
+}
+function deleteSelected(){
+  if(!selectedId)return;
+  if(confirm('このキャラクターを削除しますか？')){
+    state.monsters=state.monsters.filter(m=>m.id!==selectedId);
+    state.favoriteMonsterIds=state.favoriteMonsterIds.filter(id=>id!==selectedId);
+    if(state.battleMonsterId===selectedId)state.battleMonsterId=state.monsters[0]?.id||null;
+    if(state.dungeonMonsterId===selectedId)state.dungeonMonsterId=state.monsters[0]?.id||null;
+    if(state.storyMonsterId===selectedId)state.storyMonsterId=state.monsters[0]?.id||null;
+    selectedId=null;save();renderBox();renderBattleSelection();renderDungeon();renderStory();
+  }
+}
 
-function renderDex(){ const entries=Object.values(state.dex); $('#dexProgress').textContent=`発見した種族：${entries.length}種`; const g=$('#dexGrid'); g.innerHTML=''; if(!entries.length){ g.innerHTML='<div class="empty" style="grid-column:1/-1">バーコードを読み取ると図鑑が埋まります。</div>'; return; } entries.sort((a,b)=>a.speciesId.localeCompare(b.speciesId)).forEach(d=>{ const faux={...d,stars:1,rank:'?',level:1,skills:[],archetype:{id:'dex',name:'図鑑'},base:{hp:0,atk:0,def:0,spd:0},bonus:{hp:0,atk:0,def:0,spd:0}}; const div=document.createElement('div'); div.className='monster-mini'; div.innerHTML=`<div class="miniimg">${portraitSVG(faux)}</div><div class="mini-name">No.${d.speciesId} ${d.name}</div><div class="tiny">${d.element} / ${d.type} / 遭遇 ${d.seen}回</div>`; g.appendChild(div); }); }
+function renderDex(){ const entries=Object.values(state.dex); $('#dexProgress').textContent=`発見した種族：${entries.length}種`; const g=$('#dexGrid'); g.innerHTML=''; if(!entries.length){ g.innerHTML='<div class="empty" style="grid-column:1/-1">バーコードを読み取ると図鑑が埋まります。</div>'; return; } entries.sort((a,b)=>a.speciesId.localeCompare(b.speciesId)).forEach(d=>{ const faux={...d,stars:1,rank:'?',level:1,skills:[],archetype:{id:'dex',name:'図鑑'},form:{id:'normal',name:'ノーマル'},base:{hp:0,atk:0,def:0,spd:0},bonus:{hp:0,atk:0,def:0,spd:0}}; const div=document.createElement('div'); div.className='monster-mini'; div.innerHTML=`<div class="miniimg">${portraitSVG(faux)}</div><div class="mini-name">No.${d.speciesId} ${d.name}</div><div class="tiny">${d.element} / ${d.type} / 遭遇 ${d.seen}回</div>`; g.appendChild(div); }); }
 
 function makeEnemyForMonster(m,bonusLevel=0){
   const seed=hashString(m.id+':'+bonusLevel+':'+Date.now());
@@ -632,12 +747,13 @@ function calcDamage(a,d,special=false,logger=()=>{}){
 }
 function bump(id){const el=$(id);if(!el)return;el.classList.remove('damage-pop');void el.offsetWidth;el.classList.add('damage-pop');}
 function renderBattleSelection(){
-  const m=activeMonster();
+  bindRoster('#battleRoster','battleMonsterId',renderBattleSelection);
+  const m=battleMonster();
   if(!m){$('#battleEmpty').hidden=false;$('#battleArea').hidden=true;return;}
   prepareBattle();
 }
 function prepareBattle(){
-  const src=activeMonster();if(!src)return;
+  const src=battleMonster();if(!src)return;
   if(battle?.timer)clearTimeout(battle.timer);
   battle={player:unitFromMonster(src),enemy:unitFromMonster(makeEnemyForMonster(src,Math.floor(Math.random()*3))),over:false,autoRunning:false,timer:null};
   $('#battleArea').hidden=false;$('#battleEmpty').hidden=true;$('#battleResult').textContent='';$('#battleLog').textContent='';
@@ -688,7 +804,7 @@ function runAutoBattleTurn(){
 function checkBattleEnd(){if(battle.enemy.currentHp<=0){finishBattle(true);return true;}if(battle.player.currentHp<=0){finishBattle(false);return true;}return false;}
 function finishBattle(win){
   battle.over=true;battle.autoRunning=false;if(battle.timer)clearTimeout(battle.timer);$('#battleAiState').textContent='バトル終了';
-  const src=activeMonster();
+  const src=battleMonster();
   if(src&&win){const gain=35+battle.enemy.level*10+battle.enemy.stars*5,gold=12+battle.enemy.level*4,ups=levelUp(src,gain);state.gold+=gold;
     $('#battleResult').textContent=`🏆 WIN! +${gain} EXP / +${gold}G${ups?` / LEVEL UP! Lv.${src.level}`:''}`;
     logBattle(`勝利！ 経験値${gain}・ゴールド${gold}獲得。`);save();updateTopBar();renderBox();renderDungeon();
@@ -697,7 +813,7 @@ function finishBattle(win){
 }
 
 function renderDungeon(){
-  updateTopBar();const m=activeMonster(),wrap=$('#dungeonActiveWrap');
+  updateTopBar();bindRoster('#dungeonRoster','dungeonMonsterId',renderDungeon);const m=dungeonMonster(),wrap=$('#dungeonActiveWrap');
   if(!m){wrap.innerHTML='<div class="empty">まずBOXからお気に入りモンスターを設定してください。</div>';$('#upgradeArea').innerHTML='';$('#dungeonRunCard').hidden=true;return;}
   const s=displayStats(m);
   wrap.innerHTML=`<div class="hero"><div class="portrait ${m.stars>=4?'sparkle':''}">${portraitSVG(m)}</div><div><div class="name" style="font-size:22px">${m.name}</div><div class="badges"><span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge archetype-badge">${m.archetype?.name||"旧世代型"}</span><span class="badge">Lv.${m.level}</span></div><div class="stats"><div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div></div></div></div>`;
@@ -706,10 +822,10 @@ function renderDungeon(){
 function upgradeCost(monster,key){const bonus=monster.bonus?.[key]||0,base={hp:50,atk:60,def:60,spd:60}[key],step={hp:Math.floor(bonus/35)*18,atk:Math.floor(bonus/10)*18,def:Math.floor(bonus/10)*18,spd:Math.floor(bonus/8)*18}[key];return base+step;}
 function upgradeAmount(key){return{hp:35,atk:10,def:10,spd:8}[key];}
 function renderUpgradeArea(){
-  const m=activeMonster();if(!m){$('#upgradeArea').innerHTML='';return;}const labels={hp:'HP強化',atk:'攻撃強化',def:'防御強化',spd:'素早さ強化'};
+  const m=dungeonMonster();if(!m){$('#upgradeArea').innerHTML='';return;}const labels={hp:'HP強化',atk:'攻撃強化',def:'防御強化',spd:'素早さ強化'};
   $('#upgradeArea').innerHTML=['hp','atk','def','spd'].map(key=>{const cost=upgradeCost(m,key),plus=upgradeAmount(key),current=m.bonus?.[key]||0;return`<div class="upgrade-item"><div style="font-weight:900">${labels[key]}</div><div class="muted">永続ボーナス +${current}</div><div class="muted">次回強化: +${plus} / ${cost}G</div><button class="btn gold" style="margin-top:10px;width:100%" onclick="upgradeActive('${key}')">強化する</button></div>`;}).join('');
 }
-window.upgradeActive=function(key){const m=activeMonster();if(!m)return;const cost=upgradeCost(m,key);if(state.gold<cost){alert('ゴールドが足りません。');return;}state.gold-=cost;m.bonus[key]=(m.bonus[key]||0)+upgradeAmount(key);save();updateTopBar();renderBox();renderDungeon();};
+window.upgradeActive=function(key){const m=dungeonMonster();if(!m)return;const cost=upgradeCost(m,key);if(state.gold<cost){alert('ゴールドが足りません。');return;}state.gold-=cost;m.bonus[key]=(m.bonus[key]||0)+upgradeAmount(key);save();updateTopBar();renderBox();renderDungeon();};
 function renderDungeonRun(){
   if(!dungeonRun){$('#dungeonRunCard').hidden=true;$('#nextFloorBtn').hidden=true;$('#retireDungeonBtn').hidden=true;$('#startDungeonBtn').hidden=false;return;}
   $('#dungeonRunCard').hidden=false;$('#startDungeonBtn').hidden=true;$('#retireDungeonBtn').hidden=false;$('#nextFloorBtn').hidden=!dungeonRun.readyForNext;
@@ -721,12 +837,12 @@ function renderDungeonRun(){
 }
 function logDungeon(t){$('#dungeonLog').textContent+=t+'\n';$('#dungeonLog').scrollTop=$('#dungeonLog').scrollHeight;}
 function startDungeon(){
-  const src=activeMonster();if(!src){alert('お気に入りモンスターを設定してください。');return;}if(dungeonRun?.timer)clearTimeout(dungeonRun.timer);
+  const src=dungeonMonster();if(!src){alert('お気に入りモンスターを設定してください。');return;}if(dungeonRun?.timer)clearTimeout(dungeonRun.timer);
   dungeonRun={floor:1,player:unitFromMonster(src),enemy:null,over:false,readyForNext:false,autoRunning:false,timer:null,sourceId:src.id};dungeonRun.enemy=makeDungeonEnemy();
   $('#dungeonLog').textContent='';$('#dungeonResult').textContent='';logDungeon(`∞ダンジョン開始！\n${dungeonRun.player.name}が1Fへ突入！`);renderDungeonRun();
 }
 function makeDungeonEnemy(){
-  const src=activeMonster(),floor=dungeonRun.floor,enemy=unitFromMonster(makeEnemyForMonster(src,Math.floor(floor/2)+Math.floor(Math.random()*2)));
+  const src=dungeonMonster(),floor=dungeonRun.floor,enemy=unitFromMonster(makeEnemyForMonster(src,Math.floor(floor/2)+Math.floor(Math.random()*2)));
   enemy.level=clamp(src.level+Math.floor(floor/2),1,50);const r=rng(hashString(src.id+':'+floor));enemy.maxHp+=floor*8;enemy.currentHp=enemy.maxHp;enemy.atk+=floor*2;enemy.def+=floor*2;enemy.spd+=Math.floor(floor/3);if(floor>=10&&enemy.stars<5&&r()>.5)enemy.stars++;return enemy;
 }
 function startDungeonAutoBattle(){if(!dungeonRun||dungeonRun.over||dungeonRun.readyForNext||dungeonRun.autoRunning)return;dungeonRun.autoRunning=true;renderDungeonRun();runDungeonAutoTurn();}
@@ -740,7 +856,7 @@ function runDungeonAutoTurn(){
 }
 function checkDungeonEnd(){if(dungeonRun.enemy.currentHp<=0){finishDungeonFloor(true);return true;}if(dungeonRun.player.currentHp<=0){finishDungeonFloor(false);return true;}return false;}
 function finishDungeonFloor(win){
-  const src=activeMonster();dungeonRun.autoRunning=false;if(dungeonRun.timer)clearTimeout(dungeonRun.timer);
+  const src=dungeonMonster();dungeonRun.autoRunning=false;if(dungeonRun.timer)clearTimeout(dungeonRun.timer);
   if(win){dungeonRun.readyForNext=true;const gold=20+dungeonRun.floor*12,exp=20+dungeonRun.floor*15;state.gold+=gold;const ups=levelUp(src,exp);state.bestFloor=Math.max(state.bestFloor,dungeonRun.floor);
     $('#dungeonResult').textContent=`🏆 ${dungeonRun.floor}Fクリア！ +${gold}G / +${exp}EXP${ups?` / LEVEL UP! Lv.${src.level}`:''}`;logDungeon(`${dungeonRun.floor}F突破！ ゴールド${gold}・EXP${exp}獲得。`);save();updateTopBar();renderBox();
   }else{dungeonRun.over=true;$('#dungeonResult').textContent=`💀 ${dungeonRun.floor}Fで力尽きた…`;logDungeon('ダンジョン攻略失敗…。報酬は持ち帰れた！');if(dungeonRun.floor-1>0)state.bestFloor=Math.max(state.bestFloor,dungeonRun.floor-1);save();updateTopBar();}
@@ -752,6 +868,69 @@ function nextDungeonFloor(){
   $('#dungeonResult').textContent='';logDungeon(`\n▶ ${dungeonRun.floor}Fへ進んだ！ HPが${heal}回復。`);renderDungeonRun();
 }
 function retireDungeon(){if(!dungeonRun)return;if(confirm('ダンジョンから撤退しますか？')){if(dungeonRun.timer)clearTimeout(dungeonRun.timer);dungeonRun=null;$('#dungeonResult').textContent='';renderDungeon();}}
+const storyStages=[
+  {id:1,title:"1-1 目覚めの草原",icon:"🌿",text:"バーコードの光に導かれ、最初の扉が開いた。森へ続く道を守るモンスターを倒そう。",level:0,reward:120,gold:80,gimmick:"通常エリア"},
+  {id:2,title:"1-2 毒霧の小径",icon:"☠️",text:"森の奥には紫の霧が立ちこめている。毒を操る敵を越えなければ先へ進めない。",level:2,reward:160,gold:110,gimmick:"敵が毒能力を持ちやすい"},
+  {id:3,title:"1-3 雷鳴の洞窟",icon:"⚡",text:"洞窟の奥から激しい雷鳴が響く。素早い敵との戦いが待っている。",level:4,reward:220,gold:150,gimmick:"敵の素早さ+20%"},
+  {id:4,title:"1-4 古代の門",icon:"🏰",text:"古代の門番は堅牢な鎧をまとっている。状態異常とシナジーを使いこなそう。",level:6,reward:300,gold:210,gimmick:"敵の防御+25%"},
+  {id:5,title:"1-5 森の守護獣",icon:"👑",text:"第一章の主が姿を現した。ここまで育てた相棒と共に、守護獣へ挑め。",level:9,reward:500,gold:350,gimmick:"BOSS：全能力強化"}
+];
+function renderStory(){
+  bindRoster('#storyRoster','storyMonsterId',renderStory);
+  const map=$('#storyMap');
+  map.innerHTML=storyStages.map((s,i)=>{
+    const unlocked=i===0||state.storyCleared.includes(storyStages[i-1].id);
+    const cleared=state.storyCleared.includes(s.id);
+    return `<button class="story-node ${unlocked?'':'locked'} ${cleared?'cleared':''}" data-stage="${s.id}" ${unlocked?'':'disabled'}>
+      <div class="node-icon">${s.icon}</div><div><div class="story-title">${s.title}</div><div class="story-sub">${s.gimmick}</div></div>
+      <span class="story-status">${cleared?'CLEAR':unlocked?'挑戦':'LOCK'}</span></button>`;
+  }).join('');
+  map.querySelectorAll('[data-stage]:not([disabled])').forEach(b=>b.addEventListener('click',()=>selectStoryStage(Number(b.dataset.stage))));
+}
+function selectStoryStage(id){
+  const s=storyStages.find(x=>x.id===id);if(!s)return;selectedStoryStage=id;
+  const src=storyMonster();if(!src){alert('出撃モンスターを選んでください。');return;}
+  let enemy=makeEnemyForMonster(src,s.level);
+  if(id===2 && !hasAbility(enemy,'poison'))enemy.skills.push({kind:'poison',name:'どくどくボディ',tag:'毒',value:4,chance:42,turns:4,desc:'特殊攻撃時42%で毒'});
+  if(id===3){enemy.base.spd=Math.round(enemy.base.spd*1.20);}
+  if(id===4){enemy.base.def=Math.round(enemy.base.def*1.25);}
+  if(id===5){enemy.base.hp=Math.round(enemy.base.hp*1.35);enemy.base.atk=Math.round(enemy.base.atk*1.25);enemy.base.def=Math.round(enemy.base.def*1.25);}
+  storyRun={stage:s,player:unitFromMonster(src),enemy:unitFromMonster(enemy),over:false,autoRunning:false,timer:null};
+  $('#storyStageCard').hidden=false;$('#storyScene').innerHTML=`<b>${s.title}</b><br>${s.text}<div class="muted" style="margin-top:6px">特性：${s.gimmick} ／ 初回報酬 ${s.gold}G・${s.reward}EXP</div>`;
+  $('#storyResult').textContent='';$('#storyLog').textContent='';$('#storyAiState').textContent='「攻略開始」でAI戦闘開始';updateStoryUI();
+  $('#storyStageCard').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function updateStoryUI(){
+  if(!storyRun)return;const p=storyRun.player,e=storyRun.enemy;
+  $('#spPortrait').innerHTML=portraitSVG(p);$('#sePortrait').innerHTML=portraitSVG(e);$('#spName').textContent=p.name;$('#seName').textContent=e.name;
+  $('#spLevel').textContent=`Lv.${p.level}`;$('#seLevel').textContent=`Lv.${e.level}`;
+  $('#spHpText').textContent=`${p.currentHp}/${p.maxHp}`;$('#seHpText').textContent=`${e.currentHp}/${e.maxHp}`;
+  $('#spHpBar').style.width=(100*p.currentHp/p.maxHp)+'%';$('#seHpBar').style.width=(100*e.currentHp/e.maxHp)+'%';
+  $('#spStatus').innerHTML=statusHtml(p);$('#seStatus').innerHTML=statusHtml(e);$('#storyBattleBtn').disabled=storyRun.over||storyRun.autoRunning;
+}
+function logStory(t){$('#storyLog').textContent+=t+'\n';$('#storyLog').scrollTop=$('#storyLog').scrollHeight;}
+function startStoryBattle(){if(!storyRun||storyRun.over||storyRun.autoRunning)return;storyRun.autoRunning=true;$('#storyAiState').textContent='AI攻略中…';updateStoryUI();runStoryTurn();}
+function runStoryTurn(){
+  if(!storyRun||storyRun.over||!storyRun.autoRunning)return;
+  const p=storyRun.player,e=storyRun.enemy,pa=chooseAiAction(p,e),ea=chooseAiAction(e,p),pf=p.spd>=e.spd;
+  const first=pf?()=>doAiAction(p,e,pa,p.name,'#seFighter',logStory):()=>doAiAction(e,p,ea,e.name,'#spFighter',logStory);
+  const second=pf?()=>doAiAction(e,p,ea,e.name,'#spFighter',logStory):()=>doAiAction(p,e,pa,p.name,'#seFighter',logStory);
+  first();updateStoryUI();if(checkStoryEnd())return;
+  storyRun.timer=setTimeout(()=>{second();updateStoryUI();if(checkStoryEnd())return;storyRun.timer=setTimeout(runStoryTurn,470);},330);
+}
+function checkStoryEnd(){if(storyRun.enemy.currentHp<=0){finishStory(true);return true;}if(storyRun.player.currentHp<=0){finishStory(false);return true;}return false;}
+function finishStory(win){
+  storyRun.over=true;storyRun.autoRunning=false;if(storyRun.timer)clearTimeout(storyRun.timer);$('#storyAiState').textContent='攻略終了';
+  if(win){
+    const first=!state.storyCleared.includes(storyRun.stage.id),src=storyMonster();
+    const exp=first?storyRun.stage.reward:Math.round(storyRun.stage.reward*.35),gold=first?storyRun.stage.gold:Math.round(storyRun.stage.gold*.30);
+    state.gold+=gold;const ups=levelUp(src,exp);if(first)state.storyCleared.push(storyRun.stage.id);
+    $('#storyResult').textContent=`🏆 CLEAR! +${gold}G / +${exp}EXP${ups?` / Lv.${src.level}`:''}`;
+    logStory(first?'初回クリア！ 新しい道が開いた。':'再攻略クリア！');save();updateTopBar();renderStory();
+  }else{$('#storyResult').textContent='💀 攻略失敗';logStory('育成や別のモンスターで再挑戦しよう。');}
+  updateStoryUI();if(navigator.vibrate)navigator.vibrate(win?[40,40,80]:[120]);
+}
+
 async function startScanner(){ if(scanning) return; if(typeof Html5Qrcode==='undefined'){ alert('カメラ読み取り機能の読み込みに失敗しました。'); return; } try{ scanner=new Html5Qrcode('reader'); scanning=true; $('#cameraBtn').disabled=true; $('#stopCameraBtn').disabled=false; $('#scanFrame').style.display='block'; await scanner.start({facingMode:'environment'}, {fps:10, qrbox:{width:280,height:130}, aspectRatio:1.7}, decoded=>{ stopScanner(); summonFromCode(decoded); }, ()=>{}); } catch(e){ scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; alert('カメラを開始できませんでした。Safariのカメラ権限を確認してください。'); } }
 async function stopScanner(){ if(!scanner||!scanning) return; try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner=null; scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; $('#reader').innerHTML=''; }
 
@@ -759,13 +938,13 @@ $$('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
 $('#summonBtn').addEventListener('click',summon);$('#rerollBtn').addEventListener('click',summon);$('#saveBtn').addEventListener('click',addToBox);
 $('#barcodeInput').addEventListener('keydown',e=>{if(e.key==='Enter')summon();});
 $('#cameraBtn').addEventListener('click',startScanner);$('#stopCameraBtn').addEventListener('click',stopScanner);
-$('#setActiveBtn').addEventListener('click',()=>{if(selectedId)setActiveMonster(selectedId);});$('#deleteMonsterBtn').addEventListener('click',deleteSelected);
+$('#favoriteBtn').addEventListener('click',()=>{if(selectedId)toggleFavorite(selectedId);});$('#deleteMonsterBtn').addEventListener('click',deleteSelected);
 $('#autoBattleBtn').addEventListener('click',startAutoBattle);$('#newEnemyBtn').addEventListener('click',prepareBattle);
-$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonAutoBattleBtn').addEventListener('click',startDungeonAutoBattle);$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
+$('#storyBattleBtn').addEventListener('click',startStoryBattle);$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonAutoBattleBtn').addEventListener('click',startDungeonAutoBattle);$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
 $('#resetBtn').addEventListener('click',()=>{if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){localStorage.removeItem(STORAGE_KEY);location.reload();}});
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
-if(state.monsters.length && !state.activeMonsterId){ state.activeMonsterId=state.monsters[0].id; state.monsters[0].favorite=true; save(); }
-updateTopBar(); renderBox(); renderDex(); renderBattleSelection(); renderDungeon();
+if(state.monsters.length){if(!state.battleMonsterId)state.battleMonsterId=state.monsters[0].id;if(!state.dungeonMonsterId)state.dungeonMonsterId=state.monsters[0].id;if(!state.storyMonsterId)state.storyMonsterId=state.monsters[0].id;save();}
+updateTopBar();renderBox();renderDex();renderStory();renderBattleSelection();renderDungeon();
 </script>
 </body>
 </html>
