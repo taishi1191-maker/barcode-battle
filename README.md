@@ -1,21 +1,21 @@
-# Barcode Battle v1.7 — Full Asset Library
+# Barcode Battle v1.7.1 Display Hotfix
 
-This package is GitHub-ready and includes the game plus an organized asset library.
+Fixes the blank BOX / Dex / Adventure / Battle screens introduced in v1.7.
 
-## Structure
-- assets/monsters/normal
-- assets/monsters/rare
-- assets/monsters/legendary/<species>
-- assets/effects/<type>
-- assets/backgrounds/<stage>
-- assets/items/<category>
-- assets/ui/<category>
-- assets/reference
+Restored:
+- visualGenes()
+- visualGeneLabel()
+- displayName()
+- shortMonsterId()
+- monsterCardMeta()
+- renameMonster()
 
-The legacy paths assets/monsters/slime.png etc. are preserved because the current game still references them.
+The v1.7 storage key is intentionally kept, so the existing save data should continue to be used.
 
-## GitHub
-Extract this ZIP, select everything inside, then upload to the repository root.
-Overwrite index.html / sw.js / manifest.webmanifest / README.md when GitHub asks.
+Upload/overwrite these four files at the repository root:
+- index.html
+- sw.js
+- manifest.webmanifest
+- README.md
 
-Do not delete any existing files unless you are replacing them with files from this package.
+Do not delete the assets folder.

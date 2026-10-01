@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v1.7</title>
+  <title>Barcode Battle v1.7.1</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -394,7 +394,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.7 / Full Asset Library</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.7.1 / Display Hotfix</div></div>
     </div>
     
   </div>
@@ -786,6 +786,42 @@ function abilityListHtml(m){
   return `<div class="ability-list">${arr.map(a=>`<div class="ability"><div class="ability-head"><span>${a.name}</span><span class="ability-tag">${a.tag||"能力"}</span></div><div class="ability-desc">${a.desc||""}</div></div>`).join("")}</div>`;
 }
 function hasAbility(m,kind){return (m.skills||[]).find(a=>a.kind===kind)||null;}
+
+function visualGenes(m){
+  const seed=(m.seed||hashString(m.barcode||m.id||m.name||"monster"))>>>0;
+  const weapon=["blade","staff","claw","cannon","spear"][seed%5];
+  const pattern=["stripe","diamond","spiral","star","circuit"][(seed>>>3)%5];
+  const aura=["spark","mist","flame","leaf","void"][(seed>>>6)%5];
+  const tone=(seed>>>9)%7;
+  let rarityArt="normal";
+  if((m.stars||1)>=5&&m.rank==="SS")rarityArt="legend";
+  if((m.stars||1)>=5&&m.rank==="SS"&&((seed>>>12)%17===0))rarityArt="mythic";
+  return {weapon,pattern,aura,tone,rarityArt};
+}
+function visualGeneLabel(m){
+  const g=visualGenes(m);
+  const mapW={blade:"剣装",staff:"杖装",claw:"爪装",cannon:"砲装",spear:"槍装"};
+  const mapP={stripe:"縞模様",diamond:"結晶紋",spiral:"渦紋",star:"星紋",circuit:"回路紋"};
+  const rare=g.rarityArt==="mythic"?"神話個体":g.rarityArt==="legend"?"伝説個体":"通常個体";
+  return `${rare} / ${mapW[g.weapon]} / ${mapP[g.pattern]}`;
+}
+function displayName(m){
+  return (m&&m.nickname&&String(m.nickname).trim())?String(m.nickname).trim():(m?.name||"モンスター");
+}
+function shortMonsterId(m){
+  const raw=String(m?.id||"");
+  return raw.length>6?raw.slice(-6).toUpperCase():raw.toUpperCase();
+}
+function monsterCardMeta(m){
+  const s=displayStats(m),item=equippedItem(m);
+  return {stats:s,itemText:item?`${item.icon}${item.name}`:"装備なし",id:shortMonsterId(m)};
+}
+function renameMonster(monsterId,newName){
+  const m=monsterById(monsterId);if(!m)return;
+  m.nickname=String(newName||"").trim().slice(0,12);
+  save();renderBox();renderBattleSelection();renderDungeon();renderStory();
+}
+
 function portraitSVG(m){
   const artByType={
     "スライム":"assets/monsters/slime.png","ドラゴン":"assets/monsters/dragon.png","ビースト":"assets/monsters/beast.png",
@@ -805,7 +841,7 @@ function portraitSVG(m){
     <div style="position:absolute;left:7px;bottom:7px;z-index:4;font-size:13px">${weaponMarks[g.weapon]||"✦"}</div>
     <div style="position:absolute;right:8px;bottom:8px;z-index:4;font-size:12px">${auraMarks[g.aura]||"✦"}</div>
     <div class="form-${form} ${g.rarityArt==="legend"?"rare-legend":""} ${g.rarityArt==="mythic"?"rare-mythic":""}" style="width:100%;height:100%;display:grid;place-items:center;border-radius:18px">
-    <img class="monster-art rarity-${rare}" src="${src}" alt="${displayName?displayName(m):m.name}"
+    <img class="monster-art rarity-${rare}" src="${src}" alt="${displayName(m)}"
       style="filter:hue-rotate(${fx.h+g.tone*5}deg) saturate(${fx.s+(g.tone*.02)}) brightness(${fx.b}) drop-shadow(0 12px 18px rgba(0,0,0,.40))"></div>`;
 }
 function rosterHtml(selectedId){
