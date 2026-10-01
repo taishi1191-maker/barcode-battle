@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v1.8.1</title>
+  <title>Barcode Battle v1.9</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -334,7 +334,7 @@
     .damage-number{
       position:absolute;font-weight:1000;font-size:30px;color:#fff;
       text-shadow:0 3px 0 rgba(0,0,0,.35),0 0 12px rgba(255,255,255,.7);
-      animation:damageFloat .72s ease forwards;
+      animation:damageFloat 1.05s ease forwards;
     }
     .damage-number.crit{font-size:38px;color:#ffe36e}
     @keyframes damageFloat{0%{opacity:0;transform:translateY(10px) scale(.7)}20%{opacity:1;transform:translateY(0) scale(1.15)}100%{opacity:0;transform:translateY(-48px) scale(.9)}}
@@ -430,7 +430,7 @@
     }
     .battle-fx img.fx-img{
       position:absolute;width:190px;height:190px;object-fit:contain;pointer-events:none;
-      animation:fxImg .48s ease forwards;filter:drop-shadow(0 0 15px rgba(255,255,255,.42))
+      animation:fxImg .78s ease forwards;filter:drop-shadow(0 0 15px rgba(255,255,255,.42))
     }
     @keyframes fxImg{0%{opacity:0;transform:scale(.45) rotate(-12deg)}25%{opacity:1;transform:scale(1) rotate(0)}100%{opacity:0;transform:scale(1.35) rotate(8deg)}}
     .battle-controls-fixed{
@@ -596,6 +596,42 @@
       .battle-stage-label{max-width:52%}
     }
 
+
+    /* v1.8.2 tempo & dungeon navigation */
+    #nextFloorBtn,
+    #retireDungeonBtn{
+      position:static!important;
+      width:auto!important;
+      min-width:130px;
+      margin:0!important;
+    }
+    .dungeon-post-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+      position:relative;
+      z-index:15;
+    }
+    .dungeon-post-actions #nextFloorBtn{
+      order:1;
+      background:linear-gradient(135deg,#ffe17a,#ffc62e)!important;
+      color:#362500!important;
+      border-color:#ffd75a!important;
+    }
+    .dungeon-post-actions #retireDungeonBtn{
+      order:2;
+    }
+    #jumpDungeonShopBtn{
+      margin-top:10px!important;
+    }
+    .speed-help{
+      text-align:right;
+      font-size:10px;
+      color:#8fa8bd;
+      margin-top:3px;
+    }
+
 </style>
 </head>
 <body>
@@ -603,7 +639,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.8.1 / Battle UI Hotfix</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.9 / Monster Art Update</div></div>
     </div>
     
   </div>
@@ -624,7 +660,7 @@
 
   <section id="scan" class="screen active">
     <div class="card">
-      <div class="section-title">バーコード召喚</div>
+      <div class="section-title">バーコード召喚</div><div class="muted" style="margin:-4px 0 12px">同じ種族でもバーコードごとに立ち絵が変化。★4以上は専用アート。</div>
       <div class="row">
         <input id="barcodeInput" inputmode="numeric" placeholder="バーコード数字を入力（4桁以上）" maxlength="32">
         <button id="summonBtn" class="btn">召喚する</button>
@@ -745,7 +781,7 @@
           <div id="battleFx" class="battle-fx"></div>
           <div id="battleBanner" class="battle-banner">BATTLE START</div>
         </div>
-        <div class="battle-speed"><button class="btn secondary speed-btn active" data-speed="1">×1</button><button class="btn secondary speed-btn" data-speed="1.8">×2</button><button class="btn secondary speed-btn" data-speed="3">×3</button></div>
+        <div class="battle-speed"><button class="btn secondary speed-btn active" data-speed="0.72">×1</button><button class="btn secondary speed-btn" data-speed="1.15">×2</button><button class="btn secondary speed-btn" data-speed="1.75">×3</button></div>
         <button id="autoBattleBtn" class="auto-battle-btn">⚔ バトルスタート</button>
         <div id="battleAiState" class="ai-state">開始するとAIが自動で最後まで戦います。</div>
         <div class="row" style="margin-top:10px"><button id="newEnemyBtn" class="btn secondary">対戦相手を変更</button></div>
@@ -798,14 +834,14 @@
       </div>
 
       <div class="battle-controls-fixed">
-        <button class="btn secondary speed-btn" data-speed="1">×1</button>
-        <button class="btn secondary speed-btn" data-speed="1.8">×2</button>
-        <button class="btn secondary speed-btn" data-speed="3">×3</button>
-      </div>
+        <button class="btn secondary speed-btn" data-speed="0.72">×1</button>
+        <button class="btn secondary speed-btn" data-speed="1.15">×2</button>
+        <button class="btn secondary speed-btn" data-speed="1.75">×3</button>
+      </div><div class="speed-help">×1＝演出重視 / ×2＝標準 / ×3＝高速</div>
       <button id="dungeonAutoBattleBtn" class="auto-battle-btn">⚔ この階をオートバトル</button>
       <div id="dungeonAiState" class="ai-state">AIが自動で最後まで戦います。</div>
       <div id="dungeonInstantLog" class="instant-log">戦闘ログはここに表示されます。</div>
-      <div id="dungeonResult" class="result"></div><button id="jumpDungeonShopBtn" class="btn secondary" style="width:100%;margin-top:8px">🔧 強化ショップへ</button>
+      <div id="dungeonResult" class="result"></div><div class="dungeon-post-actions" id="dungeonPostActions"></div><button id="jumpDungeonShopBtn" class="btn secondary" style="width:100%;margin-top:8px">🔧 強化ショップへ</button>
       <details class="compact-details"><summary>戦闘ログ</summary><div class="details-body"><div id="dungeonLog" class="log"></div></div></details>
     </div>
 
@@ -1068,26 +1104,27 @@ function monsterSpeciesKey(m){
   const map={"スライム":"slime","ドラゴン":"dragon","ビースト":"beast","バード":"bird","ゴースト":"ghost","マシン":"machine","ナイト":"knight"};
   return map[m?.type]||"beast";
 }
+function monsterArtVariant(m){
+  const seed=(m.seed||hashString(m.barcode||m.id||m.name||"monster"))>>>0;
+  return (seed%3)+1;
+}
+function monsterArtTier(m){
+  const g=visualGenes(m);
+  if(g.rarityArt==="mythic")return"mythic";
+  if(g.rarityArt==="legend")return"legendary";
+  if((m?.stars||1)>=4)return"rare";
+  return"normal";
+}
 function highResMonsterBasePath(m){
-  const key=monsterSpeciesKey(m);
-  if(key==="rabi"){
-    // Rabi currently uses the high-resolution knight-family source art.
-    return "assets/monsters/knight.png";
-  }
-  return `assets/monsters/${key}.png`;
+  const key=monsterSpeciesKey(m),tier=monsterArtTier(m);
+  if(tier==="normal")return `assets/monsters/v19/normal/${key}_${monsterArtVariant(m)}.png`;
+  return `assets/monsters/v19/${tier}/${key}.png`;
 }
 function monsterVisualStyle(m){
   const g=visualGenes(m);
-  const elementHue={"水":0,"風":22,"雷":52,"炎":145,"土":190,"光":-12,"闇":238}[m?.element]||0;
-  const hue=elementHue+(g.tone||0)*4;
-  const sat=1.02+(g.tone||0)*.025;
-  const brightness=g.rarityArt==="mythic"?1.10:g.rarityArt==="legend"?1.06:1;
-  const glow=g.rarityArt==="mythic"
-    ?"drop-shadow(0 0 20px rgba(192,132,252,.82))"
-    :g.rarityArt==="legend"
-      ?"drop-shadow(0 0 15px rgba(251,191,36,.68))"
-      :"drop-shadow(0 10px 15px rgba(0,0,0,.38))";
-  return `hue-rotate(${hue}deg) saturate(${sat}) brightness(${brightness}) ${glow}`;
+  if(g.rarityArt==="mythic")return "drop-shadow(0 0 20px rgba(192,132,252,.62)) drop-shadow(0 12px 16px rgba(0,0,0,.40))";
+  if(g.rarityArt==="legend")return "drop-shadow(0 0 15px rgba(251,191,36,.52)) drop-shadow(0 12px 16px rgba(0,0,0,.40))";
+  return "drop-shadow(0 10px 15px rgba(0,0,0,.38))";
 }
 function monsterRarityFrameClass(m){
   const g=visualGenes(m);
@@ -1095,8 +1132,10 @@ function monsterRarityFrameClass(m){
 }
 function consistentMonsterArtHTML(m,context="card"){
   const src=highResMonsterBasePath(m);
+  const key=monsterSpeciesKey(m);
+  const fallback=key==="rabi"?"assets/monsters/knight.png":`assets/monsters/${key}.png`;
   const cls=context==="battle"?"battle-art":"monster-consistent-art";
-  return `<img class="${cls}" src="${src}" alt="${displayName(m)}" style="filter:${monsterVisualStyle(m)}" onerror="this.onerror=null;this.src='assets/monsters/beast.png'">`;
+  return `<img class="${cls}" src="${src}" data-fallback="${fallback}" alt="${displayName(m)}" style="filter:${monsterVisualStyle(m)}" onerror="this.onerror=null;this.src=this.dataset.fallback">`;
 }
 function monsterArtCandidates(m){
   // Kept for compatibility. The first/current path is always the same high-resolution art
@@ -1471,7 +1510,7 @@ function chooseAiAction(unit,enemy){
   if(Math.random()<.16)return"guard";
   return Math.random()<.46?"skill":"attack";
 }
-let battleSpeed=1;
+let battleSpeed=0.72;
 function showBattleBanner(sceneId,bannerId,text){
   const b=$(bannerId);if(!b)return;b.textContent=text;b.classList.remove("show");void b.offsetWidth;b.classList.add("show");
 }
@@ -1488,7 +1527,7 @@ function battleFx(targetId,type,dmg=0,note=""){
   img.className="fx-img";img.src=effectAsset(type||"slash");
   img.style.left=(cx-95)+"px";img.style.top=(cy-95)+"px";
   img.onerror=()=>{img.remove();};
-  fx.appendChild(img);setTimeout(()=>img.remove(),650);
+  fx.appendChild(img);setTimeout(()=>img.remove(),1050);
 
   if(dmg>0){
     const num=document.createElement("div");
@@ -1496,7 +1535,7 @@ function battleFx(targetId,type,dmg=0,note=""){
     num.className="damage-number"+(crit?" crit":"");
     num.textContent=miss?"MISS":((crit?"CRIT! ":"")+dmg);
     num.style.left=(cx-35)+"px";num.style.top=(cy-20)+"px";
-    fx.appendChild(num);setTimeout(()=>num.remove(),900);
+    fx.appendChild(num);setTimeout(()=>num.remove(),1250);
   }
 }function fxTypeFor(actor,action){
   if(action!=="skill")return"slash";
@@ -1520,14 +1559,14 @@ function doAiAction(actor,target,action,label,targetId,logger){
   }
   endOfAction(actor,target,logger);
 }
-function startAutoBattle(){if(!battle||battle.over||battle.autoRunning)return;battle.autoRunning=true;$('#battleAiState').textContent='AIバトル中…';updateBattleUI();showBattleBanner('#battleScene','#battleBanner','BATTLE START');setTimeout(runAutoBattleTurn,Math.round(650/battleSpeed));}
+function startAutoBattle(){if(!battle||battle.over||battle.autoRunning)return;battle.autoRunning=true;$('#battleAiState').textContent='AIバトル中…';updateBattleUI();showBattleBanner('#battleScene','#battleBanner','BATTLE START');setTimeout(runAutoBattleTurn,Math.round(850/battleSpeed));}
 function runAutoBattleTurn(){
   if(!battle||battle.over||!battle.autoRunning)return;
   const p=battle.player,e=battle.enemy,pAction=chooseAiAction(p,e),eAction=chooseAiAction(e,p),playerFirst=p.spd>=e.spd;
   const first=playerFirst?()=>doAiAction(p,e,pAction,p.name,'#eFighter',logBattle):()=>doAiAction(e,p,eAction,`COM ${e.name}`,'#pFighter',logBattle);
   const second=playerFirst?()=>doAiAction(e,p,eAction,`COM ${e.name}`,'#pFighter',logBattle):()=>doAiAction(p,e,pAction,p.name,'#eFighter',logBattle);
   first();updateBattleUI();if(checkBattleEnd())return;
-  battle.timer=setTimeout(()=>{second();updateBattleUI();if(checkBattleEnd())return;battle.timer=setTimeout(runAutoBattleTurn,Math.round(480/battleSpeed));},Math.round(330/battleSpeed));
+  battle.timer=setTimeout(()=>{second();updateBattleUI();if(checkBattleEnd())return;battle.timer=setTimeout(runAutoBattleTurn,Math.round(720/battleSpeed));},Math.round(500/battleSpeed));
 }
 function checkBattleEnd(){if(battle.enemy.currentHp<=0){finishBattle(true);return true;}if(battle.player.currentHp<=0){finishBattle(false);return true;}return false;}
 function finishBattle(win){
@@ -1554,7 +1593,15 @@ function renderUpgradeArea(){
   $('#upgradeArea').innerHTML=['hp','atk','def','spd'].map(key=>{const cost=upgradeCost(m,key),plus=upgradeAmount(key),current=m.bonus?.[key]||0;return`<div class="upgrade-item"><div style="font-weight:900">${labels[key]}</div><div class="muted">永続ボーナス +${current}</div><div class="muted">次回強化: +${plus} / ${cost}G</div><button class="btn gold" style="margin-top:10px;width:100%" onclick="upgradeActive('${key}')">強化する</button></div>`;}).join('');
 }
 window.upgradeActive=function(key){const m=dungeonMonster();if(!m)return;const cost=upgradeCost(m,key);if(state.gold<cost){alert('ゴールドが足りません。');return;}state.gold-=cost;m.bonus[key]=(m.bonus[key]||0)+upgradeAmount(key);save();updateTopBar();renderBox();renderDungeon();};
+function placeDungeonActionButtons(){
+  const wrap=$('#dungeonPostActions');
+  const next=$('#nextFloorBtn'),retire=$('#retireDungeonBtn');
+  if(!wrap||!next||!retire)return;
+  if(next.parentElement!==wrap)wrap.appendChild(next);
+  if(retire.parentElement!==wrap)wrap.appendChild(retire);
+}
 function renderDungeonRun(){
+  placeDungeonActionButtons();
   if(!dungeonRun){
     $('#dungeonRunCard').hidden=true;$('#nextFloorBtn').hidden=true;$('#retireDungeonBtn').hidden=true;$('#startDungeonBtn').hidden=false;return;
   }
@@ -1599,14 +1646,14 @@ function makeDungeonEnemy(){
   }
   return enemy;
 }
-function startDungeonAutoBattle(){if(!dungeonRun||dungeonRun.over||dungeonRun.readyForNext||dungeonRun.autoRunning)return;dungeonRun.autoRunning=true;renderDungeonRun();showBattleBanner('#dungeonBattleScene','#dungeonBattleBanner',dungeonRun.floor%10===0?'BOSS FLOOR':'∞ DUNGEON');setTimeout(runDungeonAutoTurn,Math.round(550/battleSpeed));}
+function startDungeonAutoBattle(){if(!dungeonRun||dungeonRun.over||dungeonRun.readyForNext||dungeonRun.autoRunning)return;dungeonRun.autoRunning=true;renderDungeonRun();showBattleBanner('#dungeonBattleScene','#dungeonBattleBanner',dungeonRun.floor%10===0?'BOSS FLOOR':'∞ DUNGEON');setTimeout(runDungeonAutoTurn,Math.round(800/battleSpeed));}
 function runDungeonAutoTurn(){
   if(!dungeonRun||dungeonRun.over||dungeonRun.readyForNext||!dungeonRun.autoRunning)return;
   const p=dungeonRun.player,e=dungeonRun.enemy,pAction=chooseAiAction(p,e),eAction=chooseAiAction(e,p),playerFirst=p.spd>=e.spd;
   const first=playerFirst?()=>doAiAction(p,e,pAction,p.name,'#deFighter',logDungeon):()=>doAiAction(e,p,eAction,e.name,'#dpFighter',logDungeon);
   const second=playerFirst?()=>doAiAction(e,p,eAction,e.name,'#dpFighter',logDungeon):()=>doAiAction(p,e,pAction,p.name,'#deFighter',logDungeon);
   first();renderDungeonRun();if(checkDungeonEnd())return;
-  dungeonRun.timer=setTimeout(()=>{second();renderDungeonRun();if(checkDungeonEnd())return;dungeonRun.timer=setTimeout(runDungeonAutoTurn,Math.round(460/battleSpeed));},Math.round(320/battleSpeed));
+  dungeonRun.timer=setTimeout(()=>{second();renderDungeonRun();if(checkDungeonEnd())return;dungeonRun.timer=setTimeout(runDungeonAutoTurn,Math.round(690/battleSpeed));},Math.round(480/battleSpeed));
 }
 function checkDungeonEnd(){if(dungeonRun.enemy.currentHp<=0){finishDungeonFloor(true);return true;}if(dungeonRun.player.currentHp<=0){finishDungeonFloor(false);return true;}return false;}
 function finishDungeonFloor(win){
@@ -1619,7 +1666,7 @@ function finishDungeonFloor(win){
 function nextDungeonFloor(){
   if(!dungeonRun||!dungeonRun.readyForNext)return;dungeonRun.floor++;dungeonRun.readyForNext=false;dungeonRun.over=false;dungeonRun.autoRunning=false;if(dungeonRun.timer)clearTimeout(dungeonRun.timer);
   const heal=Math.round(dungeonRun.player.maxHp*.25);dungeonRun.player.currentHp=Math.min(dungeonRun.player.maxHp,dungeonRun.player.currentHp+heal);dungeonRun.player.guarding=false;dungeonRun.player.first=true;dungeonRun.enemy=makeDungeonEnemy();
-  $('#dungeonResult').textContent='';logDungeon(`\n▶ ${dungeonRun.floor}Fへ進んだ！ HPが${heal}回復。`);renderDungeonRun();$('#dungeonRunCard').scrollIntoView({behavior:'smooth',block:'start'});
+  $('#dungeonResult').textContent='';logDungeon(`\n▶ ${dungeonRun.floor}Fへ進んだ！ HPが${heal}回復。`);renderDungeonRun();const a=$('#dungeonPostActions');if(a)a.scrollIntoView({behavior:'smooth',block:'center'});
 }
 function retireDungeon(){if(!dungeonRun)return;if(confirm('ダンジョンから撤退しますか？')){if(dungeonRun.timer)clearTimeout(dungeonRun.timer);dungeonRun=null;$('#dungeonResult').textContent='';renderDungeon();}}
 const itemTemplates=[
@@ -1826,14 +1873,14 @@ function logStory(t){
   }
   $('#storyLog').textContent+=t+'\n';$('#storyLog').scrollTop=$('#storyLog').scrollHeight;
 }
-function startStoryBattle(){if(!storyRun||storyRun.over||storyRun.autoRunning)return;storyRun.autoRunning=true;$('#storyAiState').textContent='AI攻略中…';updateStoryUI();showBattleBanner('#storyBattleScene','#storyBattleBanner',storyRun.stage.title);setTimeout(runStoryTurn,Math.round(650/battleSpeed));}
+function startStoryBattle(){if(!storyRun||storyRun.over||storyRun.autoRunning)return;storyRun.autoRunning=true;$('#storyAiState').textContent='AI攻略中…';updateStoryUI();showBattleBanner('#storyBattleScene','#storyBattleBanner',storyRun.stage.title);setTimeout(runStoryTurn,Math.round(850/battleSpeed));}
 function runStoryTurn(){
   if(!storyRun||storyRun.over||!storyRun.autoRunning)return;
   const p=storyRun.player,e=storyRun.enemy,pa=chooseAiAction(p,e),ea=chooseAiAction(e,p),pf=p.spd>=e.spd;storyRun.turns++;if(storyRun.startedFirst===null)storyRun.startedFirst=pf;if(pa==='skill')storyRun.usedSkill=true;
   const first=pf?()=>doAiAction(p,e,pa,p.name,'#seFighter',logStory):()=>doAiAction(e,p,ea,e.name,'#spFighter',logStory);
   const second=pf?()=>doAiAction(e,p,ea,e.name,'#spFighter',logStory):()=>doAiAction(p,e,pa,p.name,'#seFighter',logStory);
   first();updateStoryUI();if(checkStoryEnd())return;
-  storyRun.timer=setTimeout(()=>{second();updateStoryUI();if(checkStoryEnd())return;storyRun.timer=setTimeout(runStoryTurn,Math.round(470/battleSpeed));},Math.round(330/battleSpeed));
+  storyRun.timer=setTimeout(()=>{second();updateStoryUI();if(checkStoryEnd())return;storyRun.timer=setTimeout(runStoryTurn,Math.round(700/battleSpeed));},Math.round(500/battleSpeed));
 }
 function checkStoryEnd(){
   if(storyRun.enemy.currentHp<=0){finishStory(true);return true;}

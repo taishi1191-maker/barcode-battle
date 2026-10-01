@@ -1,28 +1,33 @@
-# Barcode Battle v1.8.1 — Battle UI Hotfix
+# Barcode Battle v1.9 — Monster Art Update
 
-## Fixed
-- BOX / summon / COM battle / Adventure / Infinite Dungeon now use the SAME monster art source.
-- Battles use the existing high-resolution 1254px base monster assets instead of the low-resolution cropped rare sheet art.
-- Legendary/Mythic are shown with special glow/frame while keeping the high-resolution source image.
-- Fixed HUD, HP bar and character overlap on iPhone.
-- Moved enemy HUD below the stage label and kept player HUD at the bottom edge.
-- Removed the sticky speed-control bar that could cover lower content.
-- Fixed malformed duplicate Infinite Dungeon battle-log markup.
-- Fixed duplicate `dungeonLog` ID.
-- Added extra bottom space so the Infinite Dungeon upgrade shop can be reached above the fixed navigation.
-- Added a `強化ショップへ` jump button.
-- Infinite Dungeon portrait DOM is no longer recreated every battle tick, reducing flicker and unnecessary image reloads.
-- Switching tabs returns to the top, preventing headings from opening under the iPhone status bar.
+## New art system
+- 48 new 512×512 transparent PNG monster artworks.
+- 8 species: Rabi, Knight, Dragon, Beast, Bird, Ghost, Machine, Slime.
+- Each species has:
+  - 3 NORMAL variants
+  - 1 RARE art
+  - 1 LEGENDARY art
+  - 1 MYTHIC art
 
-## Important
-The storage key remains `barcodeBattle_v18`.
-Existing v1.8 save data is reused.
+## Rules
+- Barcode seed fixes the NORMAL art variant.
+- Summon / BOX / Dex / COM / Adventure / Infinite Dungeon use the same art selector.
+- ★4+ → RARE
+- ★5 + SS → LEGENDARY
+- Mythic condition → MYTHIC
+- Missing v1.9 art automatically falls back to the old high-resolution art.
 
-## GitHub
-Overwrite only:
+## Also includes v1.8.2 fixes
+- Slower battle tempo so effects can be seen.
+- ×1 effect-focused / ×2 standard / ×3 fast.
+- Infinite Dungeon post-battle actions moved below the result.
+
+## GitHub upload
+Upload/overwrite:
 - index.html
 - sw.js
 - manifest.webmanifest
 - README.md
+- assets/monsters/v19/
 
-Keep the existing assets folder unchanged.
+Keep all existing assets.
