@@ -1,46 +1,21 @@
-# Barcode Battle v1.6 — Battle FX & Adventure+
+# Barcode Battle v1.7 — Full Asset Library
 
-## 2Dバトル演出強化
-- 専用バトルステージUI
-- 自分を左下、敵を右上に大型表示
-- HP / 状態異常をバトルHUD化
-- ダメージ数字ポップ
-- 会心は大型CRIT表示
-- 斬撃 / 炎 / 毒 / 雷エフェクト
-- 被弾時の画面揺れ
-- バトル開始演出
-- ×1 / ×2 / ×3 倍速
+This package is GitHub-ready and includes the game plus an organized asset library.
 
-## バーコード見た目生成
-通常個体はバーコードから以下を固定生成:
-- 武器系統
-- 模様
-- オーラ
-- 色調
-- フォーム
+## Structure
+- assets/monsters/normal
+- assets/monsters/rare
+- assets/monsters/legendary/<species>
+- assets/effects/<type>
+- assets/backgrounds/<stage>
+- assets/items/<category>
+- assets/ui/<category>
+- assets/reference
 
-★5 + SS は「伝説個体」演出対象。
-さらにごく一部は「神話個体」演出対象。
-専用立ち絵ファイルを後から追加できる構造にするための土台です。
+The legacy paths assets/monsters/slime.png etc. are preserved because the current game still references them.
 
-## 冒険モード大幅強化
-難易度:
-- NORMAL
-- HARD
-- NIGHTMARE
+## GitHub
+Extract this ZIP, select everything inside, then upload to the repository root.
+Overwrite index.html / sw.js / manifest.webmanifest / README.md when GitHub asks.
 
-各ステージ:
-- 3つのミッション
-- 最大★3評価
-- 攻略回数記録
-- 難易度ごとに敵能力と報酬倍率上昇
-- HARD / NIGHTMARE専用強化
-- 宝箱城は難易度ごとに初回宝箱報酬
-- 章踏破報酬
-- 再攻略でも育成EXP・ゴールド獲得
-
-第一章だけでも NORMAL → HARD → NIGHTMARE と進められます。
-
-## GitHub更新
-assets画像は変更していません。
-index.html / sw.js / manifest.webmanifest / README.md の4ファイルを上書きしてください。
+Do not delete any existing files unless you are replacing them with files from this package.

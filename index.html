@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v1.6</title>
+  <title>Barcode Battle v1.7</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -394,7 +394,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.6 / Battle FX & Adventure+</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.7 / Full Asset Library</div></div>
     </div>
     
   </div>
@@ -579,8 +579,8 @@
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const STORAGE_KEY="barcodeBattle_v16";
-const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v15") || localStorage.getItem("barcodeBattle_v14") || localStorage.getItem("barcodeBattle_v13") || localStorage.getItem("barcodeBattle_v12") || localStorage.getItem("barcodeBattle_v11") || localStorage.getItem("barcodeBattle_v10") || localStorage.getItem("barcodeBattle_v09") || localStorage.getItem("barcodeBattle_v08") || localStorage.getItem("barcodeBattle_v07") || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
+const STORAGE_KEY="barcodeBattle_v17";
+const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v16") || localStorage.getItem("barcodeBattle_v15") || localStorage.getItem("barcodeBattle_v14") || localStorage.getItem("barcodeBattle_v13") || localStorage.getItem("barcodeBattle_v12") || localStorage.getItem("barcodeBattle_v11") || localStorage.getItem("barcodeBattle_v10") || localStorage.getItem("barcodeBattle_v09") || localStorage.getItem("barcodeBattle_v08") || localStorage.getItem("barcodeBattle_v07") || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
 const state = legacy ? JSON.parse(legacy) : {monsters:[], dex:{}, activeMonsterId:null, gold:0, bestFloor:0};
 state.monsters ||= []; state.dex ||= {}; state.gold ||= 0; state.bestFloor ||= 0;
 state.favoriteMonsterIds ||= [];
