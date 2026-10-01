@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v1.4</title>
+  <title>Barcode Battle v1.5</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -268,6 +268,24 @@
       font-weight:950;font-size:18px;z-index:20;
     }
 
+
+    .monster-labels{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+    .monster-label{font-size:9px;padding:2px 5px;border-radius:999px;background:#15304a;color:#bfd8ee;white-space:nowrap}
+    .monster-label.item{background:#2b2248;color:#e9dcff}
+    .monster-label.id{background:#18212c;color:#9fb2c5}
+    .mini-stats{display:grid;grid-template-columns:1fr 1fr;gap:2px 6px;margin-top:5px;font-size:9px;color:#9fb5ca}
+    .mini-stats b{color:#eaf6ff;font-weight:850}
+    .nickname-box{background:#0b1929;border:1px solid #294a68;border-radius:15px;padding:10px;margin-top:9px}
+    .nickname-row{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:7px}
+    .nickname-row input{width:100%;min-width:0}
+    .species-sub{font-size:11px;color:#8fa9c1;margin-top:2px}
+    .roster-card{position:relative}
+    .roster-card .roster-name{font-weight:950;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .roster-card .roster-sub{font-size:9px;color:#9fb4c7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .item-effect-box{margin-top:6px;padding:7px 8px;border-radius:10px;background:#101f31;border:1px solid #28455f}
+    .item-effect-title{font-size:10px;font-weight:900;color:#d7ebff}
+    .item-effect-text{font-size:11px;color:#a9bdd3;line-height:1.5;margin-top:2px}
+
 </style>
 </head>
 <body>
@@ -275,7 +293,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.4 / Reroll UX Fix</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.5 / Identity & Item Detail</div></div>
     </div>
     
   </div>
@@ -350,7 +368,13 @@
     <div class="card"><div class="section-title">モンスターBOX</div><div id="boxInfo" class="muted"></div><div id="boxGrid" class="grid" style="margin-top:12px"></div></div>
     <div id="selectedCard" class="card" hidden>
       <div class="hero"><div id="boxPortrait" class="portrait"></div><div><div id="boxName" class="name"></div><div id="boxMeta" class="badges"></div><div id="boxLevel" class="level"></div><div class="xpbox"><div id="boxXpText" class="muted"></div><div class="progress"><div id="boxXpBar"></div></div></div></div></div>
-      <div id="boxStats" class="stats" style="margin-top:12px"></div><div id="boxSkill" class="skillbox"></div>
+      <div id="boxStats" class="stats" style="margin-top:12px"></div>
+      <div class="nickname-box">
+        <b>✏️ 名前変更</b>
+        <div class="species-sub">元の種族名：<span id="boxSpeciesName"></span> / 個体ID：<span id="boxIndividualId"></span></div>
+        <div class="nickname-row"><input id="nicknameInput" maxlength="12" placeholder="ニックネーム"><button id="renameBtn" class="btn">変更</button></div>
+      </div>
+      <div id="boxSkill" class="skillbox"></div>
       <div id="equippedItemBox" class="equipment-card"></div>
       <div class="equipment-card">
         <div class="equipment-head"><b>✨ 育成EXPを振り分け</b><span class="muted">所持 <span id="boxExpBankText">0</span> EXP</span></div>
@@ -443,8 +467,8 @@
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-const STORAGE_KEY="barcodeBattle_v14";
-const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v13") || localStorage.getItem("barcodeBattle_v12") || localStorage.getItem("barcodeBattle_v11") || localStorage.getItem("barcodeBattle_v10") || localStorage.getItem("barcodeBattle_v09") || localStorage.getItem("barcodeBattle_v08") || localStorage.getItem("barcodeBattle_v07") || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
+const STORAGE_KEY="barcodeBattle_v15";
+const legacy = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("barcodeBattle_v14") || localStorage.getItem("barcodeBattle_v13") || localStorage.getItem("barcodeBattle_v12") || localStorage.getItem("barcodeBattle_v11") || localStorage.getItem("barcodeBattle_v10") || localStorage.getItem("barcodeBattle_v09") || localStorage.getItem("barcodeBattle_v08") || localStorage.getItem("barcodeBattle_v07") || localStorage.getItem("barcodeBattle_v06") || localStorage.getItem("barcodeBattle_v05") || localStorage.getItem("barcodeBattle_v04") || localStorage.getItem("barcodeBattle_v03") || localStorage.getItem("barcodeBattle_v02");
 const state = legacy ? JSON.parse(legacy) : {monsters:[], dex:{}, activeMonsterId:null, gold:0, bestFloor:0};
 state.monsters ||= []; state.dex ||= {}; state.gold ||= 0; state.bestFloor ||= 0;
 state.favoriteMonsterIds ||= [];
@@ -454,6 +478,7 @@ state.storyMonsterId ||= state.activeMonsterId || null;
 state.storyCleared ||= [];
 state.expBank ||= 0;
 state.items ||= [];
+state.items.forEach(i=>normalizeLegacyItem(i));
 state.storyMonsterId ||= state.battleMonsterId || null;
 state.gachaCount ||= 0;
 if(state.activeMonsterId && !state.favoriteMonsterIds.includes(state.activeMonsterId)) state.favoriteMonsterIds.push(state.activeMonsterId);
@@ -465,6 +490,7 @@ state.monsters.forEach(m=>{
   }
   if(!m.archetype)m.archetype={id:"legacy",name:"旧世代型"};
   if(m.equippedItemId===undefined)m.equippedItemId=null;
+  if(m.nickname===undefined)m.nickname="";
   if(!m.form){
     const forms=[{id:"normal",name:"ノーマル"},{id:"royal",name:"ロイヤル"},{id:"crystal",name:"クリスタル"},{id:"shadow",name:"シャドウ"},{id:"primal",name:"プライマル"}];
     m.form=forms[(m.seed||hashString(m.name))%forms.length];
@@ -660,9 +686,36 @@ function portraitSVG(m){
     <img class="monster-art rarity-${rare}" src="${src}" alt="${m.name}"
       style="filter:hue-rotate(${fx.h}deg) saturate(${fx.s}) brightness(${fx.b}) drop-shadow(0 12px 18px rgba(0,0,0,.40))"></div>`;
 }
+function displayName(m){return (m.nickname&&m.nickname.trim())?m.nickname.trim():m.name;}
+function shortMonsterId(m){
+  const raw=String(m.id||"");
+  return raw.length>6?raw.slice(-6).toUpperCase():raw.toUpperCase();
+}
+function monsterCardMeta(m){
+  const s=displayStats(m),item=equippedItem(m);
+  return {stats:s,itemText:item?`${item.icon}${item.name}`:"装備なし",id:shortMonsterId(m)};
+}
+function renameMonster(monsterId,newName){
+  const m=monsterById(monsterId);if(!m)return;
+  const clean=String(newName||"").trim().slice(0,12);
+  m.nickname=clean;
+  save();renderBox();renderBattleSelection();renderDungeon();renderStory();
+}
 function rosterHtml(selectedId){
   if(!state.monsters.length)return'<div class="empty">BOXにモンスターがいません。</div>';
-  return state.monsters.map(m=>`<button class="roster-card ${m.id===selectedId?'selected':''}" data-monster="${m.id}"><div class="miniimg">${portraitSVG(m)}</div><b>${m.name}</b><div class="tiny">Lv.${m.level} ${m.element} ${isFavorite(m.id)?'★':''}</div></button>`).join('');
+  return state.monsters.map(m=>{
+    const meta=monsterCardMeta(m),s=meta.stats,item=equippedItem(m);
+    return `<button class="roster-card ${m.id===selectedId?'selected':''}" data-monster="${m.id}">
+      <div class="miniimg">${portraitSVG(m)}</div>
+      <div class="roster-name">${displayName(m)}</div>
+      <div class="roster-sub">Lv.${m.level} ${m.element} / ${m.archetype?.name||"旧世代型"}</div>
+      <div class="monster-labels">
+        <span class="monster-label id">ID ${meta.id}</span>
+        <span class="monster-label item">${item?item.icon+" "+item.name:"装備なし"}</span>
+      </div>
+      <div class="mini-stats"><span>HP <b>${s.hp}</b></span><span>攻 <b>${s.atk}</b></span><span>防 <b>${s.def}</b></span><span>速 <b>${s.spd}</b></span></div>
+    </button>`;
+  }).join('');
 }
 function bindRoster(containerId,key,onPick){
   const box=$(containerId);if(!box)return;
@@ -714,16 +767,48 @@ function renderSummon(m){
 }
 function addToBox(){ if(!currentSummon)return; if(state.monsters.length>=60){ alert('BOX上限は60体です。'); return; } state.monsters.push(currentSummon); if(!state.battleMonsterId)state.battleMonsterId=currentSummon.id;if(!state.dungeonMonsterId)state.dungeonMonsterId=currentSummon.id;if(!state.storyMonsterId)state.storyMonsterId=currentSummon.id; save(); renderBox(); renderDungeon(); alert('BOXに保存しました！'); $('#saveBtn').disabled=true; $('#saveBtn').textContent='保存済み'; updateTopBar(); }
 
-function renderBox(){ $('#boxInfo').textContent=`${state.monsters.length}/60体`; const g=$('#boxGrid'); g.innerHTML=''; if(!state.monsters.length){ g.innerHTML='<div class="empty" style="grid-column:1/-1">まだキャラクターがいません。</div>'; $('#selectedCard').hidden=true; return; }
-  state.monsters.forEach(m=>{ const d=document.createElement('button'); d.type='button'; d.className='monster-mini'+(m.id===selectedId?' selected':''); d.innerHTML=`${isFavorite(m.id)?'<span class="active-ribbon">★</span>':''}<div class="miniimg">${portraitSVG(m)}</div><div class="mini-name">${m.name}</div><div class="tiny">Lv.${m.level} / ${m.element} / ${m.archetype?.name||'旧世代型'}</div>`; d.addEventListener('click',()=>{ selectedId=m.id; renderBox(); renderSelected(m); }); g.appendChild(d); });
-  const selected = state.monsters.find(m=>m.id===selectedId) || state.monsters[0]; if(selected){ selectedId = selected.id; renderSelected(selected); }
+function renderBox(){
+  $('#boxInfo').textContent=`${state.monsters.length}/60体`;
+  const g=$('#boxGrid');g.innerHTML='';
+  if(!state.monsters.length){
+    g.innerHTML='<div class="empty" style="grid-column:1/-1">まだキャラクターがいません。</div>';
+    $('#selectedCard').hidden=true;return;
+  }
+  state.monsters.forEach(m=>{
+    const s=displayStats(m),item=equippedItem(m);
+    const d=document.createElement('button');
+    d.type='button';
+    d.className='monster-mini'+(m.id===selectedId?' selected':'');
+    d.innerHTML=`${isFavorite(m.id)?'<span class="active-ribbon">★</span>':''}
+      <div class="miniimg">${portraitSVG(m)}</div>
+      <div class="mini-name">${displayName(m)}</div>
+      <div class="tiny">Lv.${m.level} / ${m.element} / ${m.archetype?.name||'旧世代型'}</div>
+      <div class="monster-labels"><span class="monster-label id">ID ${shortMonsterId(m)}</span><span class="monster-label item">${item?item.icon+" "+item.name:"装備なし"}</span></div>
+      <div class="mini-stats"><span>HP <b>${s.hp}</b></span><span>攻 <b>${s.atk}</b></span><span>防 <b>${s.def}</b></span><span>速 <b>${s.spd}</b></span></div>`;
+    d.addEventListener('click',()=>{selectedId=m.id;renderBox();renderSelected(m);});
+    g.appendChild(d);
+  });
+  const selected=state.monsters.find(m=>m.id===selectedId)||state.monsters[0];
+  if(selected){selectedId=selected.id;renderSelected(selected);}
 }
 function renderSelected(m){
-  $('#selectedCard').hidden=false;$('#boxPortrait').innerHTML=portraitSVG(m);$('#boxName').textContent=m.name;
+  $('#selectedCard').hidden=false;
+  $('#boxPortrait').innerHTML=portraitSVG(m);
+  $('#boxName').textContent=displayName(m);
+  $('#boxSpeciesName').textContent=m.name;
+  $('#boxIndividualId').textContent=shortMonsterId(m);
+  $('#nicknameInput').value=m.nickname||"";
   $('#boxMeta').innerHTML=`<span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge archetype-badge">${m.archetype?.name||"旧世代型"}</span><span class="badge">${m.form?.name||"ノーマル"}</span><span class="badge">個体 ${m.rank}</span>${isFavorite(m.id)?'<span class="badge">お気に入り</span>':''}`;
-  $('#boxLevel').textContent=`Lv.${m.level}`;$('#boxXpText').textContent=`EXP ${m.xp}/${xpNeed(m.level)}`;$('#boxXpBar').style.width=xpPercent(m)+'%';
-  const s=displayStats(m);$('#boxStats').innerHTML=`<div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div>`;
-  $('#boxSkill').innerHTML=`<div class="power-total">特殊能力 ${m.skills?.length||0}個</div>${abilityListHtml(m)}`;refreshFavoriteButton(m);$('#boxExpBankText').textContent=state.expBank;renderEquippedItem(m);renderItemInventory(m);
+  $('#boxLevel').textContent=`Lv.${m.level}`;
+  $('#boxXpText').textContent=`EXP ${m.xp}/${xpNeed(m.level)}`;
+  $('#boxXpBar').style.width=xpPercent(m)+'%';
+  const s=displayStats(m);
+  $('#boxStats').innerHTML=`<div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div>`;
+  $('#boxSkill').innerHTML=`<div class="power-total">特殊能力 ${m.skills?.length||0}個</div>${abilityListHtml(m)}`;
+  refreshFavoriteButton(m);
+  $('#boxExpBankText').textContent=state.expBank;
+  renderEquippedItem(m);
+  renderItemInventory(m);
 }
 function refreshFavoriteButton(m){
   if(!m)return;
@@ -752,7 +837,7 @@ function makeEnemyForMonster(m,bonusLevel=0){
 }
 function unitFromMonster(m){
   const s=displayStats(m);
-  const u={...m,maxHp:s.hp,currentHp:s.hp,atk:s.atk,def:s.def,spd:s.spd,first:true,guarding:false,statuses:{},barrier:0,item:equippedItem(m)};
+  const u={...m,speciesName:m.name,name:displayName(m),maxHp:s.hp,currentHp:s.hp,atk:s.atk,def:s.def,spd:s.spd,first:true,guarding:false,statuses:{},barrier:0,item:equippedItem(m)};
   const barrier=hasAbility(u,"barrier");if(barrier)u.barrier=Math.round(u.maxHp*barrier.value/100);
   return u;
 }
@@ -763,7 +848,9 @@ function statusHtml(u){
 }
 function applyStatus(target,kind,ability,logger){
   const resist=hasAbility(target,"statusGuard");
-  const chance=Math.round((ability.chance||100)*(1-(resist?resist.value/100:0)));
+  const itemResist=target.item?.effect==="statusGuard"?(target.item.extraValue||0):0;
+  const totalResist=Math.min(80,(resist?.value||0)+itemResist);
+  const chance=Math.round((ability.chance||100)*(1-totalResist/100));
   if(Math.random()*100>=chance)return;
   target.statuses[kind]={turns:ability.turns||1,value:ability.value||0};
   const names={burn:"🔥炎上",poison:"☠毒",stun:"⚡麻痺",weaken:"攻撃DOWN",armorBreak:"防御DOWN"};
@@ -802,14 +889,14 @@ function endOfAction(unit,enemy,logger){
   if(poisonRegen&&enemy?.statuses?.poison?.turns>0&&unit.currentHp>0){
     const h=Math.max(1,Math.round(unit.maxHp*poisonRegen.value/100));unit.currentHp=Math.min(unit.maxHp,unit.currentHp+h);logger(`毒食いで${h}回復`);
   }
-  if(unit.item?.extra==="regen"&&unit.currentHp>0){const h=Math.max(1,Math.round(unit.maxHp*unit.item.extraValue/100));unit.currentHp=Math.min(unit.maxHp,unit.currentHp+h);logger(`装備効果で${h}回復`);}const cleanse=hasAbility(unit,"cleanse");
+  if(unit.item?.effect==="regen"&&unit.currentHp>0){const h=Math.max(1,Math.round(unit.maxHp*unit.item.extraValue/100));unit.currentHp=Math.min(unit.maxHp,unit.currentHp+h);logger(`装備効果で${h}回復`);}const cleanse=hasAbility(unit,"cleanse");
   if(cleanse&&Math.random()*100<cleanse.value){
     const keys=Object.keys(unit.statuses).filter(k=>unit.statuses[k]?.turns>0);
     if(keys.length){const k=keys[Math.floor(Math.random()*keys.length)];delete unit.statuses[k];logger(`${unit.name}は状態異常を解除！`);}
   }
 }
 function calcDamage(a,d,special=false,logger=()=>{}){
-  const evade=hasAbility(d,"evasion");const itemEvade=d.item?.extra==="evasion"?d.item.extraValue:0;if(Math.random()*100<((evade?.value||0)+itemEvade))return{dmg:0,note:"回避！ "};
+  const evade=hasAbility(d,"evasion");const itemEvade=d.item?.effect==="evasion"?d.item.extraValue:0;if(Math.random()*100<((evade?.value||0)+itemEvade))return{dmg:0,note:"回避！ "};
 
   let atk=a.atk,def=d.def,note="";
   const weaken=a.statuses?.weaken;if(weaken?.turns>0)atk*=1-weaken.value/100;
@@ -840,9 +927,9 @@ function calcDamage(a,d,special=false,logger=()=>{}){
   const ps=hasAbility(a,"poisonSynergy");if(ps&&d.statuses?.poison?.turns>0){power*=1+ps.value/100;note+="猛毒シナジー! ";}
 
   let dmg=Math.max(Math.round(atk*.07),Math.round(power-def*.48));
-  const crit=hasAbility(a,"crit");const itemCrit=a.item?.extra==="crit"?a.item.extraValue:0;if(Math.random()*100<((crit?.value||0)+itemCrit)){dmg=Math.round(dmg*1.75);note+="会心! ";}
+  const crit=hasAbility(a,"crit");const itemCrit=a.item?.effect==="crit"?a.item.extraValue:0;if(Math.random()*100<((crit?.value||0)+itemCrit)){dmg=Math.round(dmg*1.75);note+="会心! ";}
 
-  const guard=hasAbility(d,"guard");if(guard)dmg=Math.round(dmg*(1-guard.value/100));if(d.item?.extra==="guard")dmg=Math.round(dmg*(1-d.item.extraValue/100));
+  const guard=hasAbility(d,"guard");if(guard)dmg=Math.round(dmg*(1-guard.value/100));if(d.item?.effect==="guard")dmg=Math.round(dmg*(1-d.item.extraValue/100));
   if(d.guarding){dmg=Math.round(dmg*.52);note+="防御! ";}
 
   if(d.barrier>0){
@@ -863,6 +950,17 @@ function calcDamage(a,d,special=false,logger=()=>{}){
   if(special){
     for(const kind of ["burn","poison","stun","weaken","armorBreak"]){
       const ab=hasAbility(a,kind);if(ab)applyStatus(d,kind,ab,logger);
+    }
+  }
+  if(special&&a.item){
+    const it=normalizeLegacyItem(a.item);
+    if(["burn","poison","stun"].includes(it.effect)){
+      const pseudo={
+        chance:it.chance||30,
+        turns:it.effect==="stun"?1:(it.turns||3),
+        value:it.effect==="burn"||it.effect==="poison"?(it.dot||4):0
+      };
+      applyStatus(d,it.effect,pseudo,logger);
     }
   }
 
@@ -945,7 +1043,7 @@ function renderDungeon(){
   updateTopBar();bindRoster('#dungeonRoster','dungeonMonsterId',renderDungeon);const m=dungeonMonster(),wrap=$('#dungeonActiveWrap');
   if(!m){wrap.innerHTML='<div class="empty">まずBOXからお気に入りモンスターを設定してください。</div>';$('#upgradeArea').innerHTML='';$('#dungeonRunCard').hidden=true;return;}
   const s=displayStats(m);
-  wrap.innerHTML=`<div class="hero"><div class="portrait ${m.stars>=4?'sparkle':''}">${portraitSVG(m)}</div><div><div class="name" style="font-size:22px">${m.name}</div><div class="badges"><span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge archetype-badge">${m.archetype?.name||"旧世代型"}</span><span class="badge">Lv.${m.level}</span></div><div class="stats"><div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div></div></div></div>`;
+  wrap.innerHTML=`<div class="hero"><div class="portrait ${m.stars>=4?'sparkle':''}">${portraitSVG(m)}</div><div><div class="name" style="font-size:22px">${displayName(m)}</div><div class="badges"><span class="badge stars">${formatStars(m.stars)}</span><span class="badge">${m.element}</span><span class="badge">${m.type}</span><span class="badge archetype-badge">${m.archetype?.name||"旧世代型"}</span><span class="badge">Lv.${m.level}</span></div><div class="stats"><div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div></div></div></div>`;
   renderUpgradeArea();renderDungeonRun();
 }
 function upgradeCost(monster,key){const bonus=monster.bonus?.[key]||0,base={hp:50,atk:60,def:60,spd:60}[key],step={hp:Math.floor(bonus/35)*18,atk:Math.floor(bonus/10)*18,def:Math.floor(bonus/10)*18,spd:Math.floor(bonus/8)*18}[key];return base+step;}
@@ -998,39 +1096,103 @@ function nextDungeonFloor(){
 }
 function retireDungeon(){if(!dungeonRun)return;if(confirm('ダンジョンから撤退しますか？')){if(dungeonRun.timer)clearTimeout(dungeonRun.timer);dungeonRun=null;$('#dungeonResult').textContent='';renderDungeon();}}
 const itemTemplates=[
-  {type:"weapon",icon:"⚔️",names:["紅蓮ブレード","蒼雷ソード","月影ダガー"],stat:"atk",min:25,max:140,extra:"crit"},
-  {type:"shield",icon:"🛡️",names:["守護の盾","竜鱗シールド","星鉄の盾"],stat:"def",min:25,max:150,extra:"guard"},
-  {type:"charm",icon:"🔮",names:["命の護符","精霊のお守り","再生の石"],stat:"hp",min:80,max:420,extra:"regen"},
-  {type:"boots",icon:"🥾",names:["疾風ブーツ","雷光の靴","影走り"],stat:"spd",min:20,max:120,extra:"evasion"},
-  {type:"core",icon:"💠",names:["毒牙コア","灼熱コア","鋼心コア"],stat:"atk",min:15,max:90,extra:"status"}
+  {type:"weapon",icon:"⚔️",name:"紅蓮ブレード",stat:"atk",min:55,max:140,effect:"crit",effectLabel:"会心",desc:v=>`攻撃+${v.stat}。会心率+${v.extra}%`},
+  {type:"weapon",icon:"⚔️",name:"蒼雷ソード",stat:"atk",min:50,max:130,effect:"stun",effectLabel:"麻痺",desc:v=>`攻撃+${v.stat}。特殊攻撃時${v.chance}%で麻痺を1行動付与`},
+  {type:"weapon",icon:"⚔️",name:"月影ダガー",stat:"atk",min:45,max:120,effect:"crit",effectLabel:"会心",desc:v=>`攻撃+${v.stat}。会心率+${v.extra}%`},
+  {type:"shield",icon:"🛡️",name:"守護の盾",stat:"def",min:55,max:150,effect:"guard",effectLabel:"軽減",desc:v=>`防御+${v.stat}。受けるダメージを${v.extra}%軽減`},
+  {type:"shield",icon:"🛡️",name:"竜鱗シールド",stat:"def",min:60,max:155,effect:"statusGuard",effectLabel:"状態耐性",desc:v=>`防御+${v.stat}。状態異常を受ける確率を${v.extra}%軽減`},
+  {type:"shield",icon:"🛡️",name:"星鉄の盾",stat:"def",min:50,max:145,effect:"guard",effectLabel:"軽減",desc:v=>`防御+${v.stat}。受けるダメージを${v.extra}%軽減`},
+  {type:"charm",icon:"🔮",name:"命の護符",stat:"hp",min:160,max:420,effect:"regen",effectLabel:"再生",desc:v=>`HP+${v.stat}。行動後に最大HPの${v.extra}%回復`},
+  {type:"charm",icon:"🔮",name:"精霊のお守り",stat:"hp",min:140,max:380,effect:"statusGuard",effectLabel:"状態耐性",desc:v=>`HP+${v.stat}。状態異常を受ける確率を${v.extra}%軽減`},
+  {type:"charm",icon:"🔮",name:"再生の石",stat:"hp",min:120,max:350,effect:"regen",effectLabel:"再生",desc:v=>`HP+${v.stat}。行動後に最大HPの${v.extra}%回復`},
+  {type:"boots",icon:"🥾",name:"疾風ブーツ",stat:"spd",min:45,max:120,effect:"evasion",effectLabel:"回避",desc:v=>`素早さ+${v.stat}。回避率+${v.extra}%`},
+  {type:"boots",icon:"🥾",name:"雷光の靴",stat:"spd",min:40,max:115,effect:"stun",effectLabel:"麻痺",desc:v=>`素早さ+${v.stat}。特殊攻撃時${v.chance}%で麻痺を1行動付与`},
+  {type:"boots",icon:"🥾",name:"影走り",stat:"spd",min:35,max:110,effect:"evasion",effectLabel:"回避",desc:v=>`素早さ+${v.stat}。回避率+${v.extra}%`},
+  {type:"core",icon:"💠",name:"毒牙コア",stat:"atk",min:25,max:90,effect:"poison",effectLabel:"毒",desc:v=>`攻撃+${v.stat}。特殊攻撃時${v.chance}%で毒を${v.turns}行動付与。毒は行動ごとに最大HPの${v.dot}%ダメージ`},
+  {type:"core",icon:"💠",name:"灼熱コア",stat:"atk",min:25,max:90,effect:"burn",effectLabel:"炎上",desc:v=>`攻撃+${v.stat}。特殊攻撃時${v.chance}%で炎上を${v.turns}行動付与。炎上は行動ごとに最大HPの${v.dot}%ダメージ`},
+  {type:"core",icon:"💠",name:"鋼心コア",stat:"def",min:25,max:95,effect:"statusGuard",effectLabel:"状態耐性",desc:v=>`防御+${v.stat}。状態異常を受ける確率を${v.extra}%軽減`}
 ];
 function itemStars(r){const x=r();return x>.985?5:x>.92?4:x>.72?3:x>.38?2:1;}
 function makeItem(forceHigh=false){
   const r=Math.random,t=itemTemplates[Math.floor(r()*itemTemplates.length)];
   let stars=itemStars(r);if(forceHigh&&stars<4)stars=4;
-  const scale=1+(stars-1)*.35,value=Math.round((t.min+r()*(t.max-t.min))*scale),extraValue=Math.round((4+r()*8)*scale);
-  return {id:"i_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8),type:t.type,icon:t.icon,name:t.names[Math.floor(r()*t.names.length)],stars,stat:t.stat,value,extra:t.extra,extraValue};
+  const scale=1+(stars-1)*.35;
+  const value=Math.round((t.min+r()*(t.max-t.min))*scale);
+  const extraValue=Math.round((4+r()*8)*scale);
+  const chance=Math.min(75,Math.round((18+r()*20)*scale));
+  const turns=Math.max(2,Math.min(5,Math.round(2+r()*2+(stars>=4?1:0))));
+  const dot=Math.min(12,Math.round((2+r()*4)*scale));
+  return {
+    id:"i_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8),
+    type:t.type,icon:t.icon,name:t.name,stars,stat:t.stat,value,
+    effect:t.effect,extraValue,chance,turns,dot
+  };
+}
+function normalizeLegacyItem(item){
+  if(!item)return item;
+  if(item.effect)return item;
+  const byName={
+    "灼熱コア":"burn","毒牙コア":"poison","鋼心コア":"statusGuard",
+    "守護の盾":"guard","竜鱗シールド":"statusGuard","星鉄の盾":"guard",
+    "命の護符":"regen","再生の石":"regen","精霊のお守り":"statusGuard",
+    "疾風ブーツ":"evasion","影走り":"evasion","雷光の靴":"stun",
+    "紅蓮ブレード":"crit","月影ダガー":"crit","蒼雷ソード":"stun"
+  };
+  item.effect=byName[item.name]||item.extra||"";
+  item.extraValue=item.extraValue||8;
+  item.chance=item.chance||30;
+  item.turns=item.turns||3;
+  item.dot=item.dot||4;
+  return item;
 }
 function itemDesc(item){
-  const statName={hp:"HP",atk:"攻撃",def:"防御",spd:"素早さ"}[item.stat];
-  const extraName={crit:`会心率+${item.extraValue}%`,guard:`被ダメージ-${item.extraValue}%`,regen:`行動後HP${item.extraValue}%回復`,evasion:`回避率+${item.extraValue}%`,status:`状態異常付与率+${item.extraValue}%`}[item.extra]||"";
-  return `${statName}+${item.value} / ${extraName}`;
+  item=normalizeLegacyItem(item);
+  const statName={hp:"HP",atk:"攻撃",def:"防御",spd:"素早さ"}[item.stat]||"能力";
+  const base=`${statName}+${item.value}`;
+  const effects={
+    crit:`会心率+${item.extraValue}%`,
+    guard:`受けるダメージを${item.extraValue}%軽減`,
+    regen:`行動後、最大HPの${item.extraValue}%を回復`,
+    evasion:`回避率+${item.extraValue}%`,
+    statusGuard:`状態異常を受ける確率を${item.extraValue}%軽減`,
+    burn:`特殊攻撃時${item.chance}%で炎上を${item.turns}行動付与。炎上中は行動ごとに最大HPの${item.dot}%ダメージ`,
+    poison:`特殊攻撃時${item.chance}%で毒を${item.turns}行動付与。毒中は行動ごとに最大HPの${item.dot}%ダメージ`,
+    stun:`特殊攻撃時${item.chance}%で麻痺を1行動付与`
+  };
+  return `${base}。${effects[item.effect]||"追加効果なし"}`;
 }
-function equippedItem(m){return state.items.find(i=>i.id===m?.equippedItemId)||null;}
+function itemEffectTitle(item){
+  item=normalizeLegacyItem(item);
+  return {crit:"会心",guard:"ダメージ軽減",regen:"自動回復",evasion:"回避",statusGuard:"状態異常耐性",burn:"炎上付与",poison:"毒付与",stun:"麻痺付与"}[item.effect]||"装備効果";
+}
+function equippedItem(m){
+  const item=state.items.find(i=>i.id===m?.equippedItemId)||null;
+  return normalizeLegacyItem(item);
+}
 function equipItem(monsterId,itemId){
   const m=monsterById(monsterId);if(!m)return;
   state.monsters.forEach(x=>{if(x.id!==m.id&&x.equippedItemId===itemId)x.equippedItemId=null;});
-  m.equippedItemId=itemId||null;save();renderBox();
+  m.equippedItemId=itemId||null;save();renderBox();renderBattleSelection();renderDungeon();renderStory();
 }
 function renderItemInventory(m){
   const el=$('#itemInventory');if(!el)return;
   if(!state.items.length){el.innerHTML='<div class="empty" style="grid-column:1/-1">装備アイテムがありません。装備ガチャで入手できます。</div>';return;}
-  el.innerHTML=state.items.map(item=>`<button class="item-card ${m.equippedItemId===item.id?'equipped':''}" data-item="${item.id}"><div><span class="equip-icon">${item.icon}</span> <span class="item-rarity">${formatStars(item.stars)}</span></div><div class="item-name">${item.name}</div><div class="item-desc">${itemDesc(item)}</div></button>`).join('');
+  el.innerHTML=state.items.map(raw=>{
+    const item=normalizeLegacyItem(raw);
+    return `<button class="item-card ${m.equippedItemId===item.id?'equipped':''}" data-item="${item.id}">
+      <div><span class="equip-icon">${item.icon}</span> <span class="item-rarity">${formatStars(item.stars)}</span></div>
+      <div class="item-name">${item.name}</div>
+      <div class="item-effect-box"><div class="item-effect-title">${itemEffectTitle(item)}</div><div class="item-effect-text">${itemDesc(item)}</div></div>
+    </button>`;
+  }).join('');
   el.querySelectorAll('[data-item]').forEach(b=>b.addEventListener('click',()=>equipItem(m.id,b.dataset.item)));
 }
 function renderEquippedItem(m){
   const el=$('#equippedItemBox');if(!el)return;const item=equippedItem(m);
-  el.innerHTML=item?`<div class="equipment-head"><b>装備中</b><button class="btn secondary" id="unequipBtn">外す</button></div><div style="margin-top:7px"><span class="equip-icon">${item.icon}</span> <span class="item-rarity">${formatStars(item.stars)}</span> <b>${item.name}</b><div class="item-desc">${itemDesc(item)}</div></div>`:'<b>装備中</b><div class="muted" style="margin-top:6px">装備なし</div>';
+  el.innerHTML=item?`<div class="equipment-head"><b>装備中</b><button class="btn secondary" id="unequipBtn">外す</button></div>
+    <div style="margin-top:7px"><span class="equip-icon">${item.icon}</span> <span class="item-rarity">${formatStars(item.stars)}</span> <b>${item.name}</b>
+    <div class="item-effect-box"><div class="item-effect-title">${itemEffectTitle(item)}</div><div class="item-effect-text">${itemDesc(item)}</div></div></div>`:
+    '<b>装備中</b><div class="muted" style="margin-top:6px">装備なし</div>';
   if(item)$('#unequipBtn').addEventListener('click',()=>equipItem(m.id,null));
 }
 const storyStages=[
@@ -1152,16 +1314,16 @@ function allocateExp(monsterId,amount){
   const m=monsterById(monsterId);amount=Math.floor(Number(amount)||0);
   if(!m||amount<=0)return;if(amount>state.expBank){alert('育成EXPが足りません。');return;}
   state.expBank-=amount;const ups=levelUp(m,amount);save();updateTopBar();renderBox();
-  alert(`${m.name}に${amount}EXP振り分け${ups?`！ Lv.${m.level}へアップ！`:'しました。'}`);
+  alert(`${displayName(m)}に${amount}EXP振り分け${ups?`！ Lv.${m.level}へアップ！`:'しました。'}`);
 }
 async function startScanner(){ if(scanning) return; if(typeof Html5Qrcode==='undefined'){ alert('カメラ読み取り機能の読み込みに失敗しました。'); return; } try{ scanner=new Html5Qrcode('reader'); scanning=true; $('#cameraBtn').disabled=true; $('#stopCameraBtn').disabled=false; $('#scanFrame').style.display='block'; await scanner.start({facingMode:'environment'}, {fps:10, qrbox:{width:280,height:130}, aspectRatio:1.7}, decoded=>{ stopScanner(); summonFromCode(decoded); }, ()=>{}); } catch(e){ scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; alert('カメラを開始できませんでした。Safariのカメラ権限を確認してください。'); } }
 async function stopScanner(){ if(!scanner||!scanning) return; try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner=null; scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; $('#reader').innerHTML=''; }
 
 $$('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
 $('#summonBtn').addEventListener('click',summon);$('#gachaOneBtn').addEventListener('click',()=>doGacha(1));$('#gachaTenBtn').addEventListener('click',()=>doGacha(10));$('#rerollBtn').addEventListener('click',rerollSameCode);$('#saveBtn').addEventListener('click',addToBox);
-$('#barcodeInput').addEventListener('keydown',e=>{if(e.key==='Enter')summon();});
+$('#barcodeInput').addEventListener('keydown',e=>{if(e.key==='Enter')summon();});$('#nicknameInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&selectedId)renameMonster(selectedId,$('#nicknameInput').value);});
 $('#cameraBtn').addEventListener('click',startScanner);$('#stopCameraBtn').addEventListener('click',stopScanner);
-$('#favoriteBtn').addEventListener('click',()=>{if(selectedId)toggleFavorite(selectedId);});$('#expAllocateBtn').addEventListener('click',()=>{if(selectedId)allocateExp(selectedId,$('#expAllocateInput').value);});$$('.expQuickBtn').forEach(b=>b.addEventListener('click',()=>{if(!selectedId)return;const v=b.dataset.exp==='all'?state.expBank:Number(b.dataset.exp);allocateExp(selectedId,Math.min(v,state.expBank));}));$('#deleteMonsterBtn').addEventListener('click',deleteSelected);
+$('#favoriteBtn').addEventListener('click',()=>{if(selectedId)toggleFavorite(selectedId);});$('#renameBtn').addEventListener('click',()=>{if(selectedId)renameMonster(selectedId,$('#nicknameInput').value);});$('#expAllocateBtn').addEventListener('click',()=>{if(selectedId)allocateExp(selectedId,$('#expAllocateInput').value);});$$('.expQuickBtn').forEach(b=>b.addEventListener('click',()=>{if(!selectedId)return;const v=b.dataset.exp==='all'?state.expBank:Number(b.dataset.exp);allocateExp(selectedId,Math.min(v,state.expBank));}));$('#deleteMonsterBtn').addEventListener('click',deleteSelected);
 $('#autoBattleBtn').addEventListener('click',startAutoBattle);$('#newEnemyBtn').addEventListener('click',prepareBattle);
 $('#storyBattleBtn').addEventListener('click',startStoryBattle);
 $('#storyRetryBtn').addEventListener('click',()=>{
