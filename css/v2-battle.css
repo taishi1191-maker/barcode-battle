@@ -398,3 +398,116 @@
  .v2-immersive .battle-unit.player{bottom:26vh!important}
  .v2-immersive .battle-unit .portrait{height:28vh!important}
 }
+
+/* v3.0.3 submenu close / background clarity */
+.v21-submenu-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.v21-submenu-head h4{margin:0!important}
+.v21-submenu-close{width:36px!important;height:36px!important;min-height:36px!important;padding:0!important;display:grid!important;place-items:center!important;text-align:center!important;font-size:24px!important;line-height:1!important;border-radius:50%!important;background:#183a59!important;color:#fff!important;border:1px solid #79c9ff!important}
+.v2-immersive{background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important}
+
+/* =========================================================
+   Barcode Battle v4.0 - Premium Battle Rebuild
+   ========================================================= */
+.v2-immersive{
+  --v4-gold:#f4cd72;
+  --v4-gold-2:#9a6a1f;
+  --v4-blue:#071d36;
+  --v4-blue-2:#0b3156;
+  --v4-line:rgba(244,205,114,.88);
+  background-position:center!important;
+  background-size:cover!important;
+  image-rendering:auto;
+}
+.v2-immersive::before{
+  background:
+    radial-gradient(circle at 50% 48%,rgba(255,255,255,.02),rgba(0,0,0,.12) 65%,rgba(0,0,0,.48) 100%),
+    linear-gradient(180deg,rgba(0,8,22,.08),rgba(0,8,22,.02) 42%,rgba(0,8,22,.20) 76%,rgba(0,5,14,.56) 100%)!important;
+}
+.v2-battle-topbar{
+  border:1px solid var(--v4-line)!important;
+  background:linear-gradient(180deg,rgba(9,34,63,.98),rgba(3,16,34,.98))!important;
+  box-shadow:0 8px 28px rgba(0,0,0,.38),inset 0 0 0 1px rgba(255,255,255,.07)!important;
+  clip-path:polygon(9% 0,91% 0,100% 50%,91% 100%,9% 100%,0 50%);
+  letter-spacing:.08em;
+}
+.v2-immersive .battle-stage-label,.v21-mode-badge{
+  border:1px solid var(--v4-line)!important;
+  background:linear-gradient(180deg,rgba(8,35,64,.97),rgba(3,16,31,.97))!important;
+  box-shadow:0 6px 18px rgba(0,0,0,.36)!important;
+  color:#fff!important;
+}
+.v2-immersive .hud-card{
+  position:relative;
+  overflow:hidden;
+  border:1px solid var(--v4-line)!important;
+  background:linear-gradient(135deg,rgba(5,23,43,.97),rgba(2,12,25,.96))!important;
+  box-shadow:0 10px 28px rgba(0,0,0,.38),inset 0 0 24px rgba(34,117,180,.06)!important;
+  clip-path:polygon(3% 0,97% 0,100% 18%,100% 82%,97% 100%,3% 100%,0 82%,0 18%);
+}
+.v2-immersive .hud-card::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 0 24%,rgba(255,255,255,.05) 32%,transparent 42% 100%);
+}
+.v2-immersive .hud-name{font-weight:900!important;letter-spacing:.02em;text-shadow:0 2px 10px rgba(0,0,0,.75)}
+.v2-immersive .battle-hp{
+  height:12px!important;border-radius:10px!important;padding:1px!important;
+  background:#301626!important;border:1px solid rgba(255,255,255,.15)!important;
+  box-shadow:inset 0 2px 7px rgba(0,0,0,.48)!important;
+}
+.v2-immersive .battle-hp>div{
+  border-radius:8px!important;
+  background:linear-gradient(90deg,#42e7a4 0%,#86ef5b 55%,#d3ff37 100%)!important;
+  box-shadow:0 0 12px rgba(100,255,127,.30)!important;
+}
+.v2-immersive .battle-unit .portrait img.battle-art{
+  filter:drop-shadow(0 14px 12px rgba(0,0,0,.55)) drop-shadow(0 0 10px rgba(255,255,255,.10))!important;
+}
+.v21-action-panel{
+  background:linear-gradient(180deg,rgba(3,18,36,.97),rgba(2,10,24,.98))!important;
+  border:1px solid var(--v4-line)!important;
+  box-shadow:0 -10px 30px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.08)!important;
+}
+.v21-action-panel button{
+  border:1px solid rgba(225,238,255,.38)!important;
+  background:linear-gradient(180deg,#123e69,#082441)!important;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.05),0 4px 10px rgba(0,0,0,.30)!important;
+  text-shadow:0 2px 5px rgba(0,0,0,.65)!important;
+  transition:transform .08s ease,filter .1s ease,box-shadow .1s ease;
+}
+.v21-action-panel button:active{transform:translateY(2px) scale(.98)}
+.v21-action-panel button.primary{background:linear-gradient(180deg,#ffb227,#ad5a00)!important;border-color:#ffd783!important;box-shadow:0 0 15px rgba(255,157,24,.28)!important}
+.v21-action-panel button.special{background:linear-gradient(180deg,#834df4,#4320a9)!important;border-color:#c6a7ff!important;box-shadow:0 0 15px rgba(139,84,255,.26)!important}
+.v21-action-panel button.item{background:linear-gradient(180deg,#20a677,#086247)!important;border-color:#86f7d1!important;box-shadow:0 0 14px rgba(27,211,151,.22)!important}
+.v21-action-panel button.auto.on{background:linear-gradient(180deg,#2a9fe6,#0c4f8b)!important;border-color:#9cddff!important;box-shadow:0 0 18px rgba(50,174,255,.35)!important}
+.v21-submenu{
+  border:1px solid var(--v4-line)!important;
+  background:linear-gradient(180deg,rgba(5,25,47,.985),rgba(2,12,25,.985))!important;
+  box-shadow:0 14px 38px rgba(0,0,0,.48)!important;
+}
+.v21-submenu button:not(.v21-submenu-close){
+  background:linear-gradient(180deg,#0d355b,#071f38)!important;
+  border:1px solid rgba(129,199,255,.32)!important;
+}
+.v4-utility-row{
+  position:absolute;z-index:50;right:12px;bottom:calc(env(safe-area-inset-bottom) + 78px);
+  display:flex;gap:6px;align-items:center;padding:5px 6px;border-radius:14px;
+  background:rgba(2,13,29,.88);border:1px solid rgba(244,205,114,.66);
+  box-shadow:0 5px 18px rgba(0,0,0,.34);backdrop-filter:blur(10px);
+}
+.v4-utility-row button{
+  min-width:38px;height:34px;padding:0 9px;border-radius:9px;border:1px solid rgba(255,255,255,.22);
+  background:linear-gradient(180deg,#173e65,#0a233d);color:#fff;font-weight:900;font-size:12px;
+}
+.v4-utility-row .v4-speed.active{border-color:#f4cd72;box-shadow:0 0 10px rgba(244,205,114,.25)}
+.v4-utility-row .v4-log{min-width:48px}
+.v4-utility-row .v4-exit{min-width:52px;background:linear-gradient(180deg,#44384d,#221b29)}
+.v2-battle-log-panel{
+  border:1px solid rgba(244,205,114,.72)!important;
+  background:rgba(2,14,28,.96)!important;
+  box-shadow:0 12px 32px rgba(0,0,0,.48)!important;
+}
+@media(max-width:430px){
+  .v4-utility-row{right:10px;bottom:calc(env(safe-area-inset-bottom) + 74px);gap:4px;padding:4px}
+  .v4-utility-row button{min-width:34px;height:31px;padding:0 7px;font-size:11px}
+  .v4-utility-row .v4-log{min-width:43px}.v4-utility-row .v4-exit{min-width:46px}
+}

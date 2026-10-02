@@ -1,3 +1,7 @@
+# Barcode Battle v4.0 Premium Battle Rebuild
+
+v3.0.3 を基準に、戦闘画面の高級感・新背景・ユーティリティ操作をまとめて更新した完成パッチです。
+
 # Barcode Battle v3.0.2 Background Patch
 
 このZIPは v3.0.1 Manual First Fix に、新背景適用パッチを加えたものです。

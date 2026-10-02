@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v3.0.1</title>
+  <title>Barcode Battle v4.0</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -640,7 +640,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v3.0.1 / Premium Complete Update</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.0 / Item & Background Fix</div></div>
     </div>
     
   </div>
@@ -1166,30 +1166,33 @@ function battlePortraitHTML(m){
   return consistentMonsterArtHTML(m,"battle");
 }
 function battleBackground(mode,meta={}){
-  if(mode==="com"){
-    const phase=meta.phase||"day";
-    if(phase==="boss")return"assets/backgrounds/v30/arena_boss.jpg";
-    if(phase==="night")return"assets/backgrounds/v30/arena_night.jpg";
-    return"assets/backgrounds/v30/arena_day.jpg";
-  }
+  if(mode==="com")return"assets/backgrounds/v4/arena_colosseum.webp";
   if(mode==="dungeon"){
     const f=meta.floor||1;
-    const biomes=["grassland","forest","ice","ruins","volcano","castle"];
-    const biome=biomes[Math.floor((f-1)/5)%biomes.length];
-    const phase=(f%5===0)?"boss":(f%2===0?"night":"day");
-    return `assets/backgrounds/v30/${biome}_${phase}.jpg`;
+    if(f%30===0)return"assets/backgrounds/v4/cursed_castle.webp";
+    if(f%20===0)return"assets/backgrounds/v4/sky_sanctum.webp";
+    if(f%10===0)return"assets/backgrounds/v4/volcanic_arena.webp";
+    const seq=[
+      "assets/backgrounds/v4/ancient_ruins.webp",
+      "assets/backgrounds/v4/sacred_forest.webp",
+      "assets/backgrounds/v4/crystal_ice_ruins.webp",
+      "assets/backgrounds/v4/volcanic_arena.webp",
+      "assets/backgrounds/v4/royal_castle.webp",
+      "assets/backgrounds/v4/arena_colosseum.webp"
+    ];
+    return seq[Math.floor((f-1)/4)%seq.length];
   }
   if(mode==="story"){
     const id=meta.stageId||1;
     return {
-      1:"assets/backgrounds/v30/grassland_day.jpg",
-      2:"assets/backgrounds/v30/forest_day.jpg",
-      3:"assets/backgrounds/v30/ice_day.jpg",
-      4:"assets/backgrounds/v30/ruins_day.jpg",
-      5:"assets/backgrounds/v30/castle_day.jpg"
-    }[id]||"assets/backgrounds/v30/grassland_day.jpg";
+      1:"assets/backgrounds/v4/sacred_forest.webp",
+      2:"assets/backgrounds/v4/ancient_ruins.webp",
+      3:"assets/backgrounds/v4/crystal_ice_ruins.webp",
+      4:"assets/backgrounds/v4/sky_sanctum.webp",
+      5:"assets/backgrounds/v4/royal_castle.webp"
+    }[id]||"assets/backgrounds/v4/sacred_forest.webp";
   }
-  return"assets/backgrounds/v30/arena_day.jpg";
+  return"assets/backgrounds/v4/arena_colosseum.webp";
 }
 function setBattlePortrait(selector,m){
   const el=$(selector);if(!el)return;

@@ -120,11 +120,12 @@
     const sub=document.createElement("div");
     sub.className="v21-submenu";
     const defs=itemDefs();
-    sub.innerHTML=`<h4>🎒 バトルアイテム</h4><div class="menu-grid">${
+    sub.innerHTML=`<div class="v21-submenu-head"><h4>🎒 バトルアイテム</h4><button class="v21-submenu-close" type="button" aria-label="閉じる">×</button></div><div class="menu-grid">${
       Object.entries(defs).map(([k,v])=>`<button data-item="${k}" ${(state.battleBag[k]||0)<=0?"disabled":""}>
         ${v.icon} ${v.name} ×${state.battleBag[k]||0}<small>${v.desc}</small></button>`).join("")
     }</div>`;
     currentScene.appendChild(sub);
+    $(".v21-submenu-close",sub)?.addEventListener("click",closeSubmenu);
     $$("[data-item]",sub).forEach(b=>b.addEventListener("click",()=>useBattleItem(mode,b.dataset.item)));
   }
   function closeSubmenu(){currentScene?.querySelector(".v21-submenu")?.remove()}
@@ -169,13 +170,14 @@
     const sub=document.createElement("div");
     sub.className="v21-submenu";
     const passives=(p.skills||[]).slice(0,4);
-    sub.innerHTML=`<h4>✨ 特殊攻撃</h4>
+    sub.innerHTML=`<div class="v21-submenu-head"><h4>✨ 特殊攻撃</h4><button class="v21-submenu-close" type="button" aria-label="閉じる">×</button></div>
       <div class="menu-grid">
         <button data-special="1">✨ ${typeof activeBattleSkillName==="function"?activeBattleSkillName(p):"特殊攻撃"}
           <small>威力1.28倍。下記の特殊能力とシナジー</small></button>
         ${passives.map(x=>`<button disabled>${x.name}<small>${x.desc||x.tag||"パッシブ能力"}</small></button>`).join("")}
       </div>`;
     currentScene.appendChild(sub);
+    $(".v21-submenu-close",sub)?.addEventListener("click",closeSubmenu);
     $("[data-special]",sub)?.addEventListener("click",()=>playerAction(mode,"skill"));
   }
 
@@ -198,9 +200,17 @@
     scene.appendChild(panel);
 
     $(".v21-attack",panel).addEventListener("click",()=>playerAction(mode,"attack"));
-    $(".v21-skill",panel).addEventListener("click",()=>showSkillMenu(mode));
+    $(".v21-skill",panel).addEventListener("click",()=>{
+      const open=currentScene?.querySelector(".v21-submenu");
+      if(open){closeSubmenu();return;}
+      showSkillMenu(mode);
+    });
     $(".v21-guard",panel).addEventListener("click",()=>playerAction(mode,"guard"));
-    $(".v21-item",panel).addEventListener("click",()=>showItemMenu(mode));
+    $(".v21-item",panel).addEventListener("click",()=>{
+      const open=currentScene?.querySelector(".v21-submenu");
+      if(open){closeSubmenu();return;}
+      showItemMenu(mode);
+    });
     $(".v21-auto",panel).addEventListener("click",()=>{
       const r=runObj(mode);if(!r)return;
       closeSubmenu();
@@ -210,24 +220,54 @@
   }
 
   function setVerticalBackground(mode,scene){
-    let src="assets/backgrounds/v30/arena_day.jpg";
+    let src="assets/backgrounds/v4/arena_colosseum.webp";
     if(mode==="com"){
-      const r=runObj(mode),seed=(r?.enemy?.seed||r?.enemy?.level||1)>>>0;
-      src=`assets/backgrounds/v30/arena_${seed%3===0?"boss":seed%2===0?"night":"day"}.jpg`;
+      src="assets/backgrounds/v4/arena_colosseum.webp";
     }else if(mode==="adventure"){
       const id=(typeof storyRun!=="undefined"&&storyRun?.stage?.id)||1;
-      const key={1:"grassland",2:"forest",3:"ice",4:"ruins",5:"castle"}[id]||"grassland";
-      const boss=id===5?"boss":(id%2===0?"night":"day");
-      src=`assets/backgrounds/v30/${key}_${boss}.jpg`;
+      src={
+        1:"assets/backgrounds/v4/sacred_forest.webp",
+        2:"assets/backgrounds/v4/ancient_ruins.webp",
+        3:"assets/backgrounds/v4/crystal_ice_ruins.webp",
+        4:"assets/backgrounds/v4/sky_sanctum.webp",
+        5:"assets/backgrounds/v4/royal_castle.webp"
+      }[id]||"assets/backgrounds/v4/sacred_forest.webp";
     }else if(mode==="dungeon"){
       const f=(typeof dungeonRun!=="undefined"&&dungeonRun?.floor)||1;
-      const key=f%20===0?"castle":f%10===0?"ruins":["ruins","forest","ice","volcano","arena"][Math.floor((f-1)/4)%5];
-      const variant=f%10===0?"boss":f%2===0?"night":"day";
-      src=`assets/backgrounds/v30/${key}_${variant}.jpg`;
+      if(f%30===0)src="assets/backgrounds/v4/cursed_castle.webp";
+      else if(f%20===0)src="assets/backgrounds/v4/sky_sanctum.webp";
+      else if(f%10===0)src="assets/backgrounds/v4/volcanic_arena.webp";
+      else{
+        const seq=["ancient_ruins","sacred_forest","crystal_ice_ruins","volcanic_arena","royal_castle","arena_colosseum"];
+        src=`assets/backgrounds/v4/${seq[Math.floor((f-1)/4)%seq.length]}.webp`;
+      }
     }
-    scene.style.backgroundImage=`linear-gradient(rgba(2,8,16,.04),rgba(2,8,16,.12)),url("${src}")`;
+    scene.style.backgroundImage=`linear-gradient(180deg,rgba(1,6,15,.02),rgba(1,6,15,.18)),url("${src}")`;
   }
 
+  function createUtilityRow(mode,scene){
+    scene.querySelector(".v4-utility-row")?.remove();
+    const row=document.createElement("div");
+    row.className="v4-utility-row";
+    row.innerHTML=`
+      <button type="button" class="v4-speed" data-v4-speed="0.72">×1</button>
+      <button type="button" class="v4-speed active" data-v4-speed="1.15">×2</button>
+      <button type="button" class="v4-speed" data-v4-speed="1.75">×3</button>
+      <button type="button" class="v4-log">LOG</button>
+      <button type="button" class="v4-exit">戻る</button>`;
+    scene.appendChild(row);
+    $$("[data-v4-speed]",row).forEach(btn=>btn.addEventListener("click",()=>{
+      $$("[data-v4-speed]",row).forEach(x=>x.classList.remove("active"));
+      btn.classList.add("active");
+      syncSpeed(scene,btn.dataset.v4Speed);
+    }));
+    $(".v4-log",row)?.addEventListener("click",()=>{
+      closeSubmenu();
+      const panel=scene.querySelector(".v2-battle-log-panel");
+      if(panel){copyLog(mode);panel.classList.toggle("open");}
+    });
+    $(".v4-exit",row)?.addEventListener("click",exitBattleView);
+  }
   function clearFinishButtons(scene){
     scene?.querySelectorAll(".v2-finish,.v2-next").forEach(x=>x.remove());
   }
@@ -273,7 +313,7 @@
   function createChrome(mode,scene){
     if(scene.querySelector(".v2-battle-log-panel"))return;
     const top=document.createElement("div");
-    top.className="v2-battle-topbar";top.innerHTML=`<span>${modes[mode].label}</span><span>v3.0.1</span>`;
+    top.className="v2-battle-topbar";top.innerHTML=`<span>${modes[mode].label}</span><span>v4.0</span>`;
     scene.appendChild(top);
     const log=document.createElement("div");
     log.className="v2-battle-log-panel";log.textContent="戦闘ログ";scene.appendChild(log);
@@ -287,7 +327,7 @@
     initBattleBag();
     document.body.classList.add("v2-battle-active");
     scene.classList.add("v2-immersive");
-    createChrome(mode,scene);createActionPanel(mode,scene);setVerticalBackground(mode,scene);
+    createChrome(mode,scene);createActionPanel(mode,scene);createUtilityRow(mode,scene);setVerticalBackground(mode,scene);
     resultObserver?.disconnect();logObserver?.disconnect();
     const result=$(cfg.result);
     if(result){
@@ -307,6 +347,7 @@
     currentScene?.classList.remove("v2-immersive");
     currentScene?.querySelector(".v21-action-panel")?.remove();
     currentScene?.querySelector(".v21-mode-badge")?.remove();
+    currentScene?.querySelector(".v4-utility-row")?.remove();
     document.body.classList.remove("v2-battle-active");
     resultObserver?.disconnect();logObserver?.disconnect();
     currentMode=null;currentScene=null;manualBusy=false;
