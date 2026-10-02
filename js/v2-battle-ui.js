@@ -184,7 +184,7 @@
     scene.querySelector(".v21-mode-badge")?.remove();
 
     const badge=document.createElement("div");
-    badge.className="v21-mode-badge";badge.textContent="AUTO";
+    badge.className="v21-mode-badge";badge.textContent="MANUAL";
     scene.appendChild(badge);
 
     const panel=document.createElement("div");
@@ -194,7 +194,7 @@
       <button class="v21-skill special">✨<br>スキル</button>
       <button class="v21-guard">🛡<br>防御</button>
       <button class="v21-item item">🎒<br>ITEM</button>
-      <button class="v21-auto auto on">▶<br>AUTO</button>`;
+      <button class="v21-auto auto">▶<br>AUTO</button>`;
     scene.appendChild(panel);
 
     $(".v21-attack",panel).addEventListener("click",()=>playerAction(mode,"attack"));
@@ -253,15 +253,15 @@
     closeSubmenu();
     if(mode==="com"){
       $("#newEnemyBtn")?.click();
-      setTimeout(()=>{createActionPanel(mode,scene);$("#autoBattleBtn")?.click()},180);
+      setTimeout(()=>{createActionPanel(mode,scene);setVerticalBackground(mode,scene)},180);
     }else if(mode==="adventure"){
       const n=$("#storyNextBtn"),retry=$("#storyRetryBtn");
       if(n&&!n.hidden)n.click();else retry?.click();
-      setTimeout(()=>{createActionPanel(mode,scene);$("#storyBattleBtn")?.click()},220);
+      setTimeout(()=>{createActionPanel(mode,scene);setVerticalBackground(mode,scene)},220);
     }else{
       const n=$("#nextFloorBtn");
       if(n&&!n.hidden)n.click();
-      setTimeout(()=>{createActionPanel(mode,scene);$("#dungeonAutoBattleBtn")?.click()},220);
+      setTimeout(()=>{createActionPanel(mode,scene);setVerticalBackground(mode,scene)},220);
     }
   }
 
@@ -273,7 +273,7 @@
   function createChrome(mode,scene){
     if(scene.querySelector(".v2-battle-log-panel"))return;
     const top=document.createElement("div");
-    top.className="v2-battle-topbar";top.innerHTML=`<span>${modes[mode].label}</span><span>v3.0</span>`;
+    top.className="v2-battle-topbar";top.innerHTML=`<span>${modes[mode].label}</span><span>v3.0.1</span>`;
     scene.appendChild(top);
     const log=document.createElement("div");
     log.className="v2-battle-log-panel";log.textContent="戦闘ログ";scene.appendChild(log);
@@ -283,6 +283,7 @@
   function enterBattleView(mode){
     const cfg=modes[mode],scene=$(cfg.scene);if(!scene)return;
     currentMode=mode;currentScene=scene;manualBusy=false;
+    stopAuto(mode);
     initBattleBag();
     document.body.classList.add("v2-battle-active");
     scene.classList.add("v2-immersive");

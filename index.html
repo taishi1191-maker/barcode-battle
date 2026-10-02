@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v3.0</title>
+  <title>Barcode Battle v3.0.1</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -640,7 +640,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v3.0 / Premium Complete Update</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v3.0.1 / Premium Complete Update</div></div>
     </div>
     
   </div>
@@ -783,7 +783,7 @@
           <div id="battleBanner" class="battle-banner">BATTLE START</div>
         </div>
         <div class="battle-speed"><button class="btn secondary speed-btn active" data-speed="0.72">×1</button><button class="btn secondary speed-btn" data-speed="1.15">×2</button><button class="btn secondary speed-btn" data-speed="1.75">×3</button></div>
-        <button id="autoBattleBtn" class="auto-battle-btn">⚔ バトルスタート</button>
+        <button id="autoBattleBtn" class="auto-battle-btn">⚔ バトル画面へ</button>
         <div id="battleAiState" class="ai-state">開始するとAIが自動で最後まで戦います。</div>
         <div class="row" style="margin-top:10px"><button id="newEnemyBtn" class="btn secondary">対戦相手を変更</button></div>
         <div id="battleResult" class="result"></div>
@@ -839,7 +839,7 @@
         <button class="btn secondary speed-btn" data-speed="1.15">×2</button>
         <button class="btn secondary speed-btn" data-speed="1.75">×3</button>
       </div><div class="speed-help">×1＝演出重視 / ×2＝標準 / ×3＝高速</div>
-      <button id="dungeonAutoBattleBtn" class="auto-battle-btn">⚔ この階をオートバトル</button>
+      <button id="dungeonAutoBattleBtn" class="auto-battle-btn">⚔ この階へ挑戦</button>
       <div id="dungeonAiState" class="ai-state">AIが自動で最後まで戦います。</div>
       <div id="dungeonInstantLog" class="instant-log">戦闘ログはここに表示されます。</div>
       <div id="dungeonResult" class="result"></div><div class="dungeon-post-actions" id="dungeonPostActions"></div><button id="jumpDungeonShopBtn" class="btn secondary" style="width:100%;margin-top:8px">🔧 強化ショップへ</button>
@@ -1166,26 +1166,30 @@ function battlePortraitHTML(m){
   return consistentMonsterArtHTML(m,"battle");
 }
 function battleBackground(mode,meta={}){
-  if(mode==="com")return"assets/backgrounds/arena/arena.jpg";
+  if(mode==="com"){
+    const phase=meta.phase||"day";
+    if(phase==="boss")return"assets/backgrounds/v30/arena_boss.jpg";
+    if(phase==="night")return"assets/backgrounds/v30/arena_night.jpg";
+    return"assets/backgrounds/v30/arena_day.jpg";
+  }
   if(mode==="dungeon"){
     const f=meta.floor||1;
-    if(f%30===0)return"assets/backgrounds/castle/sky_castle.jpg";
-    if(f%20===0)return"assets/backgrounds/castle/castle.jpg";
-    if(f%10===0)return"assets/backgrounds/ruins/ruins.jpg";
-    const seq=["assets/backgrounds/ruins/ruins.jpg","assets/backgrounds/forest/forest.jpg","assets/backgrounds/ice/ice_ruins.jpg","assets/backgrounds/volcano/volcano.jpg","assets/backgrounds/arena/arena.jpg"];
-    return seq[Math.floor((f-1)/3)%seq.length];
+    const biomes=["grassland","forest","ice","ruins","volcano","castle"];
+    const biome=biomes[Math.floor((f-1)/5)%biomes.length];
+    const phase=(f%5===0)?"boss":(f%2===0?"night":"day");
+    return `assets/backgrounds/v30/${biome}_${phase}.jpg`;
   }
   if(mode==="story"){
     const id=meta.stageId||1;
     return {
-      1:"assets/backgrounds/grassland/grassland.jpg",
-      2:"assets/backgrounds/forest/forest.jpg",
-      3:"assets/backgrounds/ice/ice_ruins.jpg",
-      4:"assets/backgrounds/ruins/ruins.jpg",
-      5:"assets/backgrounds/castle/castle.jpg"
-    }[id]||"assets/backgrounds/grassland/grassland.jpg";
+      1:"assets/backgrounds/v30/grassland_day.jpg",
+      2:"assets/backgrounds/v30/forest_day.jpg",
+      3:"assets/backgrounds/v30/ice_day.jpg",
+      4:"assets/backgrounds/v30/ruins_day.jpg",
+      5:"assets/backgrounds/v30/castle_day.jpg"
+    }[id]||"assets/backgrounds/v30/grassland_day.jpg";
   }
-  return"assets/backgrounds/arena/arena.jpg";
+  return"assets/backgrounds/v30/arena_day.jpg";
 }
 function setBattlePortrait(selector,m){
   const el=$(selector);if(!el)return;
@@ -2000,15 +2004,15 @@ $('#summonBtn').addEventListener('click',summon);$('#gachaOneBtn').addEventListe
 $('#barcodeInput').addEventListener('keydown',e=>{if(e.key==='Enter')summon();});$('#nicknameInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&selectedId)renameMonster(selectedId,$('#nicknameInput').value);});
 $('#cameraBtn').addEventListener('click',startScanner);$('#stopCameraBtn').addEventListener('click',stopScanner);
 $('#favoriteBtn').addEventListener('click',()=>{if(selectedId)toggleFavorite(selectedId);});$('#renameBtn').addEventListener('click',()=>{if(selectedId)renameMonster(selectedId,$('#nicknameInput').value);});$('#expAllocateBtn').addEventListener('click',()=>{if(selectedId)allocateExp(selectedId,$('#expAllocateInput').value);});$$('.expQuickBtn').forEach(b=>b.addEventListener('click',()=>{if(!selectedId)return;const v=b.dataset.exp==='all'?state.expBank:Number(b.dataset.exp);allocateExp(selectedId,Math.min(v,state.expBank));}));$('#deleteMonsterBtn').addEventListener('click',deleteSelected);
-$('#autoBattleBtn').addEventListener('click',startAutoBattle);$('#newEnemyBtn').addEventListener('click',prepareBattle);
-$('#storyBattleBtn').addEventListener('click',startStoryBattle);
+$('#newEnemyBtn').addEventListener('click',prepareBattle);
+
 $('#storyRetryBtn').addEventListener('click',()=>{
   if(selectedStoryStage)selectStoryStage(selectedStoryStage);
 });
 $('#storyNextBtn').addEventListener('click',()=>{
   const next=Number($('#storyNextBtn').dataset.nextStage||0);
   if(next)selectStoryStage(next);
-});$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonAutoBattleBtn').addEventListener('click',startDungeonAutoBattle);$('#jumpDungeonShopBtn').addEventListener('click',()=>{const s=$('#dungeonShop');if(s){s.open=true;s.scrollIntoView({behavior:'smooth',block:'center'});}});$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
+});$('#startDungeonBtn').addEventListener('click',startDungeon);$('#jumpDungeonShopBtn').addEventListener('click',()=>{const s=$('#dungeonShop');if(s){s.open=true;s.scrollIntoView({behavior:'smooth',block:'center'});}});$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
 $('#resetBtn').addEventListener('click',()=>{if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){localStorage.removeItem(STORAGE_KEY);location.reload();}});
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 if(state.monsters.length){if(!state.battleMonsterId)state.battleMonsterId=state.monsters[0].id;if(!state.dungeonMonsterId)state.dungeonMonsterId=state.monsters[0].id;if(!state.storyMonsterId)state.storyMonsterId=state.monsters[0].id;save();}

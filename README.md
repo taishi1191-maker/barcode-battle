@@ -1,3 +1,13 @@
+# Barcode Battle v3.0.2 Background Patch
+
+このZIPは v3.0.1 Manual First Fix に、新背景適用パッチを加えたものです。
+
+- バトル背景を v30 高解像度背景へ切替
+- Service Worker キャッシュ更新
+- 既存のモンスター画像/背景画像はそのまま同梱
+
+---
+
 # Barcode Battle v3.0 — Premium Complete Update
 
 大型統合アップデート。

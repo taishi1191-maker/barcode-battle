@@ -1,4 +1,4 @@
-const CACHE="barcode-battle-v30";
+const CACHE="barcode-battle-v302-bgfix";
 const ASSETS=[
 "./","./index.html","./manifest.webmanifest",
 "./assets/icon-192.png","./assets/icon-512.png","./assets/apple-touch-icon.png","./assets/icon-1024.png",
@@ -9,6 +9,8 @@ const ASSETS=[
 ,"./css/v2-battle.css","./js/v2-battle-ui.js","./data/art-manifest.json","./data/battle-config.json"
 ,"./assets/backgrounds/vertical/arena_vertical.jpg","./assets/backgrounds/vertical/grassland_vertical.jpg","./assets/backgrounds/vertical/forest_vertical.jpg","./assets/backgrounds/vertical/volcano_vertical.jpg","./assets/backgrounds/vertical/ice_vertical.jpg","./assets/backgrounds/vertical/castle_vertical.jpg","./assets/backgrounds/vertical/ruins_vertical.jpg"
 ,"./assets/backgrounds/premium/arena_premium.jpg","./assets/backgrounds/premium/forest_premium.jpg","./assets/backgrounds/premium/volcano_premium.jpg","./assets/backgrounds/premium/ice_premium.jpg","./assets/backgrounds/premium/ruins_premium.jpg","./assets/backgrounds/premium/castle_premium.jpg","./assets/backgrounds/premium/grassland_premium.jpg"
+,"./assets/backgrounds/v30/arena_day.jpg","./assets/backgrounds/v30/arena_night.jpg","./assets/backgrounds/v30/arena_boss.jpg","./assets/backgrounds/v30/grassland_day.jpg","./assets/backgrounds/v30/grassland_night.jpg","./assets/backgrounds/v30/grassland_boss.jpg","./assets/backgrounds/v30/forest_day.jpg","./assets/backgrounds/v30/forest_night.jpg","./assets/backgrounds/v30/forest_boss.jpg","./assets/backgrounds/v30/ice_day.jpg","./assets/backgrounds/v30/ice_night.jpg","./assets/backgrounds/v30/ice_boss.jpg","./assets/backgrounds/v30/ruins_day.jpg","./assets/backgrounds/v30/ruins_night.jpg","./assets/backgrounds/v30/ruins_boss.jpg","./assets/backgrounds/v30/volcano_day.jpg","./assets/backgrounds/v30/volcano_night.jpg","./assets/backgrounds/v30/volcano_boss.jpg","./assets/backgrounds/v30/castle_day.jpg","./assets/backgrounds/v30/castle_night.jpg","./assets/backgrounds/v30/castle_boss.jpg","./data/art-manifest-v30.json"
+
 ];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
