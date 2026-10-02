@@ -1,0 +1,65 @@
+[beast] 6 variants
+  - beast_1.png
+  - beast_2.png
+  - beast_3.png
+  - beast_4.png
+  - beast_5.png
+  - beast_6.png
+
+[bird] 6 variants
+  - bird_1.png
+  - bird_2.png
+  - bird_3.png
+  - bird_4.png
+  - bird_5.png
+  - bird_6.png
+
+[dragon] 6 variants
+  - dragon_1.png
+  - dragon_2.png
+  - dragon_3.png
+  - dragon_4.png
+  - dragon_5.png
+  - dragon_6.png
+
+[ghost] 6 variants
+  - ghost_1.png
+  - ghost_2.png
+  - ghost_3.png
+  - ghost_4.png
+  - ghost_5.png
+  - ghost_6.png
+
+[knight] 6 variants
+  - knight_1.png
+  - knight_2.png
+  - knight_3.png
+  - knight_4.png
+  - knight_5.png
+  - knight_6.png
+
+[machine] 6 variants
+  - machine_1.png
+  - machine_2.png
+  - machine_3.png
+  - machine_4.png
+  - machine_5.png
+  - machine_6.png
+
+[rabi] 6 variants
+  - rabi_1.png
+  - rabi_2.png
+  - rabi_3.png
+  - rabi_4.png
+  - rabi_5.png
+  - rabi_6.png
+
+[slime] 6 variants
+  - slime_1.png
+  - slime_2.png
+  - slime_3.png
+  - slime_4.png
+  - slime_5.png
+  - slime_6.png
+
+TOTAL_NORMAL_VARIANTS: 48

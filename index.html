@@ -1119,7 +1119,7 @@ function monsterSpeciesKey(m){
 }
 function monsterArtVariant(m){
   const seed=(m.seed||hashString(m.barcode||m.id||m.name||"monster"))>>>0;
-  return (seed%3)+1;
+  return (seed%6)+1;
 }
 function monsterArtTier(m){
   const g=visualGenes(m);

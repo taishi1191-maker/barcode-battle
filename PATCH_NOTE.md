@@ -1,32 +1,34 @@
-# Barcode Battle v2.3 Mass Image Patch
+# Barcode Battle v2.4 Standing Art Expansion
 
-このパッチは、既存の v2.2 Premium Visual をベースに、
-「大量画像導入用の土台」としてまとめた ZIP です。
+このZIPは、v2.3 の大量画像パッチに加えて、
+**立ち絵バリエーションをさらに増やした版**です。
 
-## 同梱内容
-- premium 背景 7枚
-- vertical 背景 7枚
-- normal モンスター 24枚
-- rare モンスター 8枚
-- legendary モンスター 8枚
-- mythic モンスター 8枚
+## 追加内容
+- 各種族の通常立ち絵を **3種類 → 6種類** に拡張
+- 追加した 4〜6番は、既存の rare / legendary / mythic アートを流用して即反映できるように設定
+- `index.html` 側も 6バリエーション抽選に対応済み
+
+## 対応種族
+- rabi
+- dragon
+- beast
+- bird
+- ghost
+- machine
+- knight
+- slime
+
+## 追加ファイル例
+- `assets/monsters/v19/normal/rabi_4.png`
+- `assets/monsters/v19/normal/rabi_5.png`
+- `assets/monsters/v19/normal/rabi_6.png`
+- 同様に8種族ぶん追加
 
 ## 使い方
 1. ZIPを解凍
-2. 中身を GitHub リポジトリのルートへ上書きアップロード
-3. `assets/` はそのまま追加・上書き
-
-## 主なフォルダ
-- assets/backgrounds/premium/
-- assets/backgrounds/vertical/
-- assets/monsters/v19/normal/
-- assets/monsters/v19/rare/
-- assets/monsters/v19/legendary/
-- assets/monsters/v19/mythic/
-- css/
-- js/
-- data/
+2. 中身を GitHub リポジトリのルートへ丸ごと上書きアップロード
+3. `assets` / `css` / `js` / `data` / `index.html` をそのまま反映
 
 ## 補足
-このパッチは「大量画像をまとめて適用できる状態」に整えたものです。
-さらに立ち絵を増やす場合は、同じ命名ルールで画像を追加してください。
+本格的に「完全に別イラストを大量追加」したい場合は、
+次の段階で `normal 7〜12` などを追加してさらに拡張できます。
