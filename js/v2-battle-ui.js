@@ -23,12 +23,12 @@
     if(scene.querySelector(".v2-control-dock")) return;
     const rotate=document.createElement("div");
     rotate.className="v2-rotate-hint";
-    rotate.innerHTML="📱↻<br>iPhoneを横向きにしてください";
+    rotate.innerHTML="";
     scene.appendChild(rotate);
 
     const top=document.createElement("div");
     top.className="v2-battle-topbar";
-    top.innerHTML=`<span>${modes[mode].label}</span><span>AI AUTO</span>`;
+    top.innerHTML=`<span>${modes[mode].label}</span><span>PORTRAIT AUTO</span>`;
     scene.appendChild(top);
 
     const log=document.createElement("div");
@@ -50,6 +50,17 @@
     $(".v2-log",dock).addEventListener("click",()=>{log.classList.toggle("open");copyLog(mode)});
     $(".v2-exit",dock).addEventListener("click",exitBattleView);
   }
+  
+  function setVerticalBackground(mode, scene){
+    const map={
+      com:"assets/backgrounds/vertical/arena_vertical.jpg",
+      adventure:"assets/backgrounds/vertical/grassland_vertical.jpg",
+      dungeon:"assets/backgrounds/vertical/ruins_vertical.jpg"
+    };
+    const src=map[mode]||map.com;
+    scene.style.backgroundImage=`linear-gradient(rgba(2,8,16,.04),rgba(2,8,16,.12)),url("${src}")`;
+  }
+
   function enterBattleView(mode){
     const cfg=modes[mode],scene=$(cfg.scene);
     if(!scene)return;
@@ -57,6 +68,7 @@
     document.body.classList.add("v2-battle-active");
     scene.classList.add("v2-immersive");
     createChrome(mode,scene);
+    setVerticalBackground(mode,scene);
     syncSpeed(scene,"0.72");
 
     resultObserver?.disconnect();logObserver?.disconnect();

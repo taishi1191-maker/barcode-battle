@@ -1,21 +1,18 @@
-# Barcode Battle v2.0 — Landscape Battle
+# Barcode Battle v2.0.1 — Vertical Battle Update
 
-v1.9を土台にした実働v2.0です。
+v2.0の横向きBattle Sceneを、iPhoneで操作しやすい縦画面Battle Sceneへ変更しました。
 
-GitHubではZIPを解凍し、リポジトリのルートへアップロードしてください。
-既存ファイルは上書き、既存assetsは削除せず残してください。
+## 主な変更
+- 戦闘を縦画面前提に変更
+- 敵HUDを上部固定
+- 味方HUDを下部固定
+- 敵・味方立ち絵はHUD間の専用領域へ配置
+- HPバー / 文字 / キャラの重なりを解消
+- ×1 / ×2 / ×3 / LOG / 戻る / 戦闘終了を最下部に固定
+- 高解像度スマホ向け背景 1080×1920 を7枚追加
+- 背景は arena / grassland / forest / volcano / ice / castle / ruins
+- Art Libraryとv1.9モンスターアートは継続
 
-追加:
-- css/v2-battle.css
-- js/v2-battle-ui.js
-- data/art-manifest.json
-- data/battle-config.json
-- assets/monsters/v19/
-
-上書き:
-- index.html
-- sw.js
-- manifest.webmanifest
-- README.md
-
-戦闘開始後、iPhoneを横向きにすると最適表示になります。
+## GitHub
+ZIPを解凍し、リポジトリのルートへまとめてアップロードしてください。
+既存ファイルは上書き、既存assetsは削除しないでください。

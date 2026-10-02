@@ -1,6 +1,6 @@
 {
-  "version": "2.0",
-  "orientation": "landscape",
+  "version": "2.0.1",
+  "orientation": "portrait",
   "speeds": {
     "x1": 0.72,
     "x2": 1.15,
@@ -11,5 +11,10 @@
     "adventure",
     "dungeon"
   ],
-  "boss_interval": 10
+  "boss_interval": 10,
+  "vertical_backgrounds": {
+    "com": "assets/backgrounds/vertical/arena_vertical.jpg",
+    "adventure": "assets/backgrounds/vertical/grassland_vertical.jpg",
+    "dungeon": "assets/backgrounds/vertical/ruins_vertical.jpg"
+  }
 }
