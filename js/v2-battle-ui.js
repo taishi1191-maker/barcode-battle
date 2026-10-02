@@ -313,7 +313,7 @@
   function createChrome(mode,scene){
     if(scene.querySelector(".v2-battle-log-panel"))return;
     const top=document.createElement("div");
-    top.className="v2-battle-topbar";top.innerHTML=`<span>${modes[mode].label}</span><span>v4.0</span>`;
+    top.className="v2-battle-topbar";top.innerHTML=`<span>${modes[mode].label}</span><span>v4.1</span>`;
     scene.appendChild(top);
     const log=document.createElement("div");
     log.className="v2-battle-log-panel";log.textContent="戦闘ログ";scene.appendChild(log);

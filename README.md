@@ -1,3 +1,9 @@
+# Barcode Battle v4.1 Monster Art Rebuild
+
+モンスターアート方向性を全面刷新したパッチです。詳細は `V4_1_MONSTER_ART_REBUILD.md` を参照。
+
+---
+
 # Barcode Battle v4.0 Premium Battle Rebuild
 
 v3.0.3 を基準に、戦闘画面の高級感・新背景・ユーティリティ操作をまとめて更新した完成パッチです。

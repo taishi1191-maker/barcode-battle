@@ -1,4 +1,4 @@
-const CACHE="barcode-battle-v400-premium";
+const CACHE="barcode-battle-v41-monster-art";
 const ASSETS=[
   "./",
   "./index.html",
@@ -185,6 +185,7 @@ const ASSETS=[
   "./assets/monsters/v30/rare/slime_1.png",
   "./assets/monsters/v30/rare/slime_2.png",
   "./assets/monsters/v30/rare/slime_3.png"
+,"./assets/monsters/v41/dragon_1.png","./assets/monsters/v41/dragon_2.png","./assets/monsters/v41/dragon_3.png","./assets/monsters/v41/beast_1.png","./assets/monsters/v41/beast_2.png","./assets/monsters/v41/beast_3.png","./assets/monsters/v41/knight_1.png","./assets/monsters/v41/knight_2.png","./assets/monsters/v41/knight_3.png","./assets/monsters/v41/machine_1.png","./assets/monsters/v41/machine_2.png","./assets/monsters/v41/machine_3.png","./assets/monsters/v41/ghost_1.png","./assets/monsters/v41/ghost_2.png","./assets/monsters/v41/ghost_3.png","./assets/monsters/v41/bird_1.png","./assets/monsters/v41/bird_2.png","./assets/monsters/v41/bird_3.png","./assets/monsters/v41/slime_1.png","./assets/monsters/v41/slime_2.png","./assets/monsters/v41/slime_3.png","./assets/monsters/v41/rabi_1.png","./assets/monsters/v41/rabi_2.png","./assets/monsters/v41/rabi_3.png"
 ];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

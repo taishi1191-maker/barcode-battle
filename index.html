@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v4.0</title>
+  <title>Barcode Battle v4.1</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -640,7 +640,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.0 / Item & Background Fix</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.1 / Monster Art Rebuild</div></div>
     </div>
     
   </div>
@@ -897,33 +897,44 @@ state.monsters.forEach(m=>{
 let currentSummon=null, selectedId=null, scanner=null, scanning=false, battle=null, dungeonRun=null, storyRun=null, selectedStoryStage=0;
 
 const elements=["炎","水","雷","風","土","光","闇"];
-const types=["スライム","ドラゴン","ビースト","バード","ゴースト","マシン","ナイト"];
-const nameA=["ぽよ","モコ","ピコ","ルル","ミル","コロ","プチ","キラ","フワ","チビ","ペコ","マル"];
-const nameB=["リン","ドラ","ポン","ミー","ロボ","ピヨ","モン","リオ","ニャ","ゴン","プル","ラビ"];
+const types=["ドラゴン","ビースト","ナイト","マシン","ゴースト","ウルフ","ゴーレム","魔導士","ドラゴン","ナイト","ビースト","バード","スライム","ラビ"];
+const seriousNames={
+  "ドラゴン":["ヴォルガ","グランディオ","ゼルグリム","バルカディア","ノクスドラゴ","アークヴァーン"],
+  "ビースト":["フェンリル","ガルム","レオグラン","ヴァルハウンド","バルグレア","獄牙レオン"],
+  "ナイト":["アークナイト","ヴァルド","黒鋼レギオン","聖盾アルガス","グラディウス","ゼノブレイド"],
+  "マシン":["ギガフレーム","ヴァルカノイド","ゼロ・ギア","クロノアーム","オメガドレッド","バスターコア"],
+  "ゴースト":["ネクロス","ヴォイドレイス","アビスシェイド","グリムソウル","ナイトメア","冥王ファントム"],
+  "ウルフ":["フェンリル","シルヴァファング","ナイトウルフ","ブリザードハウンド","紅蓮牙","雷狼ヴァジュラ"],
+  "ゴーレム":["タイタン","アダマント","グラビオン","古代兵装ガイア","オリハルク","バスターロック"],
+  "魔導士":["ゼノメイガス","アークメイジ","ノクティス","ヴォルテクス","エクリプス","アストラル"],
+  "バード":["セレス","ガルーダ","フェニクス","アストレア","サンダーバード","蒼天ルクス"],
+  "スライム":["アクアコア","クリスタルム","ヴォイドジェル","プラズマコア","キングスライム","アビスコア"],
+  "ラビ":["ルクスラビ","セレスラビ","アルマラビ","ノヴァラビ","ミスティラビ","ロイヤルラビ"]
+};
 const abilityTemplates=[
-  {kind:"crit",name:"キラキラ会心",tag:"攻撃",v:[18,38],make:v=>`会心率+${v}%。会心ダメージ1.75倍`},
-  {kind:"double",name:"れんぞくラッシュ",tag:"攻撃",v:[15,34],make:v=>`${v}%で追加攻撃（55%威力）`},
-  {kind:"drain",name:"げんきすいとり",tag:"回復",v:[12,28],make:v=>`与ダメージの${v}%を吸収`},
-  {kind:"guard",name:"まもりのオーラ",tag:"防御",v:[10,30],make:v=>`常時被ダメージ${v}%軽減`},
-  {kind:"first",name:"スタートダッシュ",tag:"攻撃",v:[25,65],make:v=>`最初の攻撃が${v}%強化`},
-  {kind:"pinch",name:"ピンチパワー",tag:"逆転",v:[25,70],make:v=>`HP30%以下で攻撃${v}%強化`},
-  {kind:"regen",name:"もぐもぐ再生",tag:"回復",v:[3,10],make:v=>`行動後、最大HPの${v}%回復`},
+  {kind:"crit",name:"クリティカルエッジ",tag:"攻撃",v:[18,38],make:v=>`会心率+${v}%。会心ダメージ1.75倍`},
+  {kind:"double",name:"ツインラッシュ",tag:"攻撃",v:[15,34],make:v=>`${v}%で追加攻撃（55%威力）`},
+  {kind:"drain",name:"ブラッドドレイン",tag:"回復",v:[12,28],make:v=>`与ダメージの${v}%を吸収`},
+  {kind:"guard",name:"イージスオーラ",tag:"防御",v:[10,30],make:v=>`常時被ダメージ${v}%軽減`},
+  {kind:"first",name:"ファーストストライク",tag:"攻撃",v:[25,65],make:v=>`最初の攻撃が${v}%強化`},
+  {kind:"pinch",name:"ラストレイジ",tag:"逆転",v:[25,70],make:v=>`HP30%以下で攻撃${v}%強化`},
+  {kind:"regen",name:"リジェネレーション",tag:"回復",v:[3,10],make:v=>`行動後、最大HPの${v}%回復`},
   {kind:"speedPower",name:"疾風アタック",tag:"速度",v:[10,35],make:v=>`素早さに応じ最大${v}%与ダメージ上昇`},
   {kind:"burn",name:"ほのおまとい",tag:"炎上",v:[3,9],chance:[20,48],turns:[2,4],make:(v,c,t)=>`特殊攻撃時${c}%で炎上。${t}行動、最大HPの${v}%ダメージ`},
   {kind:"poison",name:"どくどくボディ",tag:"毒",v:[2,7],chance:[22,52],turns:[3,5],make:(v,c,t)=>`特殊攻撃時${c}%で毒。${t}行動、最大HPの${v}%ダメージ`},
   {kind:"stun",name:"ビリビリショック",tag:"麻痺",v:[0,0],chance:[10,28],turns:[1,1],make:(v,c)=>`特殊攻撃時${c}%で相手の次行動を停止`},
-  {kind:"weaken",name:"ふにゃふにゃ光線",tag:"弱体",v:[12,30],chance:[18,42],turns:[2,4],make:(v,c,t)=>`特殊攻撃時${c}%で攻撃力-${v}%（${t}行動）`},
+  {kind:"weaken",name:"ウィークネスレイ",tag:"弱体",v:[12,30],chance:[18,42],turns:[2,4],make:(v,c,t)=>`特殊攻撃時${c}%で攻撃力-${v}%（${t}行動）`},
   {kind:"armorBreak",name:"アーマーブレイク",tag:"弱体",v:[12,32],chance:[18,45],turns:[2,4],make:(v,c,t)=>`特殊攻撃時${c}%で防御力-${v}%（${t}行動）`},
-  {kind:"barrier",name:"ふわふわバリア",tag:"防御",v:[8,25],make:v=>`戦闘開始時、最大HPの${v}%分のバリア`},
+  {kind:"barrier",name:"エーテルバリア",tag:"防御",v:[8,25],make:v=>`戦闘開始時、最大HPの${v}%分のバリア`},
   {kind:"thorns",name:"トゲトゲ反射",tag:"反撃",v:[8,24],make:v=>`被ダメージの${v}%を反射`},
-  {kind:"evasion",name:"ひらり身かわし",tag:"回避",v:[6,20],make:v=>`${v}%で攻撃を完全回避`},
+  {kind:"evasion",name:"フェイズステップ",tag:"回避",v:[6,20],make:v=>`${v}%で攻撃を完全回避`},
   {kind:"execute",name:"弱点ハンター",tag:"シナジー",v:[15,45],make:v=>`状態異常中の敵へのダメージ+${v}%`},
   {kind:"burnSynergy",name:"灼熱エンジン",tag:"シナジー",v:[25,70],make:v=>`炎上中の敵へのダメージ+${v}%`},
   {kind:"poisonSynergy",name:"猛毒ハンター",tag:"シナジー",v:[25,70],make:v=>`毒状態の敵へのダメージ+${v}%`},
   {kind:"statusHeal",name:"状態吸収",tag:"シナジー",v:[3,9],make:v=>`状態異常の敵を攻撃すると最大HPの${v}%回復`},
   {kind:"fortress",name:"絶対要塞",tag:"防御",v:[10,28],make:v=>`HP50%以上で防御力+${v}%`},
   {kind:"berserk",name:"バーサーク",tag:"攻撃",v:[18,48],make:v=>`HPが減るほど攻撃上昇（最大+${v}%）`},
-  {kind:"cleanse",name:"きらめき浄化",tag:"回復",v:[15,35],make:v=>`行動後${v}%で状態異常を1つ解除`},
+  {kind:"cleanse",name:"セイクリッドクレンズ",tag:"回復",v:[15,35],make:v=>`行動後${v}%で状態異常を1つ解除`},
   {kind:"statusGuard",name:"耐性コート",tag:"防御",v:[18,45],make:v=>`状態異常付与率を${v}%軽減`},
   {kind:"poisonRegen",name:"毒食い",tag:"シナジー",v:[4,10],make:v=>`毒状態の敵がいると行動後最大HPの${v}%回復`},
   {kind:"burnRage",name:"火事場ブースト",tag:"シナジー",v:[20,55],make:v=>`自分が炎上中、攻撃力+${v}%`}
@@ -967,7 +978,10 @@ function updateTopBar(){$('#goldText').textContent=state.gold;$('#bestFloorText'
 function makeSpecies(code){
   const c=String(code).replace(/\D/g,"");
   const seed=hashString(c), r=rng(seed);
-  return { seed, element:elements[Math.floor(r()*elements.length)], type:types[Math.floor(r()*types.length)], name:nameA[Math.floor(r()*nameA.length)]+nameB[Math.floor(r()*nameB.length)], speciesId:(seed%9999).toString().padStart(4,"0") };
+  const type=types[Math.floor(r()*types.length)];
+  const pool=seriousNames[type]||seriousNames["ビースト"];
+  const name=pool[Math.floor(r()*pool.length)];
+  return { seed, element:elements[Math.floor(r()*elements.length)], type, name, speciesId:(seed%9999).toString().padStart(4,"0") };
 }
 function rollAbility(r){
   const t=abilityTemplates[Math.floor(r()*abilityTemplates.length)];
@@ -1114,7 +1128,7 @@ function renameMonster(monsterId,newName){
 function monsterSpeciesKey(m){
   const n=String(m?.speciesName||m?.name||"");
   if(n.includes("ラビ"))return"rabi";
-  const map={"スライム":"slime","ドラゴン":"dragon","ビースト":"beast","バード":"bird","ゴースト":"ghost","マシン":"machine","ナイト":"knight"};
+  const map={"スライム":"slime","ドラゴン":"dragon","ビースト":"beast","バード":"bird","ゴースト":"ghost","マシン":"machine","ナイト":"knight","ウルフ":"beast","ゴーレム":"machine","魔導士":"ghost"};
   return map[m?.type]||"beast";
 }
 function monsterArtVariant(m){
@@ -1130,11 +1144,8 @@ function monsterArtTier(m){
 }
 function highResMonsterBasePath(m){
   const key=monsterSpeciesKey(m),tier=monsterArtTier(m);
-  if(tier==="normal")return `assets/monsters/v30/normal/${key}_${monsterArtVariant(m)}.png`;
-  const seed=(m.seed||hashString(m.barcode||m.id||m.name||"monster"))>>>0;
-  if(tier==="rare")return `assets/monsters/v30/rare/${key}_${(seed%3)+1}.png`;
-  if(tier==="legendary")return `assets/monsters/v30/legendary/${key}_${(seed%2)+1}.png`;
-  return `assets/monsters/v30/mythic/${key}_${(seed%2)+1}.png`;
+  const idx=tier==="normal"?1:tier==="rare"?2:3;
+  return `assets/monsters/v41/${key}_${idx}.png`;
 }
 function monsterVisualStyle(m){
   const g=visualGenes(m);
