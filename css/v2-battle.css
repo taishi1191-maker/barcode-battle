@@ -177,3 +177,93 @@
     min-width:78px!important;
   }
 }
+
+
+/* ===== v2.1 skills / manual battle ===== */
+.skill-chips{
+  display:flex;gap:4px;flex-wrap:wrap;margin-top:6px
+}
+.skill-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:4px 6px;border-radius:8px;background:#102840;border:1px solid #315471;
+  color:#edf8ff;font-size:9px;line-height:1.1
+}
+.skill-chip small{font-size:8px;color:#93b0c7}
+.skill-chip.none{opacity:.55}
+.skill-overview-title{
+  font-weight:950;font-size:14px;margin-bottom:7px;color:#f5fbff
+}
+.active-skill-grid{display:grid;grid-template-columns:1fr;gap:7px}
+.active-skill-card{
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+  padding:10px 11px;border:1px solid #315471;border-radius:12px;background:#0b1b2d
+}
+.active-skill-card b{font-size:13px}
+.active-skill-card span{font-size:10px;color:#9eb4c7;text-align:right}
+.active-skill-card.special{border-color:#5573b7;background:linear-gradient(135deg,#122a44,#171d3c)}
+.active-skill-card.guard{border-color:#46668a}
+
+.v21-action-panel{
+  position:absolute;
+  left:calc(10px + var(--safe-left));
+  right:calc(10px + var(--safe-right));
+  bottom:calc(8px + var(--safe-bottom));
+  z-index:43;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px;
+  padding:7px;
+  border-radius:16px;
+  background:rgba(3,10,20,.94);
+  border:1px solid rgba(119,174,219,.48);
+  backdrop-filter:blur(12px);
+  box-shadow:0 10px 28px rgba(0,0,0,.32)
+}
+.v21-action-panel button{
+  min-width:0;height:46px;padding:0 5px;
+  border:1px solid #355d7a;border-radius:11px;
+  background:#10243a;color:#eef8ff;font-weight:950;font-size:11px
+}
+.v21-action-panel button.primary{
+  background:linear-gradient(135deg,#62e8ff,#9cf6ce);color:#06202a
+}
+.v21-action-panel button.special{
+  background:linear-gradient(135deg,#6b5cff,#9c67ff);color:white
+}
+.v21-action-panel button.item{background:#17384a}
+.v21-action-panel button.auto.on{
+  background:linear-gradient(135deg,#ffd86b,#ffb52e);color:#382400
+}
+.v21-action-panel button:disabled{opacity:.4}
+.v21-submenu{
+  position:absolute;
+  left:12px;right:12px;
+  bottom:calc(64px + var(--safe-bottom));
+  z-index:44;padding:10px;border-radius:14px;
+  background:rgba(3,10,20,.96);border:1px solid #3d6688;
+  box-shadow:0 10px 28px rgba(0,0,0,.34)
+}
+.v21-submenu h4{margin:0 0 8px;font-size:13px}
+.v21-submenu .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.v21-submenu button{
+  min-height:48px;border-radius:11px;border:1px solid #355d7a;
+  background:#10243a;color:#eef8ff;text-align:left;padding:8px;font-weight:850
+}
+.v21-submenu button small{display:block;color:#9eb4c7;margin-top:3px;font-weight:500}
+.v21-mode-badge{
+  position:absolute;right:12px;top:calc(44px + var(--safe-top));z-index:36;
+  padding:5px 8px;border-radius:999px;background:rgba(3,10,20,.84);
+  border:1px solid #365c7a;font-size:9px;font-weight:950
+}
+/* player HUD sits above new command bar */
+.v2-immersive .battle-hud.player{
+  bottom:calc(68px + var(--safe-bottom))!important;
+}
+.v2-control-dock{display:none!important}
+.v2-battle-log-panel{
+  bottom:calc(70px + var(--safe-bottom))!important;
+}
+@media(max-height:720px){
+  .v21-action-panel button{height:42px;font-size:10px}
+  .v2-immersive .battle-hud.player{bottom:calc(62px + var(--safe-bottom))!important}
+}

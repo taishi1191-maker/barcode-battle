@@ -1,5 +1,5 @@
 {
-  "version": "2.0.2",
+  "version": "2.1",
   "orientation": "portrait",
   "speeds": {
     "x1": 0.72,
@@ -21,5 +21,18 @@
     "com": "次の対戦",
     "adventure": "次のステージ / 再戦",
     "dungeon": "次の階へ"
+  },
+  "controls": [
+    "attack",
+    "skill",
+    "guard",
+    "item",
+    "auto"
+  ],
+  "battle_items": {
+    "potion": 5,
+    "cleanse": 3,
+    "power": 3,
+    "barrier": 3
   }
 }

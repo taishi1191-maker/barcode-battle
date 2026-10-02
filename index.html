@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v2.0.2</title>
+  <title>Barcode Battle v2.1</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -640,7 +640,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v2.0.2 / Quick Continue</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v2.1 / Battle System Update</div></div>
     </div>
     
   </div>
@@ -1056,6 +1056,18 @@ function xpPercent(m){return Math.min(100,m.xp/xpNeed(m.level)*100);}
 function registerDex(m){if(!state.dex[m.speciesId])state.dex[m.speciesId]={speciesId:m.speciesId,name:m.name,element:m.element,type:m.type,seed:m.seed,seen:0};state.dex[m.speciesId].seen++;save();}
 function levelUp(m,gain){m.xp+=gain;let ups=0;while(m.xp>=xpNeed(m.level)&&m.level<100){m.xp-=xpNeed(m.level);m.level++;ups++;}if(m.level>=100)m.xp=0;return ups;}
 
+
+function skillSummaryHtml(m,limit=2){
+  const arr=(m?.skills||[]).slice(0,limit);
+  if(!arr.length)return '<span class="skill-chip none">スキルなし</span>';
+  return arr.map(a=>`<span class="skill-chip"><b>${a.name}</b><small>${a.tag||"能力"}</small></span>`).join("");
+}
+function activeBattleSkillName(m){
+  const e=m?.element||"";
+  const map={炎:"🔥 灼熱撃",水:"💧 水流撃",雷:"⚡ 雷撃",風:"🌪 疾風撃",土:"🪨 岩砕撃",光:"✨ 光輝撃",闇:"🌑 暗黒撃"};
+  return map[e]||"✨ 特殊攻撃";
+}
+
 function abilityListHtml(m){
   const arr=m.skills||[];
   if(!arr.length)return'<div class="muted">特殊能力なし</div>';
@@ -1219,6 +1231,7 @@ function rosterHtml(selectedId){
         <span class="monster-label id">ID ${meta.id}</span>
         <span class="monster-label item">${item?item.icon+" "+item.name:"装備なし"}</span>
       </div>
+      <div class="skill-chips">${skillSummaryHtml(m,2)}</div>
       <div class="mini-stats"><span>HP <b>${s.hp}</b></span><span>攻 <b>${s.atk}</b></span><span>防 <b>${s.def}</b></span><span>速 <b>${s.spd}</b></span></div>
     </button>`;
   }).join('');
@@ -1269,7 +1282,11 @@ function renderSummon(m){
   $('#summonName').textContent=m.name;$('#summonStars').textContent=formatStars(m.stars);$('#summonElement').textContent=m.element;$('#summonType').textContent=m.type;
   $('#summonRank').textContent='個体 '+m.rank;$('#summonLevel').textContent=m.level;$('#summonXpText').textContent=`${m.xp}/${xpNeed(m.level)}`;$('#summonXpBar').style.width=xpPercent(m)+'%';
   const s=displayStats(m);$('#summonHp').textContent=s.hp;$('#summonAtk').textContent=s.atk;$('#summonDef').textContent=s.def;$('#summonSpd').textContent=s.spd;
-  $('#summonSkill').innerHTML=`<div class="badges"><span class="badge archetype-badge">型：${m.archetype?.name||"不明"}</span><span class="badge">${m.form?.name||"ノーマル"}</span><span class="badge">特殊能力 ${m.skills?.length||0}個</span></div>${abilityListHtml(m)}`;
+  $('#summonSkill').innerHTML=`<div class="skill-overview-title">⚔ バトルスキル</div>
+    <div class="active-skill-card"><b>通常攻撃</b><span>基礎攻撃</span></div>
+    <div class="active-skill-card special"><b>${activeBattleSkillName(m)}</b><span>威力1.28倍＋特殊能力シナジー</span></div>
+    <div class="skill-overview-title" style="margin-top:12px">🧬 特殊能力 / パッシブ</div>
+    <div class="badges"><span class="badge archetype-badge">型：${m.archetype?.name||"不明"}</span><span class="badge">${m.form?.name||"ノーマル"}</span><span class="badge">特殊能力 ${m.skills?.length||0}個</span></div>${abilityListHtml(m)}`;
 }
 function addToBox(){ if(!currentSummon)return; if(state.monsters.length>=60){ alert('BOX上限は60体です。'); return; } state.monsters.push(currentSummon); if(!state.battleMonsterId)state.battleMonsterId=currentSummon.id;if(!state.dungeonMonsterId)state.dungeonMonsterId=currentSummon.id;if(!state.storyMonsterId)state.storyMonsterId=currentSummon.id; save(); renderBox(); renderDungeon(); alert('BOXに保存しました！'); $('#saveBtn').disabled=true; $('#saveBtn').textContent='保存済み'; updateTopBar(); }
 
@@ -1290,6 +1307,7 @@ function renderBox(){
       <div class="mini-name">${displayName(m)}</div>
       <div class="tiny">Lv.${m.level} / ${m.element} / ${m.archetype?.name||'旧世代型'}</div>
       <div class="monster-labels"><span class="monster-label id">ID ${shortMonsterId(m)}</span><span class="monster-label item">${item?item.icon+" "+item.name:"装備なし"}</span></div>
+      <div class="skill-chips">${skillSummaryHtml(m,2)}</div>
       <div class="mini-stats"><span>HP <b>${s.hp}</b></span><span>攻 <b>${s.atk}</b></span><span>防 <b>${s.def}</b></span><span>速 <b>${s.spd}</b></span></div>`;
     d.addEventListener('click',()=>{selectedId=m.id;renderBox();renderSelected(m);});
     g.appendChild(d);
@@ -1310,7 +1328,14 @@ function renderSelected(m){
   $('#boxXpBar').style.width=xpPercent(m)+'%';
   const s=displayStats(m);
   $('#boxStats').innerHTML=`<div class="stat"><small>HP</small><b>${s.hp}</b></div><div class="stat"><small>攻撃</small><b>${s.atk}</b></div><div class="stat"><small>防御</small><b>${s.def}</b></div><div class="stat"><small>素早さ</small><b>${s.spd}</b></div>`;
-  $('#boxSkill').innerHTML=`<div class="power-total">特殊能力 ${m.skills?.length||0}個</div>${abilityListHtml(m)}`;
+  $('#boxSkill').innerHTML=`<div class="skill-overview-title">⚔ バトルスキル</div>
+    <div class="active-skill-grid">
+      <div class="active-skill-card"><b>通常攻撃</b><span>基礎攻撃</span></div>
+      <div class="active-skill-card special"><b>${activeBattleSkillName(m)}</b><span>威力1.28倍＋特殊能力シナジー</span></div>
+      <div class="active-skill-card guard"><b>防御</b><span>次の被ダメージを軽減</span></div>
+    </div>
+    <div class="skill-overview-title" style="margin-top:12px">🧬 特殊能力 / パッシブ</div>
+    <div class="power-total">特殊能力 ${m.skills?.length||0}個</div>${abilityListHtml(m)}`;
   refreshFavoriteButton(m);
   $('#boxExpBankText').textContent=state.expBank;
   renderEquippedItem(m);
