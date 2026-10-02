@@ -1,5 +1,5 @@
 {
-  "version": "2.1",
+  "version": "2.2",
   "orientation": "portrait",
   "speeds": {
     "x1": 0.72,
@@ -34,5 +34,11 @@
     "cleanse": 3,
     "power": 3,
     "barrier": 3
+  },
+  "visual_theme": "premium_gold_blue",
+  "backgrounds": {
+    "com": "assets/backgrounds/premium/arena_premium.jpg",
+    "adventure": "assets/backgrounds/premium/grassland_premium.jpg",
+    "dungeon": "assets/backgrounds/premium/ruins_premium.jpg"
   }
 }

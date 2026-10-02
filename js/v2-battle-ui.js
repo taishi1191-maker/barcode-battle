@@ -211,9 +211,9 @@
 
   function setVerticalBackground(mode,scene){
     const map={
-      com:"assets/backgrounds/vertical/arena_vertical.jpg",
-      adventure:"assets/backgrounds/vertical/grassland_vertical.jpg",
-      dungeon:"assets/backgrounds/vertical/ruins_vertical.jpg"
+      com:"assets/backgrounds/premium/arena_premium.jpg",
+      adventure:"assets/backgrounds/premium/grassland_premium.jpg",
+      dungeon:"assets/backgrounds/premium/ruins_premium.jpg"
     };
     scene.style.backgroundImage=`linear-gradient(rgba(2,8,16,.04),rgba(2,8,16,.12)),url("${map[mode]||map.com}")`;
   }
@@ -263,7 +263,7 @@
   function createChrome(mode,scene){
     if(scene.querySelector(".v2-battle-log-panel"))return;
     const top=document.createElement("div");
-    top.className="v2-battle-topbar";top.innerHTML=`<span>${modes[mode].label}</span><span>v2.1</span>`;
+    top.className="v2-battle-topbar";top.innerHTML=`<span>${modes[mode].label}</span><span>v2.2</span>`;
     scene.appendChild(top);
     const log=document.createElement("div");
     log.className="v2-battle-log-panel";log.textContent="戦闘ログ";scene.appendChild(log);

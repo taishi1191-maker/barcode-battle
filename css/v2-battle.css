@@ -267,3 +267,134 @@
   .v21-action-panel button{height:42px;font-size:10px}
   .v2-immersive .battle-hud.player{bottom:calc(62px + var(--safe-bottom))!important}
 }
+
+
+/* ===== v2.2 Premium Battle Visual ===== */
+:root{
+  --premium-gold:#f4cc6d;
+  --premium-blue:#4ebdff;
+  --premium-navy:#061323;
+  --premium-panel:rgba(5,17,34,.91);
+}
+.battle-scene.v2-immersive::before{
+  background:
+    radial-gradient(circle at 50% 46%,rgba(255,255,255,.02),rgba(0,0,0,.06) 58%,rgba(0,0,0,.36) 100%),
+    linear-gradient(180deg,rgba(3,10,25,.28) 0%,rgba(0,0,0,0) 18%,rgba(0,0,0,0) 72%,rgba(2,8,18,.48) 100%)!important;
+}
+.v2-battle-topbar{
+  top:calc(8px + var(--safe-top))!important;
+  min-width:176px;justify-content:center;
+  padding:7px 20px!important;
+  border:1px solid rgba(244,204,109,.85)!important;
+  border-radius:4px!important;
+  background:linear-gradient(180deg,rgba(13,39,72,.98),rgba(4,18,38,.98))!important;
+  color:#fff!important;
+  box-shadow:0 0 0 2px rgba(55,126,190,.40),0 4px 18px rgba(0,0,0,.34),inset 0 0 16px rgba(58,153,255,.12)!important;
+  clip-path:polygon(7% 0,93% 0,100% 50%,93% 100%,7% 100%,0 50%);
+  letter-spacing:.06em;
+}
+.v2-immersive .battle-stage-label{
+  top:calc(48px + var(--safe-top))!important;
+  border:1px solid rgba(244,204,109,.8)!important;
+  border-radius:4px!important;
+  background:linear-gradient(180deg,rgba(9,29,54,.96),rgba(4,15,30,.96))!important;
+  box-shadow:0 0 0 1px rgba(62,151,220,.34),0 5px 18px rgba(0,0,0,.25)!important;
+  clip-path:polygon(5% 0,95% 0,100% 50%,95% 100%,5% 100%,0 50%);
+  padding:7px 14px!important;
+}
+.v21-mode-badge{
+  top:calc(48px + var(--safe-top))!important;
+  border-color:rgba(244,204,109,.72)!important;
+  background:linear-gradient(180deg,rgba(12,37,68,.96),rgba(4,16,32,.96))!important;
+  box-shadow:0 0 0 1px rgba(70,160,230,.28)!important;
+}
+.v2-immersive .battle-hud.enemy,
+.v2-immersive .battle-hud.player{
+  left:calc(16px + var(--safe-left))!important;
+  right:calc(16px + var(--safe-right))!important;
+}
+.v2-immersive .battle-hud.enemy{top:calc(87px + var(--safe-top))!important}
+.v2-immersive .battle-hud.player{bottom:calc(74px + var(--safe-bottom))!important}
+.v2-immersive .hud-card{
+  position:relative;
+  overflow:hidden;
+  padding:10px 14px!important;
+  border:1px solid rgba(244,204,109,.82)!important;
+  border-radius:6px!important;
+  background:linear-gradient(100deg,rgba(6,23,47,.97),rgba(4,15,31,.93))!important;
+  box-shadow:0 0 0 2px rgba(49,131,197,.34),0 8px 24px rgba(0,0,0,.33),inset 0 0 24px rgba(22,106,190,.08)!important;
+  clip-path:polygon(2.5% 0,97.5% 0,100% 25%,100% 75%,97.5% 100%,2.5% 100%,0 75%,0 25%);
+}
+.v2-immersive .hud-card::after{
+  content:"";position:absolute;left:6%;right:6%;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,#5bc7ff,var(--premium-gold),transparent);opacity:.8;
+}
+.v2-immersive .hud-name{font-size:17px!important;font-weight:950!important;letter-spacing:.02em}
+.v2-immersive .hud-meta,.v2-immersive .hud-equipped{color:#c4d7e8!important}
+.v2-immersive .battle-hp{
+  height:12px!important;border-radius:999px!important;background:#351c2d!important;
+  border:1px solid rgba(255,255,255,.10)!important;box-shadow:inset 0 2px 4px rgba(0,0,0,.34)!important;
+}
+.v2-immersive .battle-hp > *{
+  box-shadow:0 0 10px rgba(94,255,125,.18)!important;
+}
+/* More cinematic spacing; keep monsters away from HUDs */
+.v2-immersive .battle-unit.enemy{
+  width:63vw!important;max-width:405px!important;
+  right:-8vw!important;top:23vh!important;
+}
+.v2-immersive .battle-unit.player{
+  width:63vw!important;max-width:405px!important;
+  left:-10vw!important;bottom:25vh!important;
+}
+.v2-immersive .battle-unit .portrait{height:31vh!important;max-height:310px!important}
+.v2-immersive .battle-unit .portrait img.battle-art{
+  filter:drop-shadow(0 16px 20px rgba(0,0,0,.54)) drop-shadow(0 0 12px rgba(87,201,255,.18))!important;
+}
+.v21-action-panel{
+  left:calc(8px + var(--safe-left))!important;right:calc(8px + var(--safe-right))!important;
+  bottom:calc(7px + var(--safe-bottom))!important;
+  gap:5px!important;padding:7px!important;border-radius:8px!important;
+  border:1px solid rgba(244,204,109,.72)!important;
+  background:linear-gradient(180deg,rgba(4,18,37,.97),rgba(2,10,22,.98))!important;
+  box-shadow:0 0 0 2px rgba(38,114,180,.34),0 8px 24px rgba(0,0,0,.38)!important;
+}
+.v21-action-panel button{
+  position:relative;overflow:hidden;height:51px!important;border-radius:6px!important;
+  border:1px solid rgba(90,185,255,.7)!important;
+  background:linear-gradient(180deg,#12385d,#0a223d)!important;
+  box-shadow:inset 0 0 14px rgba(74,169,255,.09),0 2px 7px rgba(0,0,0,.25)!important;
+}
+.v21-action-panel button::after{
+  content:"";position:absolute;inset:2px;border:1px solid rgba(255,255,255,.08);border-radius:4px;pointer-events:none;
+}
+.v21-action-panel button.primary{
+  background:linear-gradient(160deg,#1476c9,#08b9ee)!important;color:#fff!important;border-color:#7ee6ff!important;
+}
+.v21-action-panel button.special{
+  background:linear-gradient(160deg,#5722bf,#9443f0)!important;border-color:#c69aff!important;
+}
+.v21-action-panel button.item{
+  background:linear-gradient(160deg,#7b4c09,#d79016)!important;border-color:#ffd56d!important;
+}
+.v21-action-panel button.auto.on{
+  background:linear-gradient(160deg,#0e416f,#1767a9)!important;color:#fff!important;border-color:#76caff!important;
+}
+.v21-submenu{
+  border:1px solid rgba(244,204,109,.75)!important;
+  background:linear-gradient(180deg,rgba(5,21,43,.98),rgba(3,12,27,.98))!important;
+  border-radius:8px!important;box-shadow:0 0 0 2px rgba(49,131,197,.28),0 10px 30px rgba(0,0,0,.42)!important;
+}
+.v21-submenu button{border-radius:6px!important;background:linear-gradient(180deg,#102d4c,#091c31)!important}
+.v2-battle-log-panel{
+  border:1px solid rgba(244,204,109,.75)!important;border-radius:7px!important;
+  background:rgba(3,13,28,.96)!important;box-shadow:0 0 0 2px rgba(49,131,197,.28)!important;
+}
+.v2-immersive .damage-number{font-weight:1000!important;color:#fff2b0!important;text-shadow:0 3px 0 #7c1b00,0 0 12px #ff512f,0 0 24px #ffcf5a!important}
+.v2-immersive .damage-number.critical{color:#fff!important;text-shadow:0 3px 0 #9b1608,0 0 10px #ff3b30,0 0 26px #ffb13b!important}
+@media(max-height:720px){
+ .v2-immersive .battle-hud.enemy{top:calc(80px + var(--safe-top))!important}
+ .v2-immersive .battle-unit.enemy{top:23vh!important}
+ .v2-immersive .battle-unit.player{bottom:26vh!important}
+ .v2-immersive .battle-unit .portrait{height:28vh!important}
+}
