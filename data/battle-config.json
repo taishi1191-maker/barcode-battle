@@ -1,5 +1,5 @@
 {
-  "version": "2.0.1",
+  "version": "2.0.2",
   "orientation": "portrait",
   "speeds": {
     "x1": 0.72,
@@ -16,5 +16,10 @@
     "com": "assets/backgrounds/vertical/arena_vertical.jpg",
     "adventure": "assets/backgrounds/vertical/grassland_vertical.jpg",
     "dungeon": "assets/backgrounds/vertical/ruins_vertical.jpg"
+  },
+  "quick_continue": {
+    "com": "次の対戦",
+    "adventure": "次のステージ / 再戦",
+    "dungeon": "次の階へ"
   }
 }

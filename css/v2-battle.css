@@ -146,3 +146,34 @@
 }
 .v2-art-card .name{font-weight:950;margin-top:6px}
 .v2-art-card .tier{font-size:10px;color:#9eb4c7}
+
+
+/* v2.0.2 Quick Continue */
+.v2-control-dock .v2-next{
+  background:linear-gradient(135deg,#62e8ff,#9cf6ce)!important;
+  color:#06202a!important;
+  border-color:#75edfa!important;
+  min-width:88px!important;
+}
+.v2-control-dock .v2-next:disabled{
+  opacity:.42!important;
+  filter:grayscale(.45);
+}
+.v2-control-dock .v2-finish{
+  min-width:58px!important;
+}
+@media (max-width:430px){
+  .v2-control-dock{
+    gap:5px!important;
+    padding:6px!important;
+    max-width:calc(100vw - 16px)!important;
+  }
+  .v2-control-dock button{
+    min-width:42px!important;
+    padding:0 8px!important;
+    font-size:11px!important;
+  }
+  .v2-control-dock .v2-next{
+    min-width:78px!important;
+  }
+}

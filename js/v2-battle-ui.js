@@ -61,10 +61,92 @@
     scene.style.backgroundImage=`linear-gradient(rgba(2,8,16,.04),rgba(2,8,16,.12)),url("${src}")`;
   }
 
+
+  function clearFinishButtons(scene){
+    scene?.querySelectorAll(".v2-finish,.v2-next").forEach(x=>x.remove());
+  }
+
+  function continueToNext(mode){
+    const scene=currentScene;
+    clearFinishButtons(scene);
+
+    if(mode==="com"){
+      const next=document.querySelector("#newEnemyBtn");
+      const start=document.querySelector("#autoBattleBtn");
+      if(next) next.click();
+      setTimeout(()=>{
+        if(scene) setVerticalBackground("com",scene);
+        if(start && !start.disabled) start.click();
+      },180);
+      return;
+    }
+
+    if(mode==="adventure"){
+      const next=document.querySelector("#storyNextBtn");
+      const retry=document.querySelector("#storyRetryBtn");
+      const start=document.querySelector("#storyBattleBtn");
+      if(next && !next.hidden){
+        next.click();
+        setTimeout(()=>{
+          if(scene) setVerticalBackground("adventure",scene);
+          if(start && !start.disabled) start.click();
+        },220);
+      }else if(retry){
+        retry.click();
+        setTimeout(()=>{
+          if(scene) setVerticalBackground("adventure",scene);
+          if(start && !start.disabled) start.click();
+        },220);
+      }
+      return;
+    }
+
+    if(mode==="dungeon"){
+      const next=document.querySelector("#nextFloorBtn");
+      const start=document.querySelector("#dungeonAutoBattleBtn");
+      if(next && !next.hidden){
+        next.click();
+        setTimeout(()=>{
+          if(scene) setVerticalBackground("dungeon",scene);
+          if(start && !start.disabled) start.click();
+        },220);
+      }
+    }
+  }
+
+  function addPostBattleButtons(mode,scene){
+    const dock=scene?.querySelector(".v2-control-dock");
+    if(!dock) return;
+    clearFinishButtons(scene);
+
+    const next=document.createElement("button");
+    next.className="v2-next";
+    if(mode==="com") next.textContent="次の対戦";
+    else if(mode==="adventure"){
+      const n=document.querySelector("#storyNextBtn");
+      next.textContent=(n && !n.hidden) ? "次のステージ" : "再戦";
+    }else next.textContent="次の階へ";
+
+    if(mode==="dungeon"){
+      const n=document.querySelector("#nextFloorBtn");
+      if(!n || n.hidden) next.disabled=true;
+    }
+
+    next.addEventListener("click",()=>continueToNext(mode));
+    dock.appendChild(next);
+
+    const finish=document.createElement("button");
+    finish.className="v2-finish";
+    finish.textContent="終了";
+    finish.addEventListener("click",exitBattleView);
+    dock.appendChild(finish);
+  }
+
   function enterBattleView(mode){
     const cfg=modes[mode],scene=$(cfg.scene);
     if(!scene)return;
     currentMode=mode;currentScene=scene;
+    clearFinishButtons(scene);
     document.body.classList.add("v2-battle-active");
     scene.classList.add("v2-immersive");
     createChrome(mode,scene);
@@ -78,10 +160,8 @@
         const txt=(result.textContent||"").trim();
         if(!txt)return;
         const dock=$(".v2-control-dock",scene);
-        if(dock&&!$(".v2-finish",dock)){
-          const b=document.createElement("button");
-          b.className="v2-finish";b.textContent="戦闘終了";
-          b.addEventListener("click",exitBattleView);dock.appendChild(b);
+        if(dock && !$(".v2-finish",dock)){
+          addPostBattleButtons(mode,scene);
         }
       });
       resultObserver.observe(result,{childList:true,subtree:true,characterData:true});
@@ -105,9 +185,6 @@
       btn.dataset.v2wired="1";
       btn.addEventListener("click",()=>setTimeout(()=>enterBattleView(mode),70));
     });
-    $("#newEnemyBtn")?.addEventListener("click",exitBattleView);
-    $("#storyNextBtn")?.addEventListener("click",exitBattleView);
-    $("#nextFloorBtn")?.addEventListener("click",exitBattleView);
   }
   function addArtLibrary(){
     const dex=$("#dex");
