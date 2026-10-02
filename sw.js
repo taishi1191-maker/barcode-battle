@@ -1,4 +1,4 @@
-const CACHE="barcode-battle-v41-monster-art";
+const CACHE="barcode-battle-v411-restore-monster-art";
 const ASSETS=[
   "./",
   "./index.html",
