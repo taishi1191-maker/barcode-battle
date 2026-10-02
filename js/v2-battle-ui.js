@@ -210,12 +210,22 @@
   }
 
   function setVerticalBackground(mode,scene){
-    const map={
-      com:"assets/backgrounds/premium/arena_premium.jpg",
-      adventure:"assets/backgrounds/premium/grassland_premium.jpg",
-      dungeon:"assets/backgrounds/premium/ruins_premium.jpg"
-    };
-    scene.style.backgroundImage=`linear-gradient(rgba(2,8,16,.04),rgba(2,8,16,.12)),url("${map[mode]||map.com}")`;
+    let src="assets/backgrounds/v30/arena_day.jpg";
+    if(mode==="com"){
+      const r=runObj(mode),seed=(r?.enemy?.seed||r?.enemy?.level||1)>>>0;
+      src=`assets/backgrounds/v30/arena_${seed%3===0?"boss":seed%2===0?"night":"day"}.jpg`;
+    }else if(mode==="adventure"){
+      const id=(typeof storyRun!=="undefined"&&storyRun?.stage?.id)||1;
+      const key={1:"grassland",2:"forest",3:"ice",4:"ruins",5:"castle"}[id]||"grassland";
+      const boss=id===5?"boss":(id%2===0?"night":"day");
+      src=`assets/backgrounds/v30/${key}_${boss}.jpg`;
+    }else if(mode==="dungeon"){
+      const f=(typeof dungeonRun!=="undefined"&&dungeonRun?.floor)||1;
+      const key=f%20===0?"castle":f%10===0?"ruins":["ruins","forest","ice","volcano","arena"][Math.floor((f-1)/4)%5];
+      const variant=f%10===0?"boss":f%2===0?"night":"day";
+      src=`assets/backgrounds/v30/${key}_${variant}.jpg`;
+    }
+    scene.style.backgroundImage=`linear-gradient(rgba(2,8,16,.04),rgba(2,8,16,.12)),url("${src}")`;
   }
 
   function clearFinishButtons(scene){
@@ -263,7 +273,7 @@
   function createChrome(mode,scene){
     if(scene.querySelector(".v2-battle-log-panel"))return;
     const top=document.createElement("div");
-    top.className="v2-battle-topbar";top.innerHTML=`<span>${modes[mode].label}</span><span>v2.2</span>`;
+    top.className="v2-battle-topbar";top.innerHTML=`<span>${modes[mode].label}</span><span>v3.0</span>`;
     scene.appendChild(top);
     const log=document.createElement("div");
     log.className="v2-battle-log-panel";log.textContent="戦闘ログ";scene.appendChild(log);
