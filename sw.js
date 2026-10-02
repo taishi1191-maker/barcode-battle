@@ -1,4 +1,4 @@
-const CACHE="barcode-battle-v22";
+const CACHE="barcode-battle-v30";
 const ASSETS=[
 "./","./index.html","./manifest.webmanifest",
 "./assets/icon-192.png","./assets/icon-512.png","./assets/apple-touch-icon.png","./assets/icon-1024.png",

@@ -1,0 +1,6 @@
+normal: 96 images
+rare: 24 images
+legendary: 16 images
+mythic: 16 images
+backgrounds: 21 images
+TOTAL_NEW_V30_IMAGES: 173
