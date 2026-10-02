@@ -1,0 +1,8 @@
+assets/backgrounds/premium: 7 files
+assets/backgrounds/vertical: 7 files
+assets/monsters/v19/legendary: 8 files
+assets/monsters/v19/mythic: 8 files
+assets/monsters/v19/normal: 24 files
+assets/monsters/v19/rare: 8 files
+
+TOTAL_IMAGE_FILES: 62
