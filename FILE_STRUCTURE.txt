@@ -1,0 +1,56 @@
+barcode-battle/
+├─ index.html
+├─ manifest.webmanifest
+├─ sw.js
+├─ README.md
+├─ V2_0_SPEC.md
+│
+├─ css/
+│  ├─ app.css
+│  ├─ battle.css
+│  └─ landscape.css
+│
+├─ js/
+│  ├─ app.js
+│  ├─ storage.js
+│  ├─ monsters.js
+│  ├─ battle-engine.js
+│  ├─ battle-scene.js
+│  ├─ battle-fx.js
+│  ├─ adventure.js
+│  ├─ dungeon.js
+│  ├─ gacha.js
+│  └─ ui.js
+│
+├─ data/
+│  ├─ art-manifest.json
+│  ├─ monsters.json
+│  ├─ skills.json
+│  ├─ items.json
+│  ├─ stages.json
+│  └─ dungeon.json
+│
+└─ assets/
+   ├─ monsters/
+   │  ├─ normal/
+   │  ├─ rare/
+   │  ├─ legendary/
+   │  └─ mythic/
+   ├─ backgrounds/
+   │  ├─ battle/
+   │  ├─ adventure/
+   │  └─ dungeon/
+   ├─ effects/
+   │  ├─ slash/
+   │  ├─ fire/
+   │  ├─ poison/
+   │  ├─ lightning/
+   │  ├─ ice/
+   │  ├─ heal/
+   │  └─ crit/
+   └─ ui/
+      ├─ battle/
+      ├─ status/
+      ├─ items/
+      ├─ common/
+      └─ portrait_frames/
