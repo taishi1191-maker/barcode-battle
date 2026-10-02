@@ -1,33 +1,21 @@
-# Barcode Battle v1.9 — Monster Art Update
+# Barcode Battle v2.0 — Landscape Battle
 
-## New art system
-- 48 new 512×512 transparent PNG monster artworks.
-- 8 species: Rabi, Knight, Dragon, Beast, Bird, Ghost, Machine, Slime.
-- Each species has:
-  - 3 NORMAL variants
-  - 1 RARE art
-  - 1 LEGENDARY art
-  - 1 MYTHIC art
+v1.9を土台にした実働v2.0です。
 
-## Rules
-- Barcode seed fixes the NORMAL art variant.
-- Summon / BOX / Dex / COM / Adventure / Infinite Dungeon use the same art selector.
-- ★4+ → RARE
-- ★5 + SS → LEGENDARY
-- Mythic condition → MYTHIC
-- Missing v1.9 art automatically falls back to the old high-resolution art.
+GitHubではZIPを解凍し、リポジトリのルートへアップロードしてください。
+既存ファイルは上書き、既存assetsは削除せず残してください。
 
-## Also includes v1.8.2 fixes
-- Slower battle tempo so effects can be seen.
-- ×1 effect-focused / ×2 standard / ×3 fast.
-- Infinite Dungeon post-battle actions moved below the result.
+追加:
+- css/v2-battle.css
+- js/v2-battle-ui.js
+- data/art-manifest.json
+- data/battle-config.json
+- assets/monsters/v19/
 
-## GitHub upload
-Upload/overwrite:
+上書き:
 - index.html
 - sw.js
 - manifest.webmanifest
 - README.md
-- assets/monsters/v19/
 
-Keep all existing assets.
+戦闘開始後、iPhoneを横向きにすると最適表示になります。

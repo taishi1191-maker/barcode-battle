@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v1.9</title>
+  <title>Barcode Battle v2.0</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -633,13 +633,14 @@
     }
 
 </style>
+<link rel="stylesheet" href="css/v2-battle.css?v=20">
 </head>
 <body>
 <div class="app">
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v1.9 / Monster Art Update</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v2.0 / Landscape Battle</div></div>
     </div>
     
   </div>
@@ -1985,5 +1986,6 @@ if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').cat
 if(state.monsters.length){if(!state.battleMonsterId)state.battleMonsterId=state.monsters[0].id;if(!state.dungeonMonsterId)state.dungeonMonsterId=state.monsters[0].id;if(!state.storyMonsterId)state.storyMonsterId=state.monsters[0].id;save();}
 updateTopBar();renderBox();renderDex();renderStory();renderBattleSelection();renderDungeon();
 </script>
+<script src="js/v2-battle-ui.js?v=20"></script>
 </body>
 </html>

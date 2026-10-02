@@ -1,0 +1,117 @@
+
+/* Barcode Battle v2.0 - Landscape Battle UI */
+:root{
+  --v2-safe-top: env(safe-area-inset-top,0px);
+  --v2-safe-right: env(safe-area-inset-right,0px);
+  --v2-safe-bottom: env(safe-area-inset-bottom,0px);
+  --v2-safe-left: env(safe-area-inset-left,0px);
+}
+.v2-rotate-hint{display:none}
+.v2-battle-active{overflow:hidden!important;overscroll-behavior:none}
+.v2-battle-active .bottom-nav{opacity:0;pointer-events:none}
+.battle-scene.v2-immersive{
+  position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;
+  min-height:0!important;max-width:none!important;margin:0!important;border:0!important;
+  border-radius:0!important;z-index:9999!important;background-size:cover!important;
+  background-position:center!important;overflow:hidden!important;box-shadow:none!important
+}
+.battle-scene.v2-immersive::before{
+  background:
+    linear-gradient(90deg,rgba(2,8,16,.55) 0%,rgba(2,8,16,.05) 38%,rgba(2,8,16,.05) 62%,rgba(2,8,16,.58) 100%),
+    linear-gradient(180deg,rgba(2,8,16,.12),rgba(2,8,16,.05) 62%,rgba(2,8,16,.52))!important
+}
+.v2-immersive .battle-stage-label{
+  left:calc(14px + var(--v2-safe-left))!important;top:calc(10px + var(--v2-safe-top))!important;
+  max-width:42%!important;z-index:30!important;font-size:12px!important;background:rgba(3,10,20,.82)!important
+}
+.v2-immersive .battle-boss{
+  right:calc(16px + var(--v2-safe-right))!important;top:calc(10px + var(--v2-safe-top))!important;
+  z-index:31!important
+}
+.v2-immersive .battle-hud.enemy{
+  top:calc(48px + var(--v2-safe-top))!important;right:calc(18px + var(--v2-safe-right))!important;
+  left:auto!important;width:min(38vw,470px)!important;z-index:28!important
+}
+.v2-immersive .battle-hud.player{
+  left:calc(18px + var(--v2-safe-left))!important;bottom:calc(16px + var(--v2-safe-bottom))!important;
+  width:min(38vw,470px)!important;z-index:28!important
+}
+.v2-immersive .hud-card{
+  width:100%!important;border:1px solid rgba(114,190,255,.45)!important;
+  background:linear-gradient(180deg,rgba(5,13,25,.94),rgba(5,13,25,.82))!important;
+  box-shadow:0 10px 30px rgba(0,0,0,.32)!important;backdrop-filter:blur(10px)
+}
+.v2-immersive .hud-name{font-size:clamp(14px,2.2vw,22px)!important}
+.v2-immersive .hud-meta,.v2-immersive .hud-equipped{font-size:clamp(9px,1.2vw,13px)!important}
+.v2-immersive .battle-hp{height:12px!important}
+.v2-immersive .battle-unit{width:min(39vw,560px)!important;max-width:none!important;z-index:12!important}
+.v2-immersive .battle-unit.player{left:calc(7vw + var(--v2-safe-left))!important;bottom:13vh!important;top:auto!important}
+.v2-immersive .battle-unit.enemy{right:calc(7vw + var(--v2-safe-right))!important;top:13vh!important;bottom:auto!important}
+.v2-immersive .battle-unit .portrait{width:100%!important;height:min(64vh,560px)!important;overflow:visible!important}
+.v2-immersive .battle-unit .portrait img.battle-art{
+  width:100%!important;height:100%!important;object-fit:contain!important;image-rendering:auto!important;
+  filter:drop-shadow(0 16px 22px rgba(0,0,0,.52))
+}
+.v2-immersive .battle-fx{z-index:22!important}
+.v2-immersive .damage-number{
+  z-index:40!important;font-size:clamp(28px,6vw,66px)!important;
+  text-shadow:0 4px 0 rgba(0,0,0,.55),0 0 20px rgba(255,255,255,.38)!important
+}
+.v2-battle-topbar{
+  position:absolute;left:50%;top:calc(9px + var(--v2-safe-top));transform:translateX(-50%);
+  z-index:34;display:flex;gap:8px;align-items:center;background:rgba(3,10,20,.80);
+  border:1px solid rgba(119,174,219,.42);border-radius:999px;padding:6px 10px;
+  backdrop-filter:blur(10px);font-size:11px;font-weight:900
+}
+.v2-control-dock{
+  position:absolute;left:50%;bottom:calc(12px + var(--v2-safe-bottom));transform:translateX(-50%);
+  z-index:35;display:flex;gap:8px;align-items:center;padding:7px 9px;border-radius:16px;
+  background:rgba(3,10,20,.88);border:1px solid rgba(119,174,219,.42);
+  backdrop-filter:blur(12px);box-shadow:0 10px 28px rgba(0,0,0,.28)
+}
+.v2-control-dock button{
+  min-width:54px;height:42px;border-radius:11px;border:1px solid #355d7a;background:#10243a;
+  color:#eef8ff;font-weight:950;font-size:13px;padding:0 12px
+}
+.v2-control-dock button.active{
+  background:linear-gradient(135deg,#61e9ff,#9cf6ce);color:#06202a;border-color:#75edfa
+}
+.v2-control-dock .v2-exit{background:#263b54}
+.v2-control-dock .v2-finish{
+  background:linear-gradient(135deg,#ffd96b,#ffbd2e);color:#342200;border-color:#ffd767
+}
+.v2-battle-log-panel{
+  position:absolute;right:calc(12px + var(--v2-safe-right));bottom:calc(12px + var(--v2-safe-bottom));
+  width:min(29vw,360px);max-height:34vh;overflow:auto;z-index:33;border-radius:14px;padding:10px;
+  background:rgba(3,10,20,.86);border:1px solid rgba(119,174,219,.42);backdrop-filter:blur(10px);
+  font-size:10px;line-height:1.5;white-space:pre-line;display:none
+}
+.v2-battle-log-panel.open{display:block}
+.v2-immersive .battle-banner{z-index:45!important}
+@media (orientation:portrait){
+  .battle-scene.v2-immersive .v2-rotate-hint{
+    display:flex;position:absolute;inset:0;z-index:100;align-items:center;justify-content:center;
+    text-align:center;padding:32px;background:rgba(3,10,20,.92);color:white;font-size:20px;font-weight:950
+  }
+}
+@media (orientation:landscape) and (max-height:500px){
+  .v2-immersive .battle-hud.enemy{top:42px!important;width:34vw!important}
+  .v2-immersive .battle-hud.player{bottom:12px!important;width:34vw!important}
+  .v2-immersive .battle-unit.player{left:8vw!important;bottom:6vh!important}
+  .v2-immersive .battle-unit.enemy{right:8vw!important;top:7vh!important}
+  .v2-immersive .battle-unit .portrait{height:69vh!important}
+  .v2-control-dock{bottom:6px!important}
+  .v2-battle-log-panel{bottom:62px!important}
+}
+.v2-art-library{
+  margin-top:14px;padding:14px;border:1px solid #294864;border-radius:18px;
+  background:linear-gradient(180deg,#0d2035,#081626)
+}
+.v2-art-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.v2-art-card{padding:8px;border:1px solid #294864;border-radius:14px;background:#081522}
+.v2-art-card img{
+  width:100%;aspect-ratio:1;object-fit:contain;border-radius:12px;
+  background:radial-gradient(circle,#16324b,#06111e 70%)
+}
+.v2-art-card .name{font-weight:950;margin-top:6px}
+.v2-art-card .tier{font-size:10px;color:#9eb4c7}
