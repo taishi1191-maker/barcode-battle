@@ -1,85 +1,85 @@
 {
-  "version": "2.0",
+  "version": "4.2",
   "tiers": {
     "rabi": {
       "normal": [
-        "assets/monsters/v19/normal/rabi_1.png",
-        "assets/monsters/v19/normal/rabi_2.png",
-        "assets/monsters/v19/normal/rabi_3.png"
+        "assets/monsters/v42/rabi.png",
+        "assets/monsters/v42/rabi.png",
+        "assets/monsters/v42/rabi.png"
       ],
-      "rare": "assets/monsters/v19/rare/rabi.png",
-      "legendary": "assets/monsters/v19/legendary/rabi.png",
-      "mythic": "assets/monsters/v19/mythic/rabi.png"
+      "rare": "assets/monsters/v42/rabi.png",
+      "legendary": "assets/monsters/v42/rabi.png",
+      "mythic": "assets/monsters/v42/rabi.png"
     },
     "dragon": {
       "normal": [
-        "assets/monsters/v19/normal/dragon_1.png",
-        "assets/monsters/v19/normal/dragon_2.png",
-        "assets/monsters/v19/normal/dragon_3.png"
+        "assets/monsters/v42/dragon.png",
+        "assets/monsters/v42/dragon.png",
+        "assets/monsters/v42/dragon.png"
       ],
-      "rare": "assets/monsters/v19/rare/dragon.png",
-      "legendary": "assets/monsters/v19/legendary/dragon.png",
-      "mythic": "assets/monsters/v19/mythic/dragon.png"
+      "rare": "assets/monsters/v42/dragon.png",
+      "legendary": "assets/monsters/v42/dragon.png",
+      "mythic": "assets/monsters/v42/dragon.png"
     },
     "beast": {
       "normal": [
-        "assets/monsters/v19/normal/beast_1.png",
-        "assets/monsters/v19/normal/beast_2.png",
-        "assets/monsters/v19/normal/beast_3.png"
+        "assets/monsters/v42/beast.png",
+        "assets/monsters/v42/beast.png",
+        "assets/monsters/v42/beast.png"
       ],
-      "rare": "assets/monsters/v19/rare/beast.png",
-      "legendary": "assets/monsters/v19/legendary/beast.png",
-      "mythic": "assets/monsters/v19/mythic/beast.png"
+      "rare": "assets/monsters/v42/beast.png",
+      "legendary": "assets/monsters/v42/beast.png",
+      "mythic": "assets/monsters/v42/beast.png"
     },
     "bird": {
       "normal": [
-        "assets/monsters/v19/normal/bird_1.png",
-        "assets/monsters/v19/normal/bird_2.png",
-        "assets/monsters/v19/normal/bird_3.png"
+        "assets/monsters/v42/bird.png",
+        "assets/monsters/v42/bird.png",
+        "assets/monsters/v42/bird.png"
       ],
-      "rare": "assets/monsters/v19/rare/bird.png",
-      "legendary": "assets/monsters/v19/legendary/bird.png",
-      "mythic": "assets/monsters/v19/mythic/bird.png"
+      "rare": "assets/monsters/v42/bird.png",
+      "legendary": "assets/monsters/v42/bird.png",
+      "mythic": "assets/monsters/v42/bird.png"
     },
     "ghost": {
       "normal": [
-        "assets/monsters/v19/normal/ghost_1.png",
-        "assets/monsters/v19/normal/ghost_2.png",
-        "assets/monsters/v19/normal/ghost_3.png"
+        "assets/monsters/v42/ghost.png",
+        "assets/monsters/v42/ghost.png",
+        "assets/monsters/v42/ghost.png"
       ],
-      "rare": "assets/monsters/v19/rare/ghost.png",
-      "legendary": "assets/monsters/v19/legendary/ghost.png",
-      "mythic": "assets/monsters/v19/mythic/ghost.png"
+      "rare": "assets/monsters/v42/ghost.png",
+      "legendary": "assets/monsters/v42/ghost.png",
+      "mythic": "assets/monsters/v42/ghost.png"
     },
     "machine": {
       "normal": [
-        "assets/monsters/v19/normal/machine_1.png",
-        "assets/monsters/v19/normal/machine_2.png",
-        "assets/monsters/v19/normal/machine_3.png"
+        "assets/monsters/v42/machine.png",
+        "assets/monsters/v42/machine.png",
+        "assets/monsters/v42/machine.png"
       ],
-      "rare": "assets/monsters/v19/rare/machine.png",
-      "legendary": "assets/monsters/v19/legendary/machine.png",
-      "mythic": "assets/monsters/v19/mythic/machine.png"
+      "rare": "assets/monsters/v42/machine.png",
+      "legendary": "assets/monsters/v42/machine.png",
+      "mythic": "assets/monsters/v42/machine.png"
     },
     "knight": {
       "normal": [
-        "assets/monsters/v19/normal/knight_1.png",
-        "assets/monsters/v19/normal/knight_2.png",
-        "assets/monsters/v19/normal/knight_3.png"
+        "assets/monsters/v42/knight.png",
+        "assets/monsters/v42/knight.png",
+        "assets/monsters/v42/knight.png"
       ],
-      "rare": "assets/monsters/v19/rare/knight.png",
-      "legendary": "assets/monsters/v19/legendary/knight.png",
-      "mythic": "assets/monsters/v19/mythic/knight.png"
+      "rare": "assets/monsters/v42/knight.png",
+      "legendary": "assets/monsters/v42/knight.png",
+      "mythic": "assets/monsters/v42/knight.png"
     },
     "slime": {
       "normal": [
-        "assets/monsters/v19/normal/slime_1.png",
-        "assets/monsters/v19/normal/slime_2.png",
-        "assets/monsters/v19/normal/slime_3.png"
+        "assets/monsters/v42/slime.png",
+        "assets/monsters/v42/slime.png",
+        "assets/monsters/v42/slime.png"
       ],
-      "rare": "assets/monsters/v19/rare/slime.png",
-      "legendary": "assets/monsters/v19/legendary/slime.png",
-      "mythic": "assets/monsters/v19/mythic/slime.png"
+      "rare": "assets/monsters/v42/slime.png",
+      "legendary": "assets/monsters/v42/slime.png",
+      "mythic": "assets/monsters/v42/slime.png"
     }
   }
 }
