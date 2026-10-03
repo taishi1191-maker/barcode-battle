@@ -1,20 +1,41 @@
-# v4.2 Monster Overhaul Lite Patch
+# Barcode Battle v4.1 Monster Art Rebuild
 
-このZIPは**差分パッチ**です。
-既存の Barcode Battle プロジェクト直下へ展開して、同名ファイルを上書きしてください。
+モンスターアート方向性を全面刷新したパッチです。詳細は `V4_1_MONSTER_ART_REBUILD.md` を参照。
 
-## 内容
-- モンスター8系統の新規フラッグシップアート
-- `assets/monsters/v42/` を新設
-- `data/art-manifest.json` / `data/art-manifest-v30.json` を v42 用に切替
-- `sw.js` のキャッシュ更新
-- 主要7系統の root アイコン差し替え
+---
 
-## 仕様
-- 表示安定化を優先し、tierごとの参照先は同一アートへ集約
-- まずは「可愛い寄り」から脱却し、迫力のある高級感路線へ一新
-- 将来 v4.3 以降で tier 別差分を増やしやすい構成
+# Barcode Battle v4.0 Premium Battle Rebuild
 
-## 反映後の推奨
-- PWA を再読み込み
-- 旧キャッシュが残る場合はホーム画面アプリを一度削除して再追加
+v3.0.3 を基準に、戦闘画面の高級感・新背景・ユーティリティ操作をまとめて更新した完成パッチです。
+
+# Barcode Battle v3.0.2 Background Patch
+
+このZIPは v3.0.1 Manual First Fix に、新背景適用パッチを加えたものです。
+
+- バトル背景を v30 高解像度背景へ切替
+- Service Worker キャッシュ更新
+- 既存のモンスター画像/背景画像はそのまま同梱
+
+---
+
+# Barcode Battle v3.0 — Premium Complete Update
+
+大型統合アップデート。
+
+## 画像
+- 8種族 × 通常12種 = 96枚
+- 8種族 × Rare 3種 = 24枚
+- 8種族 × Legendary 2種 = 16枚
+- 8種族 × Mythic 2種 = 16枚
+- 合計152枚のv3.0モンスターアート
+- 背景7エリア × day/night/boss = 21枚
+
+## システム
+- v2.1の手動 / AUTO / ITEM / スキル戦闘を継承
+- v2.2のPremium UIを継承
+- COM / 冒険 / ∞ダンジョンで背景を動的切替
+- BOX / 召喚 / 戦闘で同一個体のアート固定
+- レア度別に専用アートプールを使用
+
+GitHubではZIPを解凍して、中身をリポジトリのルートへ丸ごと上書きしてください。
+既存assetsは削除せず追加・上書きしてください。

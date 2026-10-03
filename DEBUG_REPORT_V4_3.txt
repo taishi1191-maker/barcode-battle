@@ -1,0 +1,8 @@
+Barcode Battle v4.3 debug report
+64 images present: True
+64 image hashes unique: True
+index highRes path uses v43: True
+SW cache: barcode-battle-v430-64monster
+JS syntax checks: PASS
+Manifest/SW references: PASS
+Errors: none

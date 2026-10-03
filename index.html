@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v4.1.1</title>
+  <title>Barcode Battle v4.3.2</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -640,7 +640,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.1.1 / Monster Art Rebuild</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.3.2 / Monster Art Rebuild</div></div>
     </div>
     
   </div>
@@ -1144,8 +1144,13 @@ function monsterArtTier(m){
 }
 function highResMonsterBasePath(m){
   const key=monsterSpeciesKey(m),tier=monsterArtTier(m);
-  const idx=tier==="normal"?1:tier==="rare"?2:3;
-  return `assets/monsters/v41/${key}_${idx}.png`;
+  const seed=(m?.seed||hashString(m?.barcode||m?.id||m?.name||"monster"))>>>0;
+  let idx=1;
+  if(tier==="normal")idx=(seed%3)+1;
+  else if(tier==="rare")idx=4+(seed%2);
+  else if(tier==="legendary")idx=6+(seed%2);
+  else idx=8;
+  return `assets/monsters/v43/${key}_${idx}.png`;
 }
 function monsterVisualStyle(m){
   const g=visualGenes(m);

@@ -511,3 +511,7 @@
   .v4-utility-row button{min-width:34px;height:31px;padding:0 7px;font-size:11px}
   .v4-utility-row .v4-log{min-width:43px}.v4-utility-row .v4-exit{min-width:46px}
 }
+
+/* v4.1.2 clean art presentation */
+.battle-art[src*="/v41/"]{mix-blend-mode:screen;filter:drop-shadow(0 14px 24px rgba(0,0,0,.45)) saturate(1.12) contrast(1.06);border-radius:18%;}
+.monster-consistent-art[src*="/v41/"]{border-radius:18%;object-fit:cover;}
