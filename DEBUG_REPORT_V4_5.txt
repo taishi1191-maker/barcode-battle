@@ -1,0 +1,3 @@
+asset_count=64
+unique_hashes=64
+image_errors=none

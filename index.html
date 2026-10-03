@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v4.4.0</title>
+  <title>Barcode Battle v4.5.0</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -648,7 +648,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.4.0 / UI & Dungeon Polish</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.5.0 / Full Art Rebuild</div></div>
     </div>
     
   </div>
@@ -1136,12 +1136,12 @@ function renameMonster(monsterId,newName){
 
 
 const ART_ROUTE={
-  dragon:{normal:[2,3,5],rare:[4,6],legendary:[7],mythic:[8],fallback:8},
-  beast:{normal:[2,3,4],rare:[5,6],legendary:[7],mythic:[8],fallback:8},
-  bird:{normal:[2,5,7],rare:[3,4],legendary:[6],mythic:[8],fallback:8},
-  ghost:{normal:[3,4,5],rare:[2,6],legendary:[7],mythic:[8],fallback:8},
-  knight:{normal:[1,2,5],rare:[3,6],legendary:[4,7],mythic:[8],fallback:8},
-  machine:{normal:[1,2,5],rare:[3,6],legendary:[4,7],mythic:[8],fallback:8},
+  dragon:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
+  beast:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
+  bird:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
+  ghost:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
+  knight:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
+  machine:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
   rabi:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
   slime:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
   default:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8}
@@ -1153,7 +1153,7 @@ function monsterArtSet(m){
 }
 function cleanMonsterFallbackPath(m){
   const key=monsterSpeciesKey(m),set=ART_ROUTE[key]||ART_ROUTE.default;
-  return `assets/monsters/v43/${key}_${set.fallback||8}.png`;
+  return `assets/monsters/v45/${key}_${set.fallback||8}.png`;
 }
 function monsterSpeciesKey(m){
   const n=String(m?.speciesName||m?.name||"");
@@ -1176,7 +1176,7 @@ function highResMonsterBasePath(m){
   const {key,pool}=monsterArtSet(m);
   const seed=(m?.seed||hashString(m?.barcode||m?.id||m?.name||"monster"))>>>0;
   const idx=pool[seed%pool.length]||pool[0]||1;
-  return `assets/monsters/v43/${key}_${idx}.png`;
+  return `assets/monsters/v45/${key}_${idx}.png`;
 }
 function monsterVisualStyle(m){
   const g=visualGenes(m);
@@ -1201,7 +1201,7 @@ function monsterArtCandidates(m){
 }
 function monsterArtFallback(img){
   img.onerror=null;
-  img.src="assets/monsters/beast.png";
+  img.src="assets/monsters/v45/beast_8.png";
 }
 function battlePortraitHTML(m){
   return consistentMonsterArtHTML(m,"battle");
@@ -2078,7 +2078,7 @@ $('#storyNextBtn').addEventListener('click',()=>{
   if(next)selectStoryStage(next);
 });$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonChainBtn').addEventListener('click',toggleDungeonChainAuto);$('#jumpDungeonShopBtn').addEventListener('click',()=>{const s=$('#dungeonShop');if(s){s.open=true;s.scrollIntoView({behavior:'smooth',block:'center'});}});$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
 $('#resetBtn').addEventListener('click',()=>{if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){localStorage.removeItem(STORAGE_KEY);location.reload();}});
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4400').catch(()=>{});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4500').catch(()=>{});
 if(state.monsters.length){if(!state.battleMonsterId)state.battleMonsterId=state.monsters[0].id;if(!state.dungeonMonsterId)state.dungeonMonsterId=state.monsters[0].id;if(!state.storyMonsterId)state.storyMonsterId=state.monsters[0].id;save();}
 updateTopBar();renderBox();renderDex();renderStory();renderBattleSelection();renderDungeon();
 </script>

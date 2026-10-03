@@ -1,0 +1,453 @@
+{
+  "version": "4.5",
+  "monsters": [
+    {
+      "species": "dragon",
+      "variant": 1,
+      "tier": "normal",
+      "name": "フレイムリザード",
+      "image": "assets/monsters/v45/dragon_1.png"
+    },
+    {
+      "species": "dragon",
+      "variant": 2,
+      "tier": "normal",
+      "name": "ロックドラゴン",
+      "image": "assets/monsters/v45/dragon_2.png"
+    },
+    {
+      "species": "dragon",
+      "variant": 3,
+      "tier": "normal",
+      "name": "ボルトドラゴン",
+      "image": "assets/monsters/v45/dragon_3.png"
+    },
+    {
+      "species": "dragon",
+      "variant": 4,
+      "tier": "rare",
+      "name": "アイスドラゴン",
+      "image": "assets/monsters/v45/dragon_4.png"
+    },
+    {
+      "species": "dragon",
+      "variant": 5,
+      "tier": "rare",
+      "name": "ブラッドドラゴン",
+      "image": "assets/monsters/v45/dragon_5.png"
+    },
+    {
+      "species": "dragon",
+      "variant": 6,
+      "tier": "legendary",
+      "name": "エンシェントドラゴン",
+      "image": "assets/monsters/v45/dragon_6.png"
+    },
+    {
+      "species": "dragon",
+      "variant": 7,
+      "tier": "legendary",
+      "name": "スタードラゴン",
+      "image": "assets/monsters/v45/dragon_7.png"
+    },
+    {
+      "species": "dragon",
+      "variant": 8,
+      "tier": "mythic",
+      "name": "カオスドラゴン",
+      "image": "assets/monsters/v45/dragon_8.png"
+    },
+    {
+      "species": "beast",
+      "variant": 1,
+      "tier": "normal",
+      "name": "ウルフ",
+      "image": "assets/monsters/v45/beast_1.png"
+    },
+    {
+      "species": "beast",
+      "variant": 2,
+      "tier": "normal",
+      "name": "サーベルタイガー",
+      "image": "assets/monsters/v45/beast_2.png"
+    },
+    {
+      "species": "beast",
+      "variant": 3,
+      "tier": "normal",
+      "name": "ベア",
+      "image": "assets/monsters/v45/beast_3.png"
+    },
+    {
+      "species": "beast",
+      "variant": 4,
+      "tier": "rare",
+      "name": "ワイルドホーン",
+      "image": "assets/monsters/v45/beast_4.png"
+    },
+    {
+      "species": "beast",
+      "variant": 5,
+      "tier": "rare",
+      "name": "ストームライガー",
+      "image": "assets/monsters/v45/beast_5.png"
+    },
+    {
+      "species": "beast",
+      "variant": 6,
+      "tier": "legendary",
+      "name": "グリフォン",
+      "image": "assets/monsters/v45/beast_6.png"
+    },
+    {
+      "species": "beast",
+      "variant": 7,
+      "tier": "legendary",
+      "name": "マンモス",
+      "image": "assets/monsters/v45/beast_7.png"
+    },
+    {
+      "species": "beast",
+      "variant": 8,
+      "tier": "mythic",
+      "name": "ケルベロス",
+      "image": "assets/monsters/v45/beast_8.png"
+    },
+    {
+      "species": "bird",
+      "variant": 1,
+      "tier": "normal",
+      "name": "スズメロウ",
+      "image": "assets/monsters/v45/bird_1.png"
+    },
+    {
+      "species": "bird",
+      "variant": 2,
+      "tier": "normal",
+      "name": "ファルコン",
+      "image": "assets/monsters/v45/bird_2.png"
+    },
+    {
+      "species": "bird",
+      "variant": 3,
+      "tier": "normal",
+      "name": "ホーク",
+      "image": "assets/monsters/v45/bird_3.png"
+    },
+    {
+      "species": "bird",
+      "variant": 4,
+      "tier": "rare",
+      "name": "サンダーバード",
+      "image": "assets/monsters/v45/bird_4.png"
+    },
+    {
+      "species": "bird",
+      "variant": 5,
+      "tier": "rare",
+      "name": "アイスフェニックス",
+      "image": "assets/monsters/v45/bird_5.png"
+    },
+    {
+      "species": "bird",
+      "variant": 6,
+      "tier": "legendary",
+      "name": "フレイムフェニックス",
+      "image": "assets/monsters/v45/bird_6.png"
+    },
+    {
+      "species": "bird",
+      "variant": 7,
+      "tier": "legendary",
+      "name": "セレスティアル",
+      "image": "assets/monsters/v45/bird_7.png"
+    },
+    {
+      "species": "bird",
+      "variant": 8,
+      "tier": "mythic",
+      "name": "エターナルフェニックス",
+      "image": "assets/monsters/v45/bird_8.png"
+    },
+    {
+      "species": "knight",
+      "variant": 1,
+      "tier": "normal",
+      "name": "ソルジャー",
+      "image": "assets/monsters/v45/knight_1.png"
+    },
+    {
+      "species": "knight",
+      "variant": 2,
+      "tier": "normal",
+      "name": "パラディン",
+      "image": "assets/monsters/v45/knight_2.png"
+    },
+    {
+      "species": "knight",
+      "variant": 3,
+      "tier": "normal",
+      "name": "ランサー",
+      "image": "assets/monsters/v45/knight_3.png"
+    },
+    {
+      "species": "knight",
+      "variant": 4,
+      "tier": "rare",
+      "name": "ブレイドナイト",
+      "image": "assets/monsters/v45/knight_4.png"
+    },
+    {
+      "species": "knight",
+      "variant": 5,
+      "tier": "rare",
+      "name": "ダークナイト",
+      "image": "assets/monsters/v45/knight_5.png"
+    },
+    {
+      "species": "knight",
+      "variant": 6,
+      "tier": "legendary",
+      "name": "セイバーオーダー",
+      "image": "assets/monsters/v45/knight_6.png"
+    },
+    {
+      "species": "knight",
+      "variant": 7,
+      "tier": "legendary",
+      "name": "ゴッドナイト",
+      "image": "assets/monsters/v45/knight_7.png"
+    },
+    {
+      "species": "knight",
+      "variant": 8,
+      "tier": "mythic",
+      "name": "ロイヤルナイト",
+      "image": "assets/monsters/v45/knight_8.png"
+    },
+    {
+      "species": "machine",
+      "variant": 1,
+      "tier": "normal",
+      "name": "ガンタンク",
+      "image": "assets/monsters/v45/machine_1.png"
+    },
+    {
+      "species": "machine",
+      "variant": 2,
+      "tier": "normal",
+      "name": "ホバーロイド",
+      "image": "assets/monsters/v45/machine_2.png"
+    },
+    {
+      "species": "machine",
+      "variant": 3,
+      "tier": "normal",
+      "name": "アサルトメカ",
+      "image": "assets/monsters/v45/machine_3.png"
+    },
+    {
+      "species": "machine",
+      "variant": 4,
+      "tier": "rare",
+      "name": "ブレードメカ",
+      "image": "assets/monsters/v45/machine_4.png"
+    },
+    {
+      "species": "machine",
+      "variant": 5,
+      "tier": "rare",
+      "name": "キャノンメカ",
+      "image": "assets/monsters/v45/machine_5.png"
+    },
+    {
+      "species": "machine",
+      "variant": 6,
+      "tier": "legendary",
+      "name": "ジェネシスメカ",
+      "image": "assets/monsters/v45/machine_6.png"
+    },
+    {
+      "species": "machine",
+      "variant": 7,
+      "tier": "legendary",
+      "name": "オーバードライブ",
+      "image": "assets/monsters/v45/machine_7.png"
+    },
+    {
+      "species": "machine",
+      "variant": 8,
+      "tier": "mythic",
+      "name": "アルティメットメカ",
+      "image": "assets/monsters/v45/machine_8.png"
+    },
+    {
+      "species": "ghost",
+      "variant": 1,
+      "tier": "normal",
+      "name": "スケルトン",
+      "image": "assets/monsters/v45/ghost_1.png"
+    },
+    {
+      "species": "ghost",
+      "variant": 2,
+      "tier": "normal",
+      "name": "ウィスプ",
+      "image": "assets/monsters/v45/ghost_2.png"
+    },
+    {
+      "species": "ghost",
+      "variant": 3,
+      "tier": "normal",
+      "name": "レイス",
+      "image": "assets/monsters/v45/ghost_3.png"
+    },
+    {
+      "species": "ghost",
+      "variant": 4,
+      "tier": "rare",
+      "name": "シャドウアサシン",
+      "image": "assets/monsters/v45/ghost_4.png"
+    },
+    {
+      "species": "ghost",
+      "variant": 5,
+      "tier": "rare",
+      "name": "ヴァンパイア",
+      "image": "assets/monsters/v45/ghost_5.png"
+    },
+    {
+      "species": "ghost",
+      "variant": 6,
+      "tier": "legendary",
+      "name": "ネクロマンサー",
+      "image": "assets/monsters/v45/ghost_6.png"
+    },
+    {
+      "species": "ghost",
+      "variant": 7,
+      "tier": "legendary",
+      "name": "デスロード",
+      "image": "assets/monsters/v45/ghost_7.png"
+    },
+    {
+      "species": "ghost",
+      "variant": 8,
+      "tier": "mythic",
+      "name": "アビスゴースト",
+      "image": "assets/monsters/v45/ghost_8.png"
+    },
+    {
+      "species": "slime",
+      "variant": 1,
+      "tier": "normal",
+      "name": "スライム",
+      "image": "assets/monsters/v45/slime_1.png"
+    },
+    {
+      "species": "slime",
+      "variant": 2,
+      "tier": "normal",
+      "name": "バブルスライム",
+      "image": "assets/monsters/v45/slime_2.png"
+    },
+    {
+      "species": "slime",
+      "variant": 3,
+      "tier": "normal",
+      "name": "クリスタルスライム",
+      "image": "assets/monsters/v45/slime_3.png"
+    },
+    {
+      "species": "slime",
+      "variant": 4,
+      "tier": "rare",
+      "name": "メタルスライム",
+      "image": "assets/monsters/v45/slime_4.png"
+    },
+    {
+      "species": "slime",
+      "variant": 5,
+      "tier": "rare",
+      "name": "フレイムスライム",
+      "image": "assets/monsters/v45/slime_5.png"
+    },
+    {
+      "species": "slime",
+      "variant": 6,
+      "tier": "legendary",
+      "name": "アイススライム",
+      "image": "assets/monsters/v45/slime_6.png"
+    },
+    {
+      "species": "slime",
+      "variant": 7,
+      "tier": "legendary",
+      "name": "プラズマスライム",
+      "image": "assets/monsters/v45/slime_7.png"
+    },
+    {
+      "species": "slime",
+      "variant": 8,
+      "tier": "mythic",
+      "name": "キングスライム",
+      "image": "assets/monsters/v45/slime_8.png"
+    },
+    {
+      "species": "rabi",
+      "variant": 1,
+      "tier": "normal",
+      "name": "ルルラビ",
+      "image": "assets/monsters/v45/rabi_1.png"
+    },
+    {
+      "species": "rabi",
+      "variant": 2,
+      "tier": "normal",
+      "name": "ミルクラビ",
+      "image": "assets/monsters/v45/rabi_2.png"
+    },
+    {
+      "species": "rabi",
+      "variant": 3,
+      "tier": "normal",
+      "name": "フラワーラビ",
+      "image": "assets/monsters/v45/rabi_3.png"
+    },
+    {
+      "species": "rabi",
+      "variant": 4,
+      "tier": "rare",
+      "name": "ムーンラビ",
+      "image": "assets/monsters/v45/rabi_4.png"
+    },
+    {
+      "species": "rabi",
+      "variant": 5,
+      "tier": "rare",
+      "name": "シャドウラビ",
+      "image": "assets/monsters/v45/rabi_5.png"
+    },
+    {
+      "species": "rabi",
+      "variant": 6,
+      "tier": "legendary",
+      "name": "エンジェルラビ",
+      "image": "assets/monsters/v45/rabi_6.png"
+    },
+    {
+      "species": "rabi",
+      "variant": 7,
+      "tier": "legendary",
+      "name": "デモンラビ",
+      "image": "assets/monsters/v45/rabi_7.png"
+    },
+    {
+      "species": "rabi",
+      "variant": 8,
+      "tier": "mythic",
+      "name": "ネオラビ",
+      "image": "assets/monsters/v45/rabi_8.png"
+    }
+  ]
+}
