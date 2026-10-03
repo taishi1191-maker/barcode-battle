@@ -1,0 +1,66 @@
+{
+  "version": "4.7.0",
+  "special_spawn_rate": 0.28,
+  "characters": [
+    {
+      "key": "bread_guardian_01",
+      "name": "麦光ラビガード",
+      "type": "パン守護騎士",
+      "element": "光"
+    },
+    {
+      "key": "bread_guardian_02",
+      "name": "金麦バニエル",
+      "type": "パン守護騎士",
+      "element": "土"
+    },
+    {
+      "key": "electric_academy_01",
+      "name": "蒼雷アカデミア",
+      "type": "電磁学園",
+      "element": "雷"
+    },
+    {
+      "key": "electric_academy_02",
+      "name": "ヴォルトメイガス",
+      "type": "電磁学園",
+      "element": "雷"
+    },
+    {
+      "key": "flame_swordsman_01",
+      "name": "紅蓮セイラン",
+      "type": "炎剣士",
+      "element": "炎"
+    },
+    {
+      "key": "flame_swordsman_02",
+      "name": "焔鬼カグラ",
+      "type": "炎剣士",
+      "element": "炎"
+    },
+    {
+      "key": "shadow_ninja_01",
+      "name": "紫電クロウ",
+      "type": "忍者",
+      "element": "闇"
+    },
+    {
+      "key": "magical_girl_01",
+      "name": "星環ルミナ",
+      "type": "魔法少女",
+      "element": "光"
+    },
+    {
+      "key": "psychic_crystal_01",
+      "name": "晶界ノクティス",
+      "type": "超能力者",
+      "element": "闇"
+    },
+    {
+      "key": "psychic_nightmare_01",
+      "name": "夢蝕ヘクサ",
+      "type": "超能力者",
+      "element": "闇"
+    }
+  ]
+}

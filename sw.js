@@ -1,4 +1,4 @@
-const CACHE="barcode-battle-v463-artref-hardfix";
+const CACHE="barcode-battle-v470-new-character-pack";
 const ASSETS=[
   "./",
   "./index.html",
@@ -9,6 +9,7 @@ const ASSETS=[
   "./data/art-manifest-v30.json",
   "./data/battle-config.json",
   "./data/v463-monsters.json",
+  "./data/v47-new-characters.json",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
   "./assets/icon-1024.png",
@@ -91,6 +92,16 @@ const ASSETS=[
   "./assets/monsters/v463/rabi_6.png",
   "./assets/monsters/v463/rabi_7.png",
   "./assets/monsters/v463/rabi_8.png",
+  "./assets/monsters/v47/bread_guardian_01.png",
+  "./assets/monsters/v47/bread_guardian_02.png",
+  "./assets/monsters/v47/electric_academy_01.png",
+  "./assets/monsters/v47/electric_academy_02.png",
+  "./assets/monsters/v47/flame_swordsman_01.png",
+  "./assets/monsters/v47/flame_swordsman_02.png",
+  "./assets/monsters/v47/shadow_ninja_01.png",
+  "./assets/monsters/v47/magical_girl_01.png",
+  "./assets/monsters/v47/psychic_crystal_01.png",
+  "./assets/monsters/v47/psychic_nightmare_01.png",
 ];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

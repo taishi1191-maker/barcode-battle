@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v4.6.3</title>
+  <title>Barcode Battle v4.7.0</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -704,7 +704,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.6.3 / Art Reference Hard Fix</div><div class="app-update-wrap">
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.7.0 / New Character Pack</div><div class="app-update-wrap">
       <button id="appUpdateBtn" class="app-update-btn" type="button">🔄 更新</button>
       <div id="appUpdateStatus" class="app-update-status">最新版を確認</div>
     </div>
@@ -1057,9 +1057,27 @@ function activeMonster(){return battleMonster();}
 function formatStars(n){ return "★".repeat(n)+"☆".repeat(5-n); }
 function updateTopBar(){$('#goldText').textContent=state.gold;$('#bestFloorText').textContent=state.bestFloor;$('#expBankText').textContent=state.expBank;}
 
+const SPECIAL_V47=[
+  {key:"bread_guardian_01",name:"麦光ラビガード",type:"パン守護騎士",element:"光"},
+  {key:"bread_guardian_02",name:"金麦バニエル",type:"パン守護騎士",element:"土"},
+  {key:"electric_academy_01",name:"蒼雷アカデミア",type:"電磁学園",element:"雷"},
+  {key:"electric_academy_02",name:"ヴォルトメイガス",type:"電磁学園",element:"雷"},
+  {key:"flame_swordsman_01",name:"紅蓮セイラン",type:"炎剣士",element:"炎"},
+  {key:"flame_swordsman_02",name:"焔鬼カグラ",type:"炎剣士",element:"炎"},
+  {key:"shadow_ninja_01",name:"紫電クロウ",type:"忍者",element:"闇"},
+  {key:"magical_girl_01",name:"星環ルミナ",type:"魔法少女",element:"光"},
+  {key:"psychic_crystal_01",name:"晶界ノクティス",type:"超能力者",element:"闇"},
+  {key:"psychic_nightmare_01",name:"夢蝕ヘクサ",type:"超能力者",element:"闇"}
+];
+function specialV47ForSeed(seed){
+  if((seed%100)>=28)return null;
+  return SPECIAL_V47[Math.floor(seed/100)%SPECIAL_V47.length];
+}
 function makeSpecies(code){
   const c=String(code).replace(/\D/g,"");
   const seed=hashString(c), r=rng(seed);
+  const special=specialV47ForSeed(seed);
+  if(special)return {seed,element:special.element,type:special.type,name:special.name,speciesId:(seed%9999).toString().padStart(4,"0"),specialArtKey:special.key};
   const type=types[Math.floor(r()*types.length)];
   const pool=seriousNames[type]||seriousNames["ビースト"];
   const name=pool[Math.floor(r()*pool.length)];
@@ -1251,7 +1269,7 @@ function renameMonster(monsterId,newName){
 }
 
 
-const ART_PACK_VERSION="4630";
+const ART_PACK_VERSION="4700";
 const ART_ROUTE={
   dragon:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
   beast:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
@@ -1264,7 +1282,7 @@ const ART_ROUTE={
   default:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8}
 };
 function monsterSpeciesKey(m){
-  if(m?.artRef?.key)return m.artRef.key;
+  if(m?.artRef?.pack==="v463"&&m?.artRef?.key)return m.artRef.key;
   const n=String(m?.speciesName||m?.name||"");
   if(n.includes("ラビ"))return"rabi";
   const map={"スライム":"slime","ドラゴン":"dragon","ビースト":"beast","バード":"bird","ゴースト":"ghost","マシン":"machine","ナイト":"knight","ウルフ":"beast","ゴーレム":"machine","魔導士":"ghost"};
@@ -1278,6 +1296,7 @@ function monsterArtTier(m){
   return"normal";
 }
 function deriveArtRef(m){
+  if(m?.specialArtKey&&SPECIAL_V47.some(x=>x.key===m.specialArtKey))return {pack:"v47",key:m.specialArtKey,idx:1,tier:monsterArtTier(m)};
   const key=monsterSpeciesKey({...m,artRef:null}),set=ART_ROUTE[key]||ART_ROUTE.default,tier=monsterArtTier(m);
   const pool=set[tier]||set.normal||[1];
   const seed=(m?.seed||hashString(m?.barcode||m?.id||m?.name||"monster"))>>>0;
@@ -1287,10 +1306,13 @@ function deriveArtRef(m){
 function ensureArtRef(m){
   if(!m)return null;
   const r=m.artRef;
-  if(!r||r.pack!=="v463"||!r.key||!r.idx)m.artRef=deriveArtRef(m);
+  const validV463=r&&r.pack==="v463"&&r.key&&r.idx;
+  const validV47=r&&r.pack==="v47"&&SPECIAL_V47.some(x=>x.key===r.key);
+  if(!validV463&&!validV47)m.artRef=deriveArtRef(m);
   return m.artRef;
 }
 function artPathFromRef(ref){
+  if(ref?.pack==="v47")return `assets/monsters/v47/${ref.key}.png`;
   const key=ref?.key||"beast",idx=Number(ref?.idx)||8;
   return `assets/monsters/v463/${key}_${idx}.png`;
 }
@@ -1299,8 +1321,10 @@ function versionedAssetUrl(path){
 }
 function highResMonsterBasePath(m){return artPathFromRef(ensureArtRef(m));}
 function monsterArtFallbackCandidates(m){
-  const ref=ensureArtRef(m),key=ref?.key||"beast";
-  const items=[`assets/monsters/v463/${key}_8.png`,`assets/monsters/v463/${key}_1.png`,`assets/monsters/v463/beast_8.png`];
+  const ref=ensureArtRef(m),speciesKey=monsterSpeciesKey({...m,artRef:null});
+  const items=ref?.pack==="v47"
+    ?[`assets/monsters/v463/${speciesKey}_8.png`,`assets/monsters/v463/beast_8.png`]
+    :[`assets/monsters/v463/${ref?.key||speciesKey}_8.png`,`assets/monsters/v463/${ref?.key||speciesKey}_1.png`,`assets/monsters/v463/beast_8.png`];
   return [...new Set(items.filter(x=>x!==highResMonsterBasePath(m)))];
 }
 function fallbackSvgData(label="ART"){
@@ -2268,7 +2292,7 @@ $('#storyNextBtn').addEventListener('click',()=>{
 });$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonChainBtn').addEventListener('click',toggleDungeonChainAuto);$('#jumpDungeonShopBtn').addEventListener('click',()=>{const s=$('#dungeonShop');if(s){s.open=true;s.scrollIntoView({behavior:'smooth',block:'center'});}});$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
 $('#boxPrevBtn').addEventListener('click',()=>{boxPage=Math.max(0,boxPage-1);renderBox();});$('#boxNextBtn').addEventListener('click',()=>{boxPage++;renderBox();});$('#boxSortBtn').addEventListener('click',()=>{boxSortMode=(boxSortMode+1)%3;$('#boxSortBtn').textContent=['並替','★順','名前順'][boxSortMode];boxPage=0;renderBox();});$$('#boxFilters .filter-chip').forEach(b=>b.addEventListener('click',()=>{boxFilter=b.dataset.boxFilter||'all';boxPage=0;renderBox();}));$('#abilityRefreshBtn').addEventListener('click',refreshAbilityShop);
 $('#resetBtn').addEventListener('click',()=>{if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){localStorage.removeItem(STORAGE_KEY);location.reload();}});
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4630').catch(()=>{});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4700').catch(()=>{});
 if(state.monsters.length){if(!state.battleMonsterId)state.battleMonsterId=state.monsters[0].id;if(!state.dungeonMonsterId)state.dungeonMonsterId=state.monsters[0].id;if(!state.storyMonsterId)state.storyMonsterId=state.monsters[0].id;save();}
 function migrateArtReferences(){
   let changed=false;
@@ -2276,7 +2300,7 @@ function migrateArtReferences(){
   for(const d of Object.values(state.dex||{})){
     const match=(state.monsters||[]).find(m=>m.speciesId===d.speciesId);
     if(match){ensureArtRef(match);d.artRef={...match.artRef};d.stars=match.stars;d.rank=match.rank;d.form=match.form;changed=true;}
-    else if(!d.artRef||d.artRef.pack!=="v463"){ensureArtRef(d);changed=true;}
+    else if(!d.artRef||!["v463","v47"].includes(d.artRef.pack)){ensureArtRef(d);changed=true;}
   }
   if(changed)save();
 }
