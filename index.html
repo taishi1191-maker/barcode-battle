@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v4.3.2</title>
+  <title>Barcode Battle v4.4.0</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -191,6 +191,9 @@
     .floor-num{font-size:30px;font-weight:950;color:#fff}
     .reward-banner{background:linear-gradient(135deg,#102a41,#153555);border:1px solid #26557c;padding:10px;border-radius:14px}
     .run-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .dungeon-mode-toggle{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+    .chain-auto-btn.on{background:linear-gradient(135deg,#86efac,#67e8f9);color:#052521;border:0}
+    .chain-auto-btn{min-width:180px}
     @media(max-width:820px){.dungeon-top{grid-template-columns:1fr}.upgrade-list{grid-template-columns:1fr 1fr}}
     @media(max-width:680px){.hero{grid-template-columns:120px 1fr}.name{font-size:21px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:repeat(2,1fr)}.fighter .portrait{max-width:130px}.battle-actions{grid-template-columns:1fr}.upgrade-list{grid-template-columns:1fr}.top{align-items:flex-start}}
     @media(max-width:430px){.grid{grid-template-columns:1fr 1fr}.tabs{gap:5px}.tab{font-size:12px;padding:9px 10px;min-width:84px}.hero{grid-template-columns:100px 1fr}.brand{font-size:20px}}
@@ -250,10 +253,15 @@
     .equipment-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
     .equip-icon{font-size:24px}
     .item-rarity{color:#fbbf24;font-weight:900}
-    .inventory-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
-    .item-card{background:#0a1828;border:1px solid #294966;border-radius:15px;padding:10px;text-align:left;color:#fff}
+    .inventory-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px;max-height:360px;overflow:auto;padding-right:4px;align-content:start}
+    .inventory-grid::-webkit-scrollbar{width:8px}
+    .inventory-grid::-webkit-scrollbar-thumb{background:#254766;border-radius:999px}
+    .item-card{background:#0a1828;border:1px solid #294966;border-radius:15px;padding:12px;text-align:left;color:#fff;display:grid;gap:6px;align-content:start}
     .item-card.equipped{outline:2px solid #67e8f9}
     .item-name{font-weight:900}.item-desc{font-size:11px;color:#a9bdd3;margin-top:4px;line-height:1.45}
+    .item-effect-box{background:#0e2237;border:1px solid #244564;border-radius:12px;padding:8px}
+    .item-effect-title{font-size:11px;font-weight:900;color:#d7ecff;margin-bottom:4px}
+    .item-effect-text{font-size:12px;color:#adc2d7;line-height:1.42;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
     .exp-alloc{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:9px}
     .exp-alloc input{min-width:0;width:100%}
     .exp-quick{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}
@@ -640,7 +648,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.3.2 / Monster Art Rebuild</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.4.0 / UI & Dungeon Polish</div></div>
     </div>
     
   </div>
@@ -721,13 +729,14 @@
         <div class="species-sub">元の種族名：<span id="boxSpeciesName"></span> / 個体ID：<span id="boxIndividualId"></span></div>
         <div class="nickname-row"><input id="nicknameInput" maxlength="12" placeholder="ニックネーム"><button id="renameBtn" class="btn">変更</button></div>
       </div>
-      <div id="boxSkill" class="skillbox"></div>
+      <details class="compact-details"><summary>🧠 スキル・特性</summary><div class="details-body"><div id="boxSkill" class="skillbox" style="margin-top:0"></div></div></details>
       <div id="equippedItemBox" class="equipment-card"></div>
-      <div class="equipment-card">
-        <div class="equipment-head"><b>✨ 育成EXPを振り分け</b><span class="muted">所持 <span id="boxExpBankText">0</span> EXP</span></div>
-        <div class="exp-alloc"><input id="expAllocateInput" inputmode="numeric" type="number" min="1" placeholder="振り分けEXP"><button id="expAllocateBtn" class="btn">振り分け</button></div>
-        <div class="exp-quick"><button class="btn secondary expQuickBtn" data-exp="100">+100</button><button class="btn secondary expQuickBtn" data-exp="500">+500</button><button class="btn secondary expQuickBtn" data-exp="all">全部</button></div>
-      </div>
+      <details class="compact-details"><summary>✨ 育成EXPを振り分け <span class="muted">所持 <span id="boxExpBankText">0</span> EXP</span></summary><div class="details-body">
+        <div class="equipment-card" style="margin-top:0">
+          <div class="exp-alloc"><input id="expAllocateInput" inputmode="numeric" type="number" min="1" placeholder="振り分けEXP"><button id="expAllocateBtn" class="btn">振り分け</button></div>
+          <div class="exp-quick"><button class="btn secondary expQuickBtn" data-exp="100">+100</button><button class="btn secondary expQuickBtn" data-exp="500">+500</button><button class="btn secondary expQuickBtn" data-exp="all">全部</button></div>
+        </div>
+      </div></details>
       <details class="compact-details"><summary>🎒 装備アイテムを選ぶ</summary><div class="details-body"><div id="itemInventory" class="inventory-grid"></div></div></details>
       <div class="row" style="margin-top:12px"><button id="favoriteBtn" class="favorite-btn">☆ お気に入り</button><button id="deleteMonsterBtn" class="btn danger">削除</button></div><details class="compact-details safe-settings"><summary>⚙️ 設定</summary><div class="details-body"><button id="resetBtn" class="btn danger" type="button">保存データを初期化</button></div></details>
     </div>
@@ -839,6 +848,7 @@
         <button class="btn secondary speed-btn" data-speed="1.15">×2</button>
         <button class="btn secondary speed-btn" data-speed="1.75">×3</button>
       </div><div class="speed-help">×1＝演出重視 / ×2＝標準 / ×3＝高速</div>
+      <div class="dungeon-mode-toggle"><button id="dungeonChainBtn" class="btn secondary chain-auto-btn">⏭️ 連続AUTO: OFF</button><div id="dungeonChainHint" class="muted">ONで勝利後に次の階へ自動進行し、そのまま戦闘も継続します。</div></div>
       <button id="dungeonAutoBattleBtn" class="auto-battle-btn">⚔ この階へ挑戦</button>
       <div id="dungeonAiState" class="ai-state">AIが自動で最後まで戦います。</div>
       <div id="dungeonInstantLog" class="instant-log">戦闘ログはここに表示されます。</div>
@@ -894,7 +904,7 @@ state.monsters.forEach(m=>{
     m.v09Scaled=true;
   }
 });
-let currentSummon=null, selectedId=null, scanner=null, scanning=false, battle=null, dungeonRun=null, storyRun=null, selectedStoryStage=0;
+let currentSummon=null, selectedId=null, scanner=null, scanning=false, battle=null, dungeonRun=null, storyRun=null, selectedStoryStage=0, dungeonChainAuto=false;
 
 const elements=["炎","水","雷","風","土","光","闇"];
 const types=["ドラゴン","ビースト","ナイト","マシン","ゴースト","ウルフ","ゴーレム","魔導士","ドラゴン","ナイト","ビースト","バード","スライム","ラビ"];
@@ -1125,6 +1135,26 @@ function renameMonster(monsterId,newName){
 }
 
 
+const ART_ROUTE={
+  dragon:{normal:[2,3,5],rare:[4,6],legendary:[7],mythic:[8],fallback:8},
+  beast:{normal:[2,3,4],rare:[5,6],legendary:[7],mythic:[8],fallback:8},
+  bird:{normal:[2,5,7],rare:[3,4],legendary:[6],mythic:[8],fallback:8},
+  ghost:{normal:[3,4,5],rare:[2,6],legendary:[7],mythic:[8],fallback:8},
+  knight:{normal:[1,2,5],rare:[3,6],legendary:[4,7],mythic:[8],fallback:8},
+  machine:{normal:[1,2,5],rare:[3,6],legendary:[4,7],mythic:[8],fallback:8},
+  rabi:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
+  slime:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
+  default:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8}
+};
+function monsterArtSet(m){
+  const key=monsterSpeciesKey(m),set=ART_ROUTE[key]||ART_ROUTE.default;
+  const tier=monsterArtTier(m);
+  return {key,set,pool:set[tier]||set.normal||[1]};
+}
+function cleanMonsterFallbackPath(m){
+  const key=monsterSpeciesKey(m),set=ART_ROUTE[key]||ART_ROUTE.default;
+  return `assets/monsters/v43/${key}_${set.fallback||8}.png`;
+}
 function monsterSpeciesKey(m){
   const n=String(m?.speciesName||m?.name||"");
   if(n.includes("ラビ"))return"rabi";
@@ -1143,13 +1173,9 @@ function monsterArtTier(m){
   return"normal";
 }
 function highResMonsterBasePath(m){
-  const key=monsterSpeciesKey(m),tier=monsterArtTier(m);
+  const {key,pool}=monsterArtSet(m);
   const seed=(m?.seed||hashString(m?.barcode||m?.id||m?.name||"monster"))>>>0;
-  let idx=1;
-  if(tier==="normal")idx=(seed%3)+1;
-  else if(tier==="rare")idx=4+(seed%2);
-  else if(tier==="legendary")idx=6+(seed%2);
-  else idx=8;
+  const idx=pool[seed%pool.length]||pool[0]||1;
   return `assets/monsters/v43/${key}_${idx}.png`;
 }
 function monsterVisualStyle(m){
@@ -1164,10 +1190,9 @@ function monsterRarityFrameClass(m){
 }
 function consistentMonsterArtHTML(m,context="card"){
   const src=highResMonsterBasePath(m);
-  const key=monsterSpeciesKey(m);
-  const fallback=key==="rabi"?"assets/monsters/knight.png":`assets/monsters/${key}.png`;
+  const fallback=cleanMonsterFallbackPath(m);
   const cls=context==="battle"?"battle-art":"monster-consistent-art";
-  return `<img class="${cls}" src="${src}" data-fallback="${fallback}" alt="${displayName(m)}" style="filter:${monsterVisualStyle(m)}" onerror="this.onerror=null;this.src=this.dataset.fallback">`;
+  return `<img class="${cls}" src="${src}" data-fallback="${fallback}" alt="${displayName(m)}" loading="eager" decoding="sync" style="filter:${monsterVisualStyle(m)}" onerror="this.onerror=null;this.src=this.dataset.fallback">`;
 }
 function monsterArtCandidates(m){
   // Kept for compatibility. The first/current path is always the same high-resolution art
@@ -1675,13 +1700,31 @@ function renderDungeonRun(){
   $('#dpHpBar').style.width=(100*p.currentHp/p.maxHp)+'%';$('#deHpBar').style.width=(100*e.currentHp/e.maxHp)+'%';
   $('#dpStatus').innerHTML=statusHtml(p);$('#deStatus').innerHTML=statusHtml(e);
   $('#dungeonAutoBattleBtn').disabled=dungeonRun.over||dungeonRun.readyForNext||dungeonRun.autoRunning;
-  $('#dungeonAiState').textContent=dungeonRun.autoRunning?'AIバトル中…':(dungeonRun.readyForNext?'この階クリア！':'「オートバトル」で戦闘開始');
+  $('#dungeonAiState').textContent=dungeonRun.autoRunning?(dungeonChainAuto?'AI連続攻略中…':'AIバトル中…'):(dungeonRun.readyForNext?(dungeonChainAuto?'クリア！ 次の階へ自動進行待機中…':'この階クリア！'):(dungeonChainAuto?'「オートバトル」で連続攻略開始':'「オートバトル」で戦闘開始'));
+  const chainBtn=$('#dungeonChainBtn');
+  if(chainBtn){chainBtn.textContent=`⏭️ 連続AUTO: ${dungeonChainAuto?'ON':'OFF'}`;chainBtn.classList.toggle('on',dungeonChainAuto);} 
+  const chainHint=$('#dungeonChainHint');
+  if(chainHint)chainHint.textContent=dungeonChainAuto?'勝利後、回復→次の階→戦闘開始まで自動で進みます。':'ONで勝利後に次の階へ自動進行し、そのまま戦闘も継続します。';
 }
 function logDungeon(t){$('#dungeonLog').textContent+=t+'\n';$('#dungeonLog').scrollTop=$('#dungeonLog').scrollHeight;const x=$('#dungeonInstantLog');if(x)x.textContent=t;}
 function startDungeon(){
   const src=dungeonMonster();if(!src){alert('お気に入りモンスターを設定してください。');return;}if(dungeonRun?.timer)clearTimeout(dungeonRun.timer);
-  dungeonRun={floor:1,player:unitFromMonster(src),enemy:null,over:false,readyForNext:false,autoRunning:false,timer:null,sourceId:src.id};dungeonRun.enemy=makeDungeonEnemy();
+  dungeonRun={floor:1,player:unitFromMonster(src),enemy:null,over:false,readyForNext:false,autoRunning:false,timer:null,sourceId:src.id,chainAuto:dungeonChainAuto};dungeonRun.enemy=makeDungeonEnemy();
   $('#dungeonLog').textContent='';$('#dungeonResult').textContent='';logDungeon(`∞ダンジョン開始！\n${dungeonRun.player.name}が1Fへ突入！`);renderDungeonRun();
+}
+function scheduleDungeonChainAdvance(){
+  if(!dungeonRun||dungeonRun.over||!dungeonRun.readyForNext||!dungeonChainAuto)return;
+  if(dungeonRun.timer)clearTimeout(dungeonRun.timer);
+  dungeonRun.timer=setTimeout(()=>{
+    if(!dungeonRun||dungeonRun.over||!dungeonRun.readyForNext||!dungeonChainAuto)return;
+    nextDungeonFloor(true);
+    startDungeonAutoBattle();
+  },Math.round(900/battleSpeed));
+}
+function toggleDungeonChainAuto(){
+  dungeonChainAuto=!dungeonChainAuto;
+  if(dungeonRun)dungeonRun.chainAuto=dungeonChainAuto;
+  renderDungeonRun();
 }
 function makeDungeonEnemy(){
   const src=dungeonMonster(),floor=dungeonRun.floor,enemy=unitFromMonster(makeEnemyForMonster(src,Math.floor(floor/2)+Math.floor(Math.random()*2)));
@@ -1714,11 +1757,13 @@ function finishDungeonFloor(win){
     $('#dungeonResult').textContent=`🏆 ${dungeonRun.floor}Fクリア！ +${gold}G / +${exp}EXP`;logDungeon(`${dungeonRun.floor}F突破！ ゴールド${gold}・育成EXP${exp}獲得。`);save();updateTopBar();renderBox();
   }else{dungeonRun.over=true;$('#dungeonResult').textContent=`💀 ${dungeonRun.floor}Fで力尽きた…`;logDungeon('ダンジョン攻略失敗…。報酬は持ち帰れた！');if(dungeonRun.floor-1>0)state.bestFloor=Math.max(state.bestFloor,dungeonRun.floor-1);save();updateTopBar();}
   renderDungeonRun();
+  if(win&&dungeonChainAuto)scheduleDungeonChainAdvance();
 }
-function nextDungeonFloor(){
+function nextDungeonFloor(silent=false){
   if(!dungeonRun||!dungeonRun.readyForNext)return;dungeonRun.floor++;dungeonRun.readyForNext=false;dungeonRun.over=false;dungeonRun.autoRunning=false;if(dungeonRun.timer)clearTimeout(dungeonRun.timer);
   const heal=Math.round(dungeonRun.player.maxHp*.25);dungeonRun.player.currentHp=Math.min(dungeonRun.player.maxHp,dungeonRun.player.currentHp+heal);dungeonRun.player.guarding=false;dungeonRun.player.first=true;dungeonRun.enemy=makeDungeonEnemy();
-  $('#dungeonResult').textContent='';logDungeon(`\n▶ ${dungeonRun.floor}Fへ進んだ！ HPが${heal}回復。`);renderDungeonRun();const a=$('#dungeonPostActions');if(a)a.scrollIntoView({behavior:'smooth',block:'center'});
+  $('#dungeonResult').textContent='';logDungeon(`
+▶ ${dungeonRun.floor}Fへ進んだ！ HPが${heal}回復。`);renderDungeonRun();const a=$('#dungeonPostActions');if(a&&!silent)a.scrollIntoView({behavior:'smooth',block:'center'});
 }
 function retireDungeon(){if(!dungeonRun)return;if(confirm('ダンジョンから撤退しますか？')){if(dungeonRun.timer)clearTimeout(dungeonRun.timer);dungeonRun=null;$('#dungeonResult').textContent='';renderDungeon();}}
 const itemTemplates=[
@@ -2031,9 +2076,9 @@ $('#storyRetryBtn').addEventListener('click',()=>{
 $('#storyNextBtn').addEventListener('click',()=>{
   const next=Number($('#storyNextBtn').dataset.nextStage||0);
   if(next)selectStoryStage(next);
-});$('#startDungeonBtn').addEventListener('click',startDungeon);$('#jumpDungeonShopBtn').addEventListener('click',()=>{const s=$('#dungeonShop');if(s){s.open=true;s.scrollIntoView({behavior:'smooth',block:'center'});}});$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
+});$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonChainBtn').addEventListener('click',toggleDungeonChainAuto);$('#jumpDungeonShopBtn').addEventListener('click',()=>{const s=$('#dungeonShop');if(s){s.open=true;s.scrollIntoView({behavior:'smooth',block:'center'});}});$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
 $('#resetBtn').addEventListener('click',()=>{if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){localStorage.removeItem(STORAGE_KEY);location.reload();}});
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4400').catch(()=>{});
 if(state.monsters.length){if(!state.battleMonsterId)state.battleMonsterId=state.monsters[0].id;if(!state.dungeonMonsterId)state.dungeonMonsterId=state.monsters[0].id;if(!state.storyMonsterId)state.storyMonsterId=state.monsters[0].id;save();}
 updateTopBar();renderBox();renderDex();renderStory();renderBattleSelection();renderDungeon();
 </script>

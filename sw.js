@@ -1,4 +1,4 @@
-const CACHE="barcode-battle-v430-64monster";
+const CACHE="barcode-battle-v440-ui-dungeon";
 const ASSETS=[
   "./",
   "./index.html",
