@@ -1,4 +1,4 @@
-const CACHE="barcode-battle-v461-update-button";
+const CACHE="barcode-battle-v462-image-scan-fix";
 const ASSETS=[
   "./",
   "./index.html",
