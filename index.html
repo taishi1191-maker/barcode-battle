@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v4.5.0</title>
+  <title>Barcode Battle v4.6.0</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -640,6 +640,50 @@
       margin-top:3px;
     }
 
+
+    /* v4.6 BOX compact / roster / ability shop */
+    .box-toolbar{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-top:10px}
+    .box-filter-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+    .box-filter-row::-webkit-scrollbar{display:none}
+    .filter-chip{min-height:38px;padding:7px 11px;border-radius:999px;border:1px solid #2b4d6c;background:#0b1b2d;color:#bdd2e5;font-weight:850;font-size:12px;white-space:nowrap}
+    .filter-chip.active{background:#163b55;color:#8ef3e6;border-color:#55cfe3}
+    .box-pager{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:12px}
+    .box-pager .btn{min-height:40px;padding:8px 13px}
+    .box-page-label{font-size:12px;color:#9fb4c7;min-width:72px;text-align:center}
+    #boxGrid.compact-box-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+    #boxGrid.compact-box-grid .monster-mini{padding:8px;border-radius:16px}
+    #boxGrid.compact-box-grid .miniimg{margin-bottom:6px}
+    #boxGrid.compact-box-grid .mini-name{font-size:15px}
+    #boxGrid.compact-box-grid .skill-chips{display:none}
+    #boxGrid.compact-box-grid .monster-labels .item{display:none}
+    #boxGrid.compact-box-grid .mini-stats{font-size:10px;gap:3px}
+    .monster-roster{padding:5px 4px 10px;scroll-padding-left:4px}
+    .roster-card{flex:0 0 132px!important;padding:7px!important;border-radius:16px!important;overflow:hidden}
+    .roster-card .miniimg{aspect-ratio:1/1;margin-bottom:6px!important}
+    .roster-card .skill-chips,.roster-card .monster-labels,.roster-card .mini-stats{display:none!important}
+    .roster-card .roster-name{font-size:13px!important}
+    .roster-card .roster-sub{font-size:10px!important}
+    .ability-shop-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px;max-height:420px;overflow:auto;padding-right:3px}
+    .ability-shop-card{border:1px solid #2e506f;border-radius:14px;background:#0b1a2b;color:#fff;padding:10px;text-align:left;display:grid;gap:5px}
+    .ability-shop-card .shop-name{font-weight:950;font-size:13px}
+    .ability-shop-card .shop-tag{font-size:10px;color:#8fd8ff}
+    .ability-shop-card .shop-desc{font-size:11px;color:#aec2d5;line-height:1.35;min-height:44px}
+    .ability-shop-card .shop-cost{font-weight:900;color:#ffd66b;font-size:12px}
+    .ability-shop-card:disabled{opacity:.45}
+    .ability-shop-head{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+    .ability-slot-select{width:100%;min-height:42px;border-radius:12px;border:1px solid #36506f;background:#081421;color:#fff;padding:8px}
+    .ability-shop-note{font-size:11px;color:#9fb4c7;line-height:1.45;margin-top:6px}
+    .battle-unit{overflow:visible!important}
+    .battle-unit.player{left:1%!important;width:46%!important}
+    .battle-unit.enemy{right:1%!important;width:46%!important}
+    .battle-unit .portrait img.battle-art{max-width:96%!important;max-height:96%!important}
+    @media(max-width:430px){
+      .battle-unit.player{left:0!important;width:47%!important}
+      .battle-unit.enemy{right:0!important;width:47%!important}
+      .ability-shop-grid{grid-template-columns:1fr 1fr;max-height:360px}
+      .roster-card{flex-basis:122px!important}
+    }
+
 </style>
 <link rel="stylesheet" href="css/v2-battle.css?v=20">
 </head>
@@ -648,7 +692,7 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.5.0 / Full Art Rebuild</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.6.0 / BOX & Ability Shop</div></div>
     </div>
     
   </div>
@@ -720,7 +764,11 @@
   </section>
 
   <section id="box" class="screen">
-    <div class="card"><div class="section-title">モンスターBOX</div><div id="boxInfo" class="muted"></div><div id="boxGrid" class="grid" style="margin-top:12px"></div></div>
+    <div class="card"><div class="section-title">モンスターBOX</div><div id="boxInfo" class="muted"></div>
+      <div class="box-toolbar"><div class="box-filter-row" id="boxFilters"><button class="filter-chip active" data-box-filter="all">すべて</button><button class="filter-chip" data-box-filter="favorite">★お気に入り</button><button class="filter-chip" data-box-filter="mythic">最レア</button><button class="filter-chip" data-box-filter="equipped">装備中</button><button class="filter-chip" data-box-filter="highlevel">Lv高い順</button></div><button id="boxSortBtn" class="btn secondary" type="button">並替</button></div>
+      <div id="boxGrid" class="grid compact-box-grid" style="margin-top:12px"></div>
+      <div class="box-pager"><button id="boxPrevBtn" class="btn secondary" type="button">◀ 前</button><span id="boxPageLabel" class="box-page-label"></span><button id="boxNextBtn" class="btn secondary" type="button">次 ▶</button></div>
+    </div>
     <div id="selectedCard" class="card" hidden>
       <div class="hero"><div id="boxPortrait" class="portrait"></div><div><div id="boxName" class="name"></div><div id="boxMeta" class="badges"></div><div id="boxLevel" class="level"></div><div class="xpbox"><div id="boxXpText" class="muted"></div><div class="progress"><div id="boxXpBar"></div></div></div></div></div>
       <div id="boxStats" class="stats" style="margin-top:12px"></div>
@@ -737,7 +785,11 @@
           <div class="exp-quick"><button class="btn secondary expQuickBtn" data-exp="100">+100</button><button class="btn secondary expQuickBtn" data-exp="500">+500</button><button class="btn secondary expQuickBtn" data-exp="all">全部</button></div>
         </div>
       </div></details>
-      <details class="compact-details"><summary>🎒 装備アイテムを選ぶ</summary><div class="details-body"><div id="itemInventory" class="inventory-grid"></div></div></details>
+      <details class="compact-details" id="abilityShop"><summary>🧪 能力ショップ <span class="muted">ゴールドで能力を付け替え</span></summary><div class="details-body">
+        <div class="ability-shop-head"><select id="abilitySlotSelect" class="ability-slot-select"></select><button id="abilityRefreshBtn" class="btn secondary" type="button">品揃え更新 100G</button></div>
+        <div class="ability-shop-note">選んだ能力スロットを、購入した能力に置き換えます。能力数は増えません。最レア個体も付け替え可能です。</div>
+        <div id="abilityShopGrid" class="ability-shop-grid"></div>
+      </div></details>
       <div class="row" style="margin-top:12px"><button id="favoriteBtn" class="favorite-btn">☆ お気に入り</button><button id="deleteMonsterBtn" class="btn danger">削除</button></div><details class="compact-details safe-settings"><summary>⚙️ 設定</summary><div class="details-body"><button id="resetBtn" class="btn danger" type="button">保存データを初期化</button></div></details>
     </div>
   </section>
@@ -884,6 +936,7 @@ state.storyStars ||= {};
 state.storyRuns ||= {};
 state.storyChestClaimed ||= {};
 state.chapter1Cleared ||= false;
+state.abilityShopRefresh ||= 0;
 if(state.activeMonsterId && !state.favoriteMonsterIds.includes(state.activeMonsterId)) state.favoriteMonsterIds.push(state.activeMonsterId);
 state.monsters.forEach(m=>{
   m.bonus ||= {hp:0,atk:0,def:0,spd:0};
@@ -904,7 +957,7 @@ state.monsters.forEach(m=>{
     m.v09Scaled=true;
   }
 });
-let currentSummon=null, selectedId=null, scanner=null, scanning=false, battle=null, dungeonRun=null, storyRun=null, selectedStoryStage=0, dungeonChainAuto=false;
+let currentSummon=null, selectedId=null, scanner=null, scanning=false, battle=null, dungeonRun=null, storyRun=null, selectedStoryStage=0, dungeonChainAuto=false, boxPage=0, boxFilter="all", boxSortMode=0;
 
 const elements=["炎","水","雷","風","土","光","闇"];
 const types=["ドラゴン","ビースト","ナイト","マシン","ゴースト","ウルフ","ゴーレム","魔導士","ドラゴン","ナイト","ビースト","バード","スライム","ラビ"];
@@ -1008,6 +1061,50 @@ function uniqueAbilities(r,count){
     if(!used.has(a.kind)){used.add(a.kind);out.push(a);}
   }
   return out;
+}
+function makeAbilityFromTemplate(t,r,power=1){
+  const span=t.v[1]-t.v[0],base=t.v[0]+r()*span;
+  const val=Math.round(Math.min(t.v[1],base*(.92+.16*power)));
+  const chance=t.chance?Math.round(t.chance[0]+r()*(t.chance[1]-t.chance[0])):0;
+  const turns=t.turns?Math.round(t.turns[0]+r()*(t.turns[1]-t.turns[0])):0;
+  return {kind:t.kind,name:t.name,tag:t.tag,value:val,chance,turns,desc:t.make(val,chance,turns)};
+}
+function abilityShopOffers(m){
+  if(!m)return[];
+  const used=new Set((m.skills||[]).map(x=>x.kind));
+  const seed=hashString(`${m.id||m.seed}:shop:${state.abilityShopRefresh||0}`),r=rng(seed);
+  const pool=[...abilityTemplates].sort(()=>r()-.5);
+  const out=[];
+  for(const t of pool){
+    if(used.has(t.kind)&&out.length<4)continue;
+    const a=makeAbilityFromTemplate(t,r,1+(m.stars||1)*.08);
+    const premium=["barrier","cleanse","execute","fortress","berserk","crit","regen"].includes(a.kind);
+    a.cost=Math.round((220+(m.stars||1)*90+(premium?180:0))/10)*10;
+    out.push(a);if(out.length>=8)break;
+  }
+  return out;
+}
+function renderAbilityShop(m){
+  const select=$('#abilitySlotSelect'),grid=$('#abilityShopGrid');if(!select||!grid||!m)return;
+  const skills=m.skills||[];
+  select.innerHTML=skills.length?skills.map((a,i)=>`<option value="${i}">交換対象 ${i+1}: ${a.name}</option>`).join(''):'<option value="">能力なし</option>';
+  const offers=abilityShopOffers(m);
+  grid.innerHTML=offers.map((a,i)=>`<button class="ability-shop-card" data-shop-ability="${i}" ${skills.length?'':'disabled'}><div class="shop-name">${a.name}</div><div class="shop-tag">${a.tag||'能力'}</div><div class="shop-desc">${a.desc||''}</div><div class="shop-cost">💰 ${a.cost}G</div></button>`).join('');
+  grid.querySelectorAll('[data-shop-ability]').forEach(btn=>btn.addEventListener('click',()=>buyAbilityOffer(m,Number(btn.dataset.shopAbility))));
+}
+function buyAbilityOffer(m,offerIndex){
+  if(!m||!(m.skills||[]).length)return;
+  const slot=Number($('#abilitySlotSelect')?.value||0),offers=abilityShopOffers(m),offer=offers[offerIndex];if(!offer)return;
+  const old=m.skills[slot];
+  if(state.gold<offer.cost){alert('ゴールドが足りません。');return;}
+  if(!confirm(`${old?.name||'能力'} → ${offer.name}
+${offer.cost}Gで付け替えますか？`))return;
+  state.gold-=offer.cost;m.skills[slot]={kind:offer.kind,name:offer.name,tag:offer.tag,value:offer.value,chance:offer.chance,turns:offer.turns,desc:offer.desc};
+  save();updateTopBar();renderBox();renderBattleSelection();renderDungeon();renderStory();
+}
+function refreshAbilityShop(){
+  if(state.gold<100){alert('ゴールドが足りません。');return;}
+  state.gold-=100;state.abilityShopRefresh=(state.abilityShopRefresh||0)+1;save();updateTopBar();const m=monsterById(selectedId);if(m)renderAbilityShop(m);
 }
 function makeMonster(code){
   const clean=String(code).replace(/\D/g,"");if(clean.length<4)throw Error("4桁以上の数字を入力してください。");
@@ -1341,30 +1438,32 @@ function renderSummon(m){
 }
 function addToBox(){ if(!currentSummon)return; if(state.monsters.length>=60){ alert('BOX上限は60体です。'); return; } state.monsters.push(currentSummon); if(!state.battleMonsterId)state.battleMonsterId=currentSummon.id;if(!state.dungeonMonsterId)state.dungeonMonsterId=currentSummon.id;if(!state.storyMonsterId)state.storyMonsterId=currentSummon.id; save(); renderBox(); renderDungeon(); alert('BOXに保存しました！'); $('#saveBtn').disabled=true; $('#saveBtn').textContent='保存済み'; updateTopBar(); }
 
+function filteredBoxMonsters(){
+  let arr=[...state.monsters];
+  if(boxFilter==='favorite')arr=arr.filter(m=>isFavorite(m.id));
+  else if(boxFilter==='mythic')arr=arr.filter(m=>visualGenes(m).rarityArt==='mythic');
+  else if(boxFilter==='equipped')arr=arr.filter(m=>!!m.equippedItemId);
+  else if(boxFilter==='highlevel')arr.sort((a,b)=>(b.level||1)-(a.level||1)||((b.stars||1)-(a.stars||1)));
+  if(boxSortMode===1)arr.sort((a,b)=>(b.stars||1)-(a.stars||1)||((b.level||1)-(a.level||1)));
+  if(boxSortMode===2)arr.sort((a,b)=>displayName(a).localeCompare(displayName(b),'ja'));
+  return arr;
+}
 function renderBox(){
-  $('#boxInfo').textContent=`${state.monsters.length}/60体`;
+  const all=state.monsters,arr=filteredBoxMonsters(),pageSize=8,totalPages=Math.max(1,Math.ceil(arr.length/pageSize));
+  boxPage=Math.max(0,Math.min(boxPage,totalPages-1));
+  $('#boxInfo').textContent=`${all.length}/60体 ・ 表示 ${arr.length}体`;
   const g=$('#boxGrid');g.innerHTML='';
-  if(!state.monsters.length){
-    g.innerHTML='<div class="empty" style="grid-column:1/-1">まだキャラクターがいません。</div>';
-    $('#selectedCard').hidden=true;return;
-  }
-  state.monsters.forEach(m=>{
-    const s=displayStats(m),item=equippedItem(m);
-    const d=document.createElement('button');
-    d.type='button';
-    d.className='monster-mini'+(m.id===selectedId?' selected':'');
-    d.innerHTML=`${isFavorite(m.id)?'<span class="active-ribbon">★</span>':''}
-      <div class="miniimg">${portraitSVG(m)}</div>
-      <div class="mini-name">${displayName(m)}</div>
-      <div class="tiny">Lv.${m.level} / ${m.element} / ${m.archetype?.name||'旧世代型'}</div>
-      <div class="monster-labels"><span class="monster-label id">ID ${shortMonsterId(m)}</span><span class="monster-label item">${item?item.icon+" "+item.name:"装備なし"}</span></div>
-      <div class="skill-chips">${skillSummaryHtml(m,2)}</div>
-      <div class="mini-stats"><span>HP <b>${s.hp}</b></span><span>攻 <b>${s.atk}</b></span><span>防 <b>${s.def}</b></span><span>速 <b>${s.spd}</b></span></div>`;
-    d.addEventListener('click',()=>{selectedId=m.id;renderBox();renderSelected(m);});
-    g.appendChild(d);
+  if(!all.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">まだキャラクターがいません。</div>';$('#selectedCard').hidden=true;$('#boxPageLabel').textContent='';return;}
+  const page=arr.slice(boxPage*pageSize,boxPage*pageSize+pageSize);
+  if(!page.length)g.innerHTML='<div class="empty" style="grid-column:1/-1">この条件のモンスターはいません。</div>';
+  page.forEach(m=>{
+    const s=displayStats(m),item=equippedItem(m);const d=document.createElement('button');d.type='button';d.className='monster-mini'+(m.id===selectedId?' selected':'');
+    d.innerHTML=`${isFavorite(m.id)?'<span class="active-ribbon">★</span>':''}<div class="miniimg">${portraitSVG(m)}</div><div class="mini-name">${displayName(m)}</div><div class="tiny">Lv.${m.level} / ${m.element} / ${m.archetype?.name||'旧世代型'}</div><div class="monster-labels"><span class="monster-label id">ID ${shortMonsterId(m)}</span><span class="monster-label item">${item?item.icon+' '+item.name:'装備なし'}</span></div><div class="skill-chips">${skillSummaryHtml(m,2)}</div><div class="mini-stats"><span>HP <b>${s.hp}</b></span><span>攻 <b>${s.atk}</b></span><span>防 <b>${s.def}</b></span><span>速 <b>${s.spd}</b></span></div>`;
+    d.addEventListener('click',()=>{selectedId=m.id;renderBox();renderSelected(m);const sc=$('#selectedCard');if(sc)sc.scrollIntoView({behavior:'smooth',block:'start'});});g.appendChild(d);
   });
-  const selected=state.monsters.find(m=>m.id===selectedId)||state.monsters[0];
-  if(selected){selectedId=selected.id;renderSelected(selected);}
+  $('#boxPageLabel').textContent=`${boxPage+1} / ${totalPages}`;$('#boxPrevBtn').disabled=boxPage<=0;$('#boxNextBtn').disabled=boxPage>=totalPages-1;
+  $$('#boxFilters .filter-chip').forEach(b=>b.classList.toggle('active',b.dataset.boxFilter===boxFilter));
+  const selected=state.monsters.find(m=>m.id===selectedId)||page[0]||state.monsters[0];if(selected){selectedId=selected.id;renderSelected(selected);}
 }
 function renderSelected(m){
   $('#selectedCard').hidden=false;
@@ -1391,6 +1490,7 @@ function renderSelected(m){
   $('#boxExpBankText').textContent=state.expBank;
   renderEquippedItem(m);
   renderItemInventory(m);
+  renderAbilityShop(m);
 }
 function refreshFavoriteButton(m){
   if(!m)return;
@@ -2077,8 +2177,9 @@ $('#storyNextBtn').addEventListener('click',()=>{
   const next=Number($('#storyNextBtn').dataset.nextStage||0);
   if(next)selectStoryStage(next);
 });$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonChainBtn').addEventListener('click',toggleDungeonChainAuto);$('#jumpDungeonShopBtn').addEventListener('click',()=>{const s=$('#dungeonShop');if(s){s.open=true;s.scrollIntoView({behavior:'smooth',block:'center'});}});$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
+$('#boxPrevBtn').addEventListener('click',()=>{boxPage=Math.max(0,boxPage-1);renderBox();});$('#boxNextBtn').addEventListener('click',()=>{boxPage++;renderBox();});$('#boxSortBtn').addEventListener('click',()=>{boxSortMode=(boxSortMode+1)%3;$('#boxSortBtn').textContent=['並替','★順','名前順'][boxSortMode];boxPage=0;renderBox();});$$('#boxFilters .filter-chip').forEach(b=>b.addEventListener('click',()=>{boxFilter=b.dataset.boxFilter||'all';boxPage=0;renderBox();}));$('#abilityRefreshBtn').addEventListener('click',refreshAbilityShop);
 $('#resetBtn').addEventListener('click',()=>{if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){localStorage.removeItem(STORAGE_KEY);location.reload();}});
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4500').catch(()=>{});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4600').catch(()=>{});
 if(state.monsters.length){if(!state.battleMonsterId)state.battleMonsterId=state.monsters[0].id;if(!state.dungeonMonsterId)state.dungeonMonsterId=state.monsters[0].id;if(!state.storyMonsterId)state.storyMonsterId=state.monsters[0].id;save();}
 updateTopBar();renderBox();renderDex();renderStory();renderBattleSelection();renderDungeon();
 </script>

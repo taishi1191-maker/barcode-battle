@@ -1,4 +1,4 @@
-const CACHE="barcode-battle-v450-full-art-rebuild";
+const CACHE="barcode-battle-v460-box-ability-shop";
 const ASSETS=[
   "./",
   "./index.html",
@@ -91,7 +91,6 @@ const ASSETS=[
   "./assets/monsters/v45/rabi_6.png",
   "./assets/monsters/v45/rabi_7.png",
   "./assets/monsters/v45/rabi_8.png",
-  "./assets/monsters/slime.png"
 ];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
