@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="BarcodeBattle">
-  <title>Barcode Battle v4.6.0</title>
+  <title>Barcode Battle v4.6.1</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
@@ -25,6 +25,15 @@
     button,input{font:inherit} button{cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-height:46px} input{font-size:16px}
     .app{max-width:980px;margin:auto;padding:calc(10px + env(safe-area-inset-top)) 14px calc(96px + env(safe-area-inset-bottom))}
     .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 14px}
+    .app-update-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none}
+    .app-update-btn{min-height:38px;padding:8px 11px;border-radius:12px;border:1px solid #315775;background:#10253d;color:#e8f7ff;font-size:12px;font-weight:900;white-space:nowrap}
+    .app-update-btn:disabled{opacity:.55}
+    .app-update-status{font-size:9px;color:#8fa9c1;min-height:12px;text-align:right}
+    @media(max-width:430px){
+      .app-update-btn{min-height:34px;padding:7px 8px;font-size:10px}
+      .app-update-status{display:none}
+      .brand-wrap{gap:8px}
+    }
     .brand-wrap{display:flex;align-items:center;gap:12px}
     .top-icon{width:54px;height:54px;border-radius:18px;border:1px solid #355278;overflow:hidden;flex:none;box-shadow:0 10px 25px rgba(0,0,0,.25)}
     .top-icon img{width:100%;height:100%;display:block}
@@ -692,7 +701,11 @@
   <div class="top">
     <div class="brand-wrap">
       <div class="top-icon"><img src="assets/icon-192.png" alt="Barcode Battle icon"></div>
-      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.6.0 / BOX & Ability Shop</div></div>
+      <div><div class="brand">⚡ BARCODE BATTLE</div><div class="ver">v4.6.1 / Update Button</div><div class="app-update-wrap">
+      <button id="appUpdateBtn" class="app-update-btn" type="button">🔄 更新</button>
+      <div id="appUpdateStatus" class="app-update-status">最新版を確認</div>
+    </div>
+  </div>
     </div>
     
   </div>
@@ -2160,13 +2173,43 @@ function allocateExp(monsterId,amount){
   state.expBank-=amount;const ups=levelUp(m,amount);save();updateTopBar();renderBox();
   alert(`${displayName(m)}に${amount}EXP振り分け${ups?`！ Lv.${m.level}へアップ！`:'しました。'}`);
 }
+
+async function forceAppUpdate(){
+  const btn=$('#appUpdateBtn'),status=$('#appUpdateStatus');
+  if(btn){btn.disabled=true;btn.textContent='⏳ 更新中';}
+  if(status)status.textContent='最新版を取得しています…';
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(async reg=>{try{await reg.update();}catch(e){}}));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.map(k=>caches.delete(k)));
+    }
+    try{
+      await fetch(`./index.html?forceUpdate=${Date.now()}`,{cache:'no-store'});
+      await fetch(`./sw.js?forceUpdate=${Date.now()}`,{cache:'no-store'});
+    }catch(e){}
+    if(status)status.textContent='更新完了。再読み込みします';
+    const u=new URL(location.href);
+    u.searchParams.set('appUpdate',Date.now());
+    setTimeout(()=>location.replace(u.toString()),250);
+  }catch(err){
+    console.error(err);
+    if(btn){btn.disabled=false;btn.textContent='🔄 更新';}
+    if(status)status.textContent='更新失敗';
+    alert('更新に失敗しました。通信状態を確認して、もう一度「更新」を押してください。');
+  }
+}
+
 async function startScanner(){ if(scanning) return; if(typeof Html5Qrcode==='undefined'){ alert('カメラ読み取り機能の読み込みに失敗しました。'); return; } try{ scanner=new Html5Qrcode('reader'); scanning=true; $('#cameraBtn').disabled=true; $('#stopCameraBtn').disabled=false; $('#scanFrame').style.display='block'; await scanner.start({facingMode:'environment'}, {fps:10, qrbox:{width:280,height:130}, aspectRatio:1.7}, decoded=>{ stopScanner(); summonFromCode(decoded); }, ()=>{}); } catch(e){ scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; alert('カメラを開始できませんでした。Safariのカメラ権限を確認してください。'); } }
 async function stopScanner(){ if(!scanner||!scanning) return; try{ await scanner.stop(); await scanner.clear(); }catch(e){} scanner=null; scanning=false; $('#cameraBtn').disabled=false; $('#stopCameraBtn').disabled=true; $('#scanFrame').style.display='none'; $('#reader').innerHTML=''; }
 
 $$('.tab').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));$$('.difficulty-btn').forEach(b=>b.addEventListener('click',()=>{state.storyDifficulty=b.dataset.diff;save();renderStory();}));$$('.speed-btn').forEach(b=>b.addEventListener('click',()=>{battleSpeed=Number(b.dataset.speed)||1;$$('.speed-btn').forEach(x=>x.classList.toggle('active',x===b));}));
 $('#summonBtn').addEventListener('click',summon);$('#gachaOneBtn').addEventListener('click',()=>doGacha(1));$('#gachaTenBtn').addEventListener('click',()=>doGacha(10));$('#rerollBtn').addEventListener('click',rerollSameCode);$('#saveBtn').addEventListener('click',addToBox);
 $('#barcodeInput').addEventListener('keydown',e=>{if(e.key==='Enter')summon();});$('#nicknameInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&selectedId)renameMonster(selectedId,$('#nicknameInput').value);});
-$('#cameraBtn').addEventListener('click',startScanner);$('#stopCameraBtn').addEventListener('click',stopScanner);
+$('#cameraBtn').addEventListener('click',startScanner);$('#stopCameraBtn').addEventListener('click',stopScanner);$('#appUpdateBtn').addEventListener('click',forceAppUpdate);
 $('#favoriteBtn').addEventListener('click',()=>{if(selectedId)toggleFavorite(selectedId);});$('#renameBtn').addEventListener('click',()=>{if(selectedId)renameMonster(selectedId,$('#nicknameInput').value);});$('#expAllocateBtn').addEventListener('click',()=>{if(selectedId)allocateExp(selectedId,$('#expAllocateInput').value);});$$('.expQuickBtn').forEach(b=>b.addEventListener('click',()=>{if(!selectedId)return;const v=b.dataset.exp==='all'?state.expBank:Number(b.dataset.exp);allocateExp(selectedId,Math.min(v,state.expBank));}));$('#deleteMonsterBtn').addEventListener('click',deleteSelected);
 $('#newEnemyBtn').addEventListener('click',prepareBattle);
 
@@ -2179,7 +2222,7 @@ $('#storyNextBtn').addEventListener('click',()=>{
 });$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonChainBtn').addEventListener('click',toggleDungeonChainAuto);$('#jumpDungeonShopBtn').addEventListener('click',()=>{const s=$('#dungeonShop');if(s){s.open=true;s.scrollIntoView({behavior:'smooth',block:'center'});}});$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
 $('#boxPrevBtn').addEventListener('click',()=>{boxPage=Math.max(0,boxPage-1);renderBox();});$('#boxNextBtn').addEventListener('click',()=>{boxPage++;renderBox();});$('#boxSortBtn').addEventListener('click',()=>{boxSortMode=(boxSortMode+1)%3;$('#boxSortBtn').textContent=['並替','★順','名前順'][boxSortMode];boxPage=0;renderBox();});$$('#boxFilters .filter-chip').forEach(b=>b.addEventListener('click',()=>{boxFilter=b.dataset.boxFilter||'all';boxPage=0;renderBox();}));$('#abilityRefreshBtn').addEventListener('click',refreshAbilityShop);
 $('#resetBtn').addEventListener('click',()=>{if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){localStorage.removeItem(STORAGE_KEY);location.reload();}});
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4600').catch(()=>{});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4610').catch(()=>{});
 if(state.monsters.length){if(!state.battleMonsterId)state.battleMonsterId=state.monsters[0].id;if(!state.dungeonMonsterId)state.dungeonMonsterId=state.monsters[0].id;if(!state.storyMonsterId)state.storyMonsterId=state.monsters[0].id;save();}
 updateTopBar();renderBox();renderDex();renderStory();renderBattleSelection();renderDungeon();
 </script>

@@ -1,4 +1,4 @@
-const CACHE="barcode-battle-v460-box-ability-shop";
+const CACHE="barcode-battle-v461-update-button";
 const ASSETS=[
   "./",
   "./index.html",
