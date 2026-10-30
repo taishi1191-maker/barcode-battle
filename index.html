@@ -1054,7 +1054,7 @@ function toggleFavorite(id){
   save();renderBox();
 }
 function activeMonster(){return battleMonster();}
-function formatStars(n){ return "★".repeat(n)+"☆".repeat(5-n); }
+function formatStars(n){ return n>=7 ? "★∞" : n===6 ? "★★★★★★" : "★".repeat(Math.max(0,n||0))+"☆".repeat(Math.max(0,5-(n||0))); }
 function updateTopBar(){$('#goldText').textContent=state.gold;$('#bestFloorText').textContent=state.bestFloor;$('#expBankText').textContent=state.expBank;}
 
 const SPECIAL_V47=[
@@ -1069,6 +1069,37 @@ const SPECIAL_V47=[
   {key:"psychic_crystal_01",name:"晶界ノクティス",type:"超能力者",element:"闇"},
   {key:"psychic_nightmare_01",name:"夢蝕ヘクサ",type:"超能力者",element:"闇"}
 ];
+
+// v4.8: approved 20 character pack. The barcode hash fixes character identity.
+const SPECIAL_V48=[
+  {"key": "r6_academy", "name": "無極学園戦士", "type": "学園戦士", "element": "無", "stars": 6},
+  {"key": "r6_cute_beastgirl", "name": "無極獣人戦士", "type": "獣人戦士", "element": "無", "stars": 6},
+  {"key": "r6_dark_mage", "name": "無極ダーク魔導士", "type": "ダーク魔導士", "element": "無", "stars": 6},
+  {"key": "r6_dragonkin", "name": "無極竜人戦士", "type": "竜人戦士", "element": "無", "stars": 6},
+  {"key": "r6_holy_knight", "name": "無極聖騎士", "type": "聖騎士", "element": "無", "stars": 6},
+  {"key": "r6_magicalgirl", "name": "無極魔法少女", "type": "魔法少女", "element": "無", "stars": 6},
+  {"key": "r6_mecha_warrior", "name": "無極メカ戦士", "type": "メカ戦士", "element": "無", "stars": 6},
+  {"key": "r6_ninja", "name": "無極忍者", "type": "忍者", "element": "無", "stars": 6},
+  {"key": "r6_psychic", "name": "無極超能力者", "type": "超能力者", "element": "無", "stars": 6},
+  {"key": "r6_swordswoman", "name": "無極剣士", "type": "剣士", "element": "無", "stars": 6},
+  {"key": "infinity_academy", "name": "無限学園戦士", "type": "学園戦士", "element": "無", "stars": 7},
+  {"key": "infinity_cute_beastgirl", "name": "無限獣人戦士", "type": "獣人戦士", "element": "無", "stars": 7},
+  {"key": "infinity_dark_mage", "name": "無限ダーク魔導士", "type": "ダーク魔導士", "element": "無", "stars": 7},
+  {"key": "infinity_dragonkin", "name": "無限竜人戦士", "type": "竜人戦士", "element": "無", "stars": 7},
+  {"key": "infinity_holy_knight", "name": "無限聖騎士", "type": "聖騎士", "element": "無", "stars": 7},
+  {"key": "infinity_magicalgirl", "name": "無限魔法少女", "type": "魔法少女", "element": "無", "stars": 7},
+  {"key": "infinity_mecha_warrior", "name": "無限メカ戦士", "type": "メカ戦士", "element": "無", "stars": 7},
+  {"key": "infinity_ninja", "name": "無限忍者", "type": "忍者", "element": "無", "stars": 7},
+  {"key": "infinity_psychic", "name": "無限超能力者", "type": "超能力者", "element": "無", "stars": 7},
+  {"key": "infinity_swordswoman", "name": "無限剣士", "type": "剣士", "element": "無", "stars": 7}
+];
+function specialV48ForSeed(seed){
+  const roll=seed%1000;
+  if(roll===0 || roll===1)return SPECIAL_V48[10+(Math.floor(seed/1000)%10)]; // 0.2% ★∞
+  if(roll<22)return SPECIAL_V48[Math.floor(seed/1000)%10]; // 2.0% ★6
+  return null;
+}
+
 function specialV47ForSeed(seed){
   if((seed%100)>=28)return null;
   return SPECIAL_V47[Math.floor(seed/100)%SPECIAL_V47.length];
@@ -1076,6 +1107,8 @@ function specialV47ForSeed(seed){
 function makeSpecies(code){
   const c=String(code).replace(/\D/g,"");
   const seed=hashString(c), r=rng(seed);
+  const approved=specialV48ForSeed(seed);
+  if(approved)return {seed,element:approved.element,type:approved.type,name:approved.name,speciesId:(seed%9999).toString().padStart(4,"0"),specialArtKey:approved.key,approvedStars:approved.stars};
   const special=specialV47ForSeed(seed);
   if(special)return {seed,element:special.element,type:special.type,name:special.name,speciesId:(seed%9999).toString().padStart(4,"0"),specialArtKey:special.key};
   const type=types[Math.floor(r()*types.length)];
@@ -1152,14 +1185,15 @@ function makeMonster(code){
   const rarity=(sp.seed%1000)/1000;
   let stars=rarity>.985?5:rarity>.92?4:rarity>.74?3:rarity>.42?2:1;
   if(r()>.94&&stars<5)stars++;
+  if(sp.approvedStars)stars=sp.approvedStars;
 
   // バーコード固定の「型」。一部は極端な尖り性能。
   const archIndex=Math.floor(fixed()*archetypes.length);
   const archetype=archetypes[archIndex];
 
   // 新スケール：Lv1でも3〜4桁HP、数百級ステータスが出る。
-  const quality=0.80+r()*.42+(stars-1)*.055;
-  const baseBudget=1+(stars-1)*.07;
+  const quality=0.80+r()*.42+(Math.min(stars,6)-1)*.055*(stars>=7?1.2:1);
+  const baseBudget=1+(Math.min(stars,6)-1)*.07*(stars>=7?1.4:1);
   const hp=Math.round((360+fixed()*330+r()*240)*archetype.w.hp*quality*baseBudget);
   const atk=Math.round((135+fixed()*170+r()*125)*archetype.w.atk*quality*baseBudget);
   const def=Math.round((125+fixed()*165+r()*120)*archetype.w.def*quality*baseBudget);
@@ -1269,7 +1303,7 @@ function renameMonster(monsterId,newName){
 }
 
 
-const ART_PACK_VERSION="4700";
+const ART_PACK_VERSION="4800";
 const ART_ROUTE={
   dragon:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
   beast:{normal:[1,2,3],rare:[4,5],legendary:[6,7],mythic:[8],fallback:8},
@@ -1296,6 +1330,7 @@ function monsterArtTier(m){
   return"normal";
 }
 function deriveArtRef(m){
+  if(m?.specialArtKey&&SPECIAL_V48.some(x=>x.key===m.specialArtKey))return {pack:"v48",key:m.specialArtKey,idx:1,tier:"mythic"};
   if(m?.specialArtKey&&SPECIAL_V47.some(x=>x.key===m.specialArtKey))return {pack:"v47",key:m.specialArtKey,idx:1,tier:monsterArtTier(m)};
   const key=monsterSpeciesKey({...m,artRef:null}),set=ART_ROUTE[key]||ART_ROUTE.default,tier=monsterArtTier(m);
   const pool=set[tier]||set.normal||[1];
@@ -1308,10 +1343,12 @@ function ensureArtRef(m){
   const r=m.artRef;
   const validV463=r&&r.pack==="v463"&&r.key&&r.idx;
   const validV47=r&&r.pack==="v47"&&SPECIAL_V47.some(x=>x.key===r.key);
-  if(!validV463&&!validV47)m.artRef=deriveArtRef(m);
+  const validV48=r&&r.pack==="v48"&&SPECIAL_V48.some(x=>x.key===r.key);
+  if(!validV463&&!validV47&&!validV48)m.artRef=deriveArtRef(m);
   return m.artRef;
 }
 function artPathFromRef(ref){
+  if(ref?.pack==="v48")return `assets/monsters/v48/${ref.key}.png`;
   if(ref?.pack==="v47")return `assets/monsters/v47/${ref.key}.png`;
   const key=ref?.key||"beast",idx=Number(ref?.idx)||8;
   return `assets/monsters/v463/${key}_${idx}.png`;
@@ -1322,7 +1359,7 @@ function versionedAssetUrl(path){
 function highResMonsterBasePath(m){return artPathFromRef(ensureArtRef(m));}
 function monsterArtFallbackCandidates(m){
   const ref=ensureArtRef(m),speciesKey=monsterSpeciesKey({...m,artRef:null});
-  const items=ref?.pack==="v47"
+  const items=(ref?.pack==="v47"||ref?.pack==="v48")
     ?[`assets/monsters/v463/${speciesKey}_8.png`,`assets/monsters/v463/beast_8.png`]
     :[`assets/monsters/v463/${ref?.key||speciesKey}_8.png`,`assets/monsters/v463/${ref?.key||speciesKey}_1.png`,`assets/monsters/v463/beast_8.png`];
   return [...new Set(items.filter(x=>x!==highResMonsterBasePath(m)))];
@@ -2292,7 +2329,7 @@ $('#storyNextBtn').addEventListener('click',()=>{
 });$('#startDungeonBtn').addEventListener('click',startDungeon);$('#dungeonChainBtn').addEventListener('click',toggleDungeonChainAuto);$('#jumpDungeonShopBtn').addEventListener('click',()=>{const s=$('#dungeonShop');if(s){s.open=true;s.scrollIntoView({behavior:'smooth',block:'center'});}});$('#nextFloorBtn').addEventListener('click',nextDungeonFloor);$('#retireDungeonBtn').addEventListener('click',retireDungeon);
 $('#boxPrevBtn').addEventListener('click',()=>{boxPage=Math.max(0,boxPage-1);renderBox();});$('#boxNextBtn').addEventListener('click',()=>{boxPage++;renderBox();});$('#boxSortBtn').addEventListener('click',()=>{boxSortMode=(boxSortMode+1)%3;$('#boxSortBtn').textContent=['並替','★順','名前順'][boxSortMode];boxPage=0;renderBox();});$$('#boxFilters .filter-chip').forEach(b=>b.addEventListener('click',()=>{boxFilter=b.dataset.boxFilter||'all';boxPage=0;renderBox();}));$('#abilityRefreshBtn').addEventListener('click',refreshAbilityShop);
 $('#resetBtn').addEventListener('click',()=>{if(confirm('BOX・図鑑・育成・ダンジョンデータをすべて初期化しますか？')){localStorage.removeItem(STORAGE_KEY);location.reload();}});
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4700').catch(()=>{});
+if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js?v=4800').catch(()=>{});
 if(state.monsters.length){if(!state.battleMonsterId)state.battleMonsterId=state.monsters[0].id;if(!state.dungeonMonsterId)state.dungeonMonsterId=state.monsters[0].id;if(!state.storyMonsterId)state.storyMonsterId=state.monsters[0].id;save();}
 function migrateArtReferences(){
   let changed=false;
@@ -2300,7 +2337,7 @@ function migrateArtReferences(){
   for(const d of Object.values(state.dex||{})){
     const match=(state.monsters||[]).find(m=>m.speciesId===d.speciesId);
     if(match){ensureArtRef(match);d.artRef={...match.artRef};d.stars=match.stars;d.rank=match.rank;d.form=match.form;changed=true;}
-    else if(!d.artRef||!["v463","v47"].includes(d.artRef.pack)){ensureArtRef(d);changed=true;}
+    else if(!d.artRef||!["v463","v47","v48"].includes(d.artRef.pack)){ensureArtRef(d);changed=true;}
   }
   if(changed)save();
 }

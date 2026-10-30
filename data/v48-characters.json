@@ -1,0 +1,185 @@
+{
+  "version": "4.8.0",
+  "characters": [
+    {
+      "key": "r6_academy",
+      "name": "無極学園戦士",
+      "type": "学園戦士",
+      "element": "無",
+      "stars": 6,
+      "displayRarity": "★6",
+      "image": "assets/monsters/v48/r6_academy.png"
+    },
+    {
+      "key": "r6_cute_beastgirl",
+      "name": "無極獣人戦士",
+      "type": "獣人戦士",
+      "element": "無",
+      "stars": 6,
+      "displayRarity": "★6",
+      "image": "assets/monsters/v48/r6_cute_beastgirl.png"
+    },
+    {
+      "key": "r6_dark_mage",
+      "name": "無極ダーク魔導士",
+      "type": "ダーク魔導士",
+      "element": "無",
+      "stars": 6,
+      "displayRarity": "★6",
+      "image": "assets/monsters/v48/r6_dark_mage.png"
+    },
+    {
+      "key": "r6_dragonkin",
+      "name": "無極竜人戦士",
+      "type": "竜人戦士",
+      "element": "無",
+      "stars": 6,
+      "displayRarity": "★6",
+      "image": "assets/monsters/v48/r6_dragonkin.png"
+    },
+    {
+      "key": "r6_holy_knight",
+      "name": "無極聖騎士",
+      "type": "聖騎士",
+      "element": "無",
+      "stars": 6,
+      "displayRarity": "★6",
+      "image": "assets/monsters/v48/r6_holy_knight.png"
+    },
+    {
+      "key": "r6_magicalgirl",
+      "name": "無極魔法少女",
+      "type": "魔法少女",
+      "element": "無",
+      "stars": 6,
+      "displayRarity": "★6",
+      "image": "assets/monsters/v48/r6_magicalgirl.png"
+    },
+    {
+      "key": "r6_mecha_warrior",
+      "name": "無極メカ戦士",
+      "type": "メカ戦士",
+      "element": "無",
+      "stars": 6,
+      "displayRarity": "★6",
+      "image": "assets/monsters/v48/r6_mecha_warrior.png"
+    },
+    {
+      "key": "r6_ninja",
+      "name": "無極忍者",
+      "type": "忍者",
+      "element": "無",
+      "stars": 6,
+      "displayRarity": "★6",
+      "image": "assets/monsters/v48/r6_ninja.png"
+    },
+    {
+      "key": "r6_psychic",
+      "name": "無極超能力者",
+      "type": "超能力者",
+      "element": "無",
+      "stars": 6,
+      "displayRarity": "★6",
+      "image": "assets/monsters/v48/r6_psychic.png"
+    },
+    {
+      "key": "r6_swordswoman",
+      "name": "無極剣士",
+      "type": "剣士",
+      "element": "無",
+      "stars": 6,
+      "displayRarity": "★6",
+      "image": "assets/monsters/v48/r6_swordswoman.png"
+    },
+    {
+      "key": "infinity_academy",
+      "name": "無限学園戦士",
+      "type": "学園戦士",
+      "element": "無",
+      "stars": 7,
+      "displayRarity": "★∞",
+      "image": "assets/monsters/v48/infinity_academy.png"
+    },
+    {
+      "key": "infinity_cute_beastgirl",
+      "name": "無限獣人戦士",
+      "type": "獣人戦士",
+      "element": "無",
+      "stars": 7,
+      "displayRarity": "★∞",
+      "image": "assets/monsters/v48/infinity_cute_beastgirl.png"
+    },
+    {
+      "key": "infinity_dark_mage",
+      "name": "無限ダーク魔導士",
+      "type": "ダーク魔導士",
+      "element": "無",
+      "stars": 7,
+      "displayRarity": "★∞",
+      "image": "assets/monsters/v48/infinity_dark_mage.png"
+    },
+    {
+      "key": "infinity_dragonkin",
+      "name": "無限竜人戦士",
+      "type": "竜人戦士",
+      "element": "無",
+      "stars": 7,
+      "displayRarity": "★∞",
+      "image": "assets/monsters/v48/infinity_dragonkin.png"
+    },
+    {
+      "key": "infinity_holy_knight",
+      "name": "無限聖騎士",
+      "type": "聖騎士",
+      "element": "無",
+      "stars": 7,
+      "displayRarity": "★∞",
+      "image": "assets/monsters/v48/infinity_holy_knight.png"
+    },
+    {
+      "key": "infinity_magicalgirl",
+      "name": "無限魔法少女",
+      "type": "魔法少女",
+      "element": "無",
+      "stars": 7,
+      "displayRarity": "★∞",
+      "image": "assets/monsters/v48/infinity_magicalgirl.png"
+    },
+    {
+      "key": "infinity_mecha_warrior",
+      "name": "無限メカ戦士",
+      "type": "メカ戦士",
+      "element": "無",
+      "stars": 7,
+      "displayRarity": "★∞",
+      "image": "assets/monsters/v48/infinity_mecha_warrior.png"
+    },
+    {
+      "key": "infinity_ninja",
+      "name": "無限忍者",
+      "type": "忍者",
+      "element": "無",
+      "stars": 7,
+      "displayRarity": "★∞",
+      "image": "assets/monsters/v48/infinity_ninja.png"
+    },
+    {
+      "key": "infinity_psychic",
+      "name": "無限超能力者",
+      "type": "超能力者",
+      "element": "無",
+      "stars": 7,
+      "displayRarity": "★∞",
+      "image": "assets/monsters/v48/infinity_psychic.png"
+    },
+    {
+      "key": "infinity_swordswoman",
+      "name": "無限剣士",
+      "type": "剣士",
+      "element": "無",
+      "stars": 7,
+      "displayRarity": "★∞",
+      "image": "assets/monsters/v48/infinity_swordswoman.png"
+    }
+  ]
+}

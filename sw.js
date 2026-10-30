@@ -1,4 +1,4 @@
-const CACHE="barcode-battle-v470-new-character-pack";
+const CACHE="barcode-battle-v480-approved-twenty";
 const ASSETS=[
   "./",
   "./index.html",
@@ -10,6 +10,7 @@ const ASSETS=[
   "./data/battle-config.json",
   "./data/v463-monsters.json",
   "./data/v47-new-characters.json",
+  "./data/v48-characters.json",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
   "./assets/icon-1024.png",
@@ -102,6 +103,26 @@ const ASSETS=[
   "./assets/monsters/v47/magical_girl_01.png",
   "./assets/monsters/v47/psychic_crystal_01.png",
   "./assets/monsters/v47/psychic_nightmare_01.png",
+  "./assets/monsters/v48/r6_academy.png",
+  "./assets/monsters/v48/r6_cute_beastgirl.png",
+  "./assets/monsters/v48/r6_dark_mage.png",
+  "./assets/monsters/v48/r6_dragonkin.png",
+  "./assets/monsters/v48/r6_holy_knight.png",
+  "./assets/monsters/v48/r6_magicalgirl.png",
+  "./assets/monsters/v48/r6_mecha_warrior.png",
+  "./assets/monsters/v48/r6_ninja.png",
+  "./assets/monsters/v48/r6_psychic.png",
+  "./assets/monsters/v48/r6_swordswoman.png",
+  "./assets/monsters/v48/infinity_academy.png",
+  "./assets/monsters/v48/infinity_cute_beastgirl.png",
+  "./assets/monsters/v48/infinity_dark_mage.png",
+  "./assets/monsters/v48/infinity_dragonkin.png",
+  "./assets/monsters/v48/infinity_holy_knight.png",
+  "./assets/monsters/v48/infinity_magicalgirl.png",
+  "./assets/monsters/v48/infinity_mecha_warrior.png",
+  "./assets/monsters/v48/infinity_ninja.png",
+  "./assets/monsters/v48/infinity_psychic.png",
+  "./assets/monsters/v48/infinity_swordswoman.png",
 ];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
